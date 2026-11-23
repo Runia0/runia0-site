@@ -7,12 +7,13 @@ Statik, Türkçe/İngilizce, izleme kodu ve çerez içermeyen site. GitHub Pages
 
 | Yol | İçerik |
 |---|---|
-| `index.html`, `gizlilik.html` | Türkçe sayfalar |
-| `en/index.html`, `en/privacy.html` | İngilizce sayfalar |
+| `index.html`, `projeler.html`, `projeler/*.html`, `gizlilik.html` | Türkçe sayfalar |
+| `en/index.html`, `en/projects.html`, `en/projects/*.html`, `en/privacy.html` | İngilizce sayfalar |
 | `404.html`, `sitemap.xml`, `robots.txt` | GitHub Pages / SEO dosyaları |
-| `assets/` | CSS, JS (proje filtresi), favicon, logo, Open Graph görseli |
+| `assets/` | CSS, JS (proje filtresi ve arama), favicon, logo, Open Graph görseli, `covers/` temsilî proje kapakları |
 | `tools/content.py` | **Bütün metinler ve proje envanteri burada** |
 | `tools/build.py` | HTML, sitemap ve robots dosyalarını üretir |
+| `tools/covers.py` | Proje kapaklarını (SVG) üretir |
 | `tools/render_images.py` | Favicon PNG'leri ve OG görselini üretir (Playwright) |
 
 ## Güncelleme

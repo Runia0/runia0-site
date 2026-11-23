@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Runia0 site content (TR + EN).
 
-Every project status here is deliberately conservative. Nothing is shown as
-"live" unless there is a public, verifiable link. Update `review` to "verified"
-once the code/repo for a project has been checked.
+Rules this file follows:
+- Nothing is labelled "live" without a public, verifiable link.
+- Features listed are ones that were actually built and tested; planned work
+  goes under "next" and is labelled as planned.
+- No invented metrics (stars, downloads, users, revenue).
 """
 
 # Change this one value when the custom domain (e.g. https://runia0.dev/) is live.
@@ -13,12 +15,322 @@ GITHUB = "https://github.com/Runia0"
 REPO = "https://github.com/Runia0/runia0-site"
 
 GROUPS = ["released", "progress", "experiment", "concept"]
+FEATURED = ["frogie", "shadow-protocol", "sokaklarin-kanunu", "iplik"]
+
+AI_ROLE = {
+    "tr": "Fikir, oyun tasarımı ve yapım yönetimi · yapay zekâ destekli geliştirme",
+    "en": "Concept, game design and production · AI-assisted development",
+}
+AI_ROLE_APP = {
+    "tr": "Ürün fikri, tasarım yönü ve yapım · yapay zekâ destekli geliştirme",
+    "en": "Product concept, design direction and production · AI-assisted development",
+}
 
 PROJECTS = [
+    # ------------------------------------------------------------------ GAMES
+    {
+        "id": "frogie",
+        "group": "progress",
+        "cats": ["games"],
+        "date": "2026-11",
+        "cover": "frogie",
+        "name": {"tr": "Frogie", "en": "Frogie"},
+        "desc": {
+            "tr": "Tarayıcıda ve mobilde oynanan 3D aksiyon-platform oyunu: 100 bölüm, 5 biyom ve boss savaşları.",
+            "en": "3D action-platformer for browser and mobile: 100 levels, 5 biomes and boss fights.",
+        },
+        "overview": {
+            "tr": [
+                "Frogie, basit bir “yolu karşıya geç” fikrinden başlayıp kendi kampanyası, ekonomisi ve hikâye modu olan tam bir mobil oyuna dönüşen bir proje. Oyuncu, dilini silah gibi kullanan bir kurbağayı serbestçe yönetiyor; zıplıyor, atılıyor, yüzüyor ve her dünyanın sonunda bir boss ile karşılaşıyor.",
+                "Oyun tek bir HTML5 uygulaması olarak yazıldı. Aynı kod tabanından PWA paketi ve Capacitor tabanlı bir Android projesi üretiliyor.",
+            ],
+            "en": [
+                "Frogie started as a simple “cross the road” idea and grew into a full mobile game with its own campaign, economy and story mode. The player freely controls a frog that uses its tongue as a weapon, jumping, dashing and swimming, with a boss waiting at the end of each world.",
+                "The game is written as a single HTML5 application. The same codebase produces a PWA package and a Capacitor-based Android project.",
+            ],
+        },
+        "features": {
+            "tr": [
+                "20 dünyaya yayılmış 100 bölüm ve yıldızla puanlama",
+                "5 biyom: çayır, çöl, kar, bataklık ve lav",
+                "Kendi mekanikleri olan 5 boss savaşı",
+                "Serbest hareket, fareyle nişan alınan dil saldırısı, zıplama, atılım ve yüzme",
+                "Coin ekonomisi, 30'dan fazla açılabilir skin, paket açma, şans çarkı, günlük görevler ve başarımlar",
+                "Animasyonlu, 3D manga tarzı hikâye modu",
+                "Mobil oyun hissi veren “çıkartma” tarzı arayüz; klavye, dokunmatik ve gamepad desteği",
+                "GitHub Actions ile test APK'sı ve imzalı Play Store AAB'si üreten derleme hattı",
+                "Tanıtım için reklam filmi, fragman, dikey kısa video ve posterler",
+            ],
+            "en": [
+                "100 levels across 20 worlds with star ratings",
+                "5 biomes: meadow, desert, snow, swamp and lava",
+                "5 boss fights, each with its own mechanics",
+                "Free movement, mouse-aimed tongue attack, jump, dash and swimming",
+                "Coin economy, 30+ unlockable skins, pack opening, lucky wheel, daily quests and achievements",
+                "Animated, 3D manga-style story mode",
+                "Sticker-style mobile UI; keyboard, touch and gamepad support",
+                "GitHub Actions pipeline producing a test APK and a signed Play Store AAB",
+                "Promo film, trailer, vertical short video and posters",
+            ],
+        },
+        "notes": {
+            "tr": "Masaüstü Chromium'da ve telefon ekran boyutlarında test edildi; gerçek cihaz testi henüz yapılmadı.",
+            "en": "Tested in desktop Chromium and at phone screen sizes; not yet tested on a physical device.",
+        },
+        "next": {
+            "tr": ["Gerçek cihaz testleri", "Google Play kapalı test süreci"],
+            "en": ["Testing on physical devices", "Google Play closed testing"],
+        },
+        "role": AI_ROLE,
+        "stack": ["Three.js", "JavaScript", "HTML5", "PWA", "Capacitor", "Android", "GitHub Actions"],
+        "status": {"tr": "Oynanabilir sürüm · yayın hazırlığı", "en": "Playable build · pre-release"},
+        "link": None,
+        "nolink": {"tr": "Herkese açık yayın bağlantısı henüz yok", "en": "No public release link yet"},
+    },
+    {
+        "id": "shadow-protocol",
+        "group": "progress",
+        "cats": ["games"],
+        "date": "2026-11",
+        "cover": "shadow",
+        "name": {"tr": "Shadow Protocol", "en": "Shadow Protocol"},
+        "desc": {
+            "tr": "Hikâyeli 3D sniper oyunu: 5 görev, gerçekçi balistik ve silah geliştirme sistemi.",
+            "en": "Story-driven 3D sniper game: 5 missions, realistic ballistics and weapon upgrades.",
+        },
+        "overview": {
+            "tr": [
+                "Shadow Protocol, Birim 9'dan bir keskin nişancının şifreli bir mesajla başlayan hikâyesini anlatan birinci şahıs bir sniper oyunu. Her görev, öncesi ve sonrası ara sahneleriyle hikâyeyi ilerletiyor.",
+                "Proje başlangıçta Unity 6 hedefiyle planlandı; mevcut oynanabilir sürüm tarayıcıda çalışan bir Three.js uygulaması.",
+            ],
+            "en": [
+                "Shadow Protocol is a first-person sniper game following a marksman from Unit 9, starting with an encrypted message. Each mission moves the story forward with cutscenes before and after.",
+                "The project was originally planned for Unity 6; the current playable build is a Three.js application that runs in the browser.",
+            ],
+        },
+        "features": {
+            "tr": [
+                "Ara sahneli 5 görev: First Contact, Dark City, Cold Silence, The Betrayal, Last Signal",
+                "Balistik: mermi düşüşü, rüzgâr, nefes tutma, termal dürbün, fark edilme göstergesi ve yavaş çekim son atış kamerası",
+                "5 tüfek, 5 dürbün, 8 kamuflaj, geliştirme ağaçları ve 7 kıyafet",
+                "Seviye ve rütbe sistemi, kayıt ve ayarlar",
+                "3D ana menü, silah ve karakter vitrini, istihbarat dosyalı hikâye modu",
+                "Tamamen sentezlenmiş müzik, ortam ve silah sesleri",
+                "Tam klavye desteği ve dokunmatik kontroller",
+                "Oyunun kendi sahnesinden üretilmiş dikey tanıtım videosu",
+            ],
+            "en": [
+                "5 missions with cutscenes: First Contact, Dark City, Cold Silence, The Betrayal, Last Signal",
+                "Ballistics: bullet drop, wind, breath hold, thermal scope, detection meter and slow-motion killcam",
+                "5 rifles, 5 scopes, 8 camos, upgrade trees and 7 outfits",
+                "Levels and ranks, saves and settings",
+                "3D main menu, weapon and character showroom, story mode with intel files",
+                "Fully synthesized music, ambience and weapon sounds",
+                "Full keyboard support and touch controls",
+                "Vertical promo video rendered from the game's own scene",
+            ],
+        },
+        "notes": {
+            "tr": "Görevler, otomatik oynayan test betikleriyle baştan sona headless Chromium'da oynatılarak test edildi. Modeller basit geometriden oluşuyor.",
+            "en": "Missions were tested end to end in headless Chromium with auto-play scripts. Models are built from simple geometry.",
+        },
+        "next": {
+            "tr": ["Daha ayrıntılı modeller", "Android paketi"],
+            "en": ["More detailed models", "Android package"],
+        },
+        "role": AI_ROLE,
+        "stack": ["Three.js", "JavaScript", "Web Audio API", "Playwright"],
+        "status": {"tr": "Oynanabilir prototip", "en": "Playable prototype"},
+        "link": None,
+        "nolink": {"tr": "Herkese açık yayın bağlantısı henüz yok", "en": "No public release link yet"},
+    },
+    {
+        "id": "sokaklarin-kanunu",
+        "group": "progress",
+        "cats": ["games"],
+        "date": "2026-11",
+        "cover": "streets",
+        "name": {"tr": "Sokakların Kanunu", "en": "Sokakların Kanunu"},
+        "desc": {
+            "tr": "Adana'da kurgusal bir mahallede geçen, kararların finali belirlediği özgün 3D aile ve suç draması.",
+            "en": "Original 3D family-and-crime drama set in a fictional Adana neighbourhood, where choices decide the ending.",
+        },
+        "overview": {
+            "tr": [
+                "Kerem üç yıl sonra Adana'daki Yıldıztepe mahallesine döner: babası ölmüş, kardeşi Selim mahallenin babası Cemal Karataş'a borçlanmıştır. Oyun, sadakat ve ihanet arasında sıkışan bir ailenin hikâyesini bölüm bölüm anlatıyor.",
+                "Hikâye, karakterler ve müzik tamamen özgündür; herhangi bir dizi veya yapımla bağlantısı yoktur.",
+            ],
+            "en": [
+                "Kerem returns to the Yıldıztepe neighbourhood in Adana after three years: his father is dead and his brother Selim owes money to the local boss Cemal Karataş. The game tells, chapter by chapter, the story of a family caught between loyalty and betrayal.",
+                "The story, characters and music are entirely original and not affiliated with any TV series or production.",
+            ],
+        },
+        "features": {
+            "tr": [
+                "Üçüncü şahıs kamera ile gezilebilen mahalle; NPC'ler ve diyaloglar",
+                "Bölüm yapısı ve kararlarla şekillenen 3 final: Usta, Yeni Reis, Tek Bilet",
+                "Mesajlar, kişiler, görevler ve harita içeren oyun içi telefon",
+                "Sokak dövüşleri ve araç sürüşü",
+                "Gün batımı, gece ve yağmur gibi atmosfer değişimleri",
+                "Kayıt sistemi ve dokunmatik kontroller",
+                "Oyun görüntüleri ve özgün müzikle hazırlanmış 33 saniyelik fragman",
+            ],
+            "en": [
+                "Explorable neighbourhood with third-person camera, NPCs and dialogue",
+                "Chapter structure and 3 endings shaped by choices: Usta, Yeni Reis, Tek Bilet",
+                "In-game phone with messages, contacts, quests and map",
+                "Street fights and driving",
+                "Atmosphere changes such as sunset, night and rain",
+                "Save system and touch controls",
+                "33-second trailer made from gameplay footage with an original score",
+            ],
+        },
+        "notes": {
+            "tr": "Tarayıcıda çalışan tek sayfalık bir Three.js uygulaması; gerçekçi modelleme üzerinde çalışılıyor.",
+            "en": "A single-page Three.js application that runs in the browser; more realistic modelling is in progress.",
+        },
+        "next": {
+            "tr": ["Daha gerçekçi karakter ve çevre modelleri"],
+            "en": ["More realistic character and environment models"],
+        },
+        "role": AI_ROLE,
+        "stack": ["Three.js", "JavaScript", "Web Audio API"],
+        "status": {"tr": "Oynanabilir prototip", "en": "Playable prototype"},
+        "link": None,
+        "nolink": {"tr": "Herkese açık yayın bağlantısı henüz yok", "en": "No public release link yet"},
+    },
+    {
+        "id": "night-shift",
+        "group": "progress",
+        "cats": ["games"],
+        "date": "2026-11",
+        "cover": "nightshift",
+        "name": {"tr": "NIGHT SHIFT: Son Vardiya", "en": "NIGHT SHIFT: Son Vardiya"},
+        "desc": {
+            "tr": "Benzin istasyonu ve market işletmeciliğini psikolojik korkuyla birleştiren 3D mobil oyun.",
+            "en": "3D mobile game combining gas station and market management with psychological horror.",
+        },
+        "overview": {
+            "tr": [
+                "Oyuncu gece vardiyasında bir benzin istasyonu ve marketi işletir; aldığı kararlar hem işletmeyi hem de giderek tuhaflaşan hikâyeyi etkiler.",
+                "Proje, web tabanlı 3D (Three.js) üzerine kurulu altı aşamalı bir planla geliştiriliyor. Aşağıdaki maddeler hedeflenen kapsamdır.",
+            ],
+            "en": [
+                "The player runs a gas station and market on the night shift; their choices affect both the business and an increasingly strange story.",
+                "The project is being developed on web 3D (Three.js) following a six-stage plan. The items below are the planned scope.",
+            ],
+        },
+        "features": {
+            "tr": [
+                "Planlanan: işletme simülasyonu (yakıt, market, müşteriler)",
+                "Planlanan: seçime dayalı hikâye ve en az 8 final",
+                "Planlanan: psikolojik korku katmanı",
+                "Planlanan: Türkçe ve İngilizce, mobil kontroller",
+            ],
+            "en": [
+                "Planned: business simulation (fuel, shop, customers)",
+                "Planned: choice-driven story with at least 8 endings",
+                "Planned: psychological horror layer",
+                "Planned: Turkish and English, mobile controls",
+            ],
+        },
+        "role": AI_ROLE,
+        "stack": ["Three.js", "JavaScript"],
+        "status": {"tr": "Erken geliştirme", "en": "Early development"},
+        "link": None,
+    },
+    {
+        "id": "create-and-rate",
+        "group": "progress",
+        "cats": ["games"],
+        "cover": "generic",
+        "name": {"tr": "Create&Rate (Roblox)", "en": "Create&Rate (Roblox)"},
+        "desc": {
+            "tr": "Roblox üzerinde 3D oyun projesi; oynanış (gameplay) kodlaması.",
+            "en": "3D game project on Roblox; gameplay scripting.",
+        },
+        "role": {"tr": "Scripter (takım projesi)", "en": "Scripter (team project)"},
+        "stack": ["Roblox Studio", "Luau"],
+        "status": {"tr": "Geliştirme aşamasında", "en": "In development"},
+        "link": None,
+        "nolink": {"tr": "Yayın bağlantısı henüz eklenmedi", "en": "No public link yet"},
+    },
+    {
+        "id": "futbol-duello",
+        "group": "experiment",
+        "cats": ["games"],
+        "cover": "generic",
+        "name": {"tr": "2D Futbol Düellosu", "en": "2D Football Duel"},
+        "desc": {
+            "tr": "Futbol temalı 2D oyun mekaniği ve hızlı prototipleme denemesi. Resmî bir ürün değildir.",
+            "en": "Football-themed 2D game-mechanics and rapid-prototyping experiment. Not an official product.",
+        },
+        "role": {"tr": "Geliştirme", "en": "Development"},
+        "stack": ["LÖVE / Pygame"],
+        "status": {"tr": "Deney", "en": "Experiment"},
+        "link": None,
+    },
+    # --------------------------------------------------------------- SOFTWARE
+    {
+        "id": "iplik",
+        "group": "progress",
+        "cats": ["software", "ai"],
+        "date": "2026-11",
+        "cover": "iplik",
+        "name": {"tr": "İplik", "en": "İplik"},
+        "desc": {
+            "tr": "Türkçe özlü söz ve atasözü uygulaması: günün sözü, atasözü oyunu ve paylaşılabilir görseller.",
+            "en": "Turkish quotes and proverbs app: quote of the day, proverb game and shareable images.",
+        },
+        "overview": {
+            "tr": [
+                "İplik birkaç sürümden geçti. İlk sürüm, yapay zekâ ile söz üreten ve Firebase üzerinde çalışan bir web uygulamasıydı: sözler bir Firestore havuzunda tutuluyor, zamanlanmış Cloud Functions havuzu dolduruyor, API anahtarı sunucu tarafında saklanıyordu.",
+                "Güncel sürüm, Google Play için baştan yazılmış, internetsiz çalışan ve çalıştırma maliyeti olmayan bir Android uygulaması.",
+            ],
+            "en": [
+                "İplik has gone through several versions. The first was a Firebase web app that generated quotes with AI: quotes lived in a Firestore pool, scheduled Cloud Functions refilled it, and the API key stayed server-side.",
+                "The current version is an Android app rewritten for Google Play that works offline and has no running costs.",
+            ],
+        },
+        "features": {
+            "tr": [
+                "11 kategoride 270'ten fazla söz ve atasözü, günün sözü bildirimi",
+                "“Atasözünü tamamla” oyunu",
+                "8 temada Instagram gönderisi ve hikâye boyutunda paylaşım görselleri",
+                "Favoriler, koleksiyonlar, kendi sözlerin ve düşünce notları",
+                "Seri ve rozetler, odak modu, sesli okuma",
+                "Açık/koyu tema, vurgu renkleri ve yazı tipi seçenekleri",
+                "Hesap yok, reklam yok, veriler yalnızca cihazda",
+                "Capacitor Android projesi ve GitHub Actions ile imzalı AAB derleme hattı",
+                "Önceki sürüm: Firebase Hosting, Firestore, Cloud Functions, Firebase Auth ve PWA",
+            ],
+            "en": [
+                "270+ quotes and proverbs in 11 categories, quote-of-the-day notification",
+                "“Complete the proverb” game",
+                "Share images in 8 themes, in post and story sizes",
+                "Favourites, collections, your own quotes and reflection notes",
+                "Streaks and badges, focus mode, read-aloud",
+                "Light/dark theme, accent colours and font options",
+                "No account, no ads, data stays on the device",
+                "Capacitor Android project and GitHub Actions pipeline for a signed AAB",
+                "Previous version: Firebase Hosting, Firestore, Cloud Functions, Firebase Auth and PWA",
+            ],
+        },
+        "next": {
+            "tr": ["Google Play kapalı test süreci ve yayın"],
+            "en": ["Google Play closed testing and release"],
+        },
+        "role": AI_ROLE_APP,
+        "stack": ["JavaScript", "HTML/CSS", "Capacitor", "Android", "Firebase", "GitHub Actions"],
+        "status": {"tr": "Yayın hazırlığı", "en": "Pre-release"},
+        "link": None,
+        "nolink": {"tr": "Kod özel depoda · mağaza bağlantısı henüz yok", "en": "Code in a private repo · no store link yet"},
+    },
     {
         "id": "pazarim-gelsin",
         "group": "released",
         "cats": ["software"],
+        "cover": "generic",
         "name": {"tr": "Pazarım Gelsin", "en": "Pazarım Gelsin"},
         "desc": {
             "tr": "Yerel market siparişleri ve teslimat akışları için geliştirilen uygulamanın backend tarafı.",
@@ -34,21 +346,37 @@ PROJECTS = [
         "id": "runia0-site",
         "group": "progress",
         "cats": ["software"],
+        "date": "2026-11",
+        "cover": "generic",
         "name": {"tr": "runia0-site", "en": "runia0-site"},
         "desc": {
             "tr": "Bu site: statik, çift dilli, erişilebilir ve izleme kodu içermeyen portföy.",
             "en": "This site: a static, bilingual, accessible portfolio with no tracking.",
         },
+        "features": {
+            "tr": [
+                "Tek bir içerik dosyasından Python ile üretilen Türkçe ve İngilizce sayfalar",
+                "Çerez, analitik ve dış yazı tipi yok",
+                "Canonical, hreflang, sitemap, Open Graph ve yapılandırılmış veri",
+                "Headless Chromium ile bağlantı, mobil taşma ve konsol hatası testleri",
+            ],
+            "en": [
+                "Turkish and English pages generated with Python from a single content file",
+                "No cookies, analytics or external fonts",
+                "Canonical, hreflang, sitemap, Open Graph and structured data",
+                "Link, mobile overflow and console error tests in headless Chromium",
+            ],
+        },
         "role": {"tr": "Tasarım ve geliştirme", "en": "Design and development"},
         "stack": ["HTML", "CSS", "JavaScript", "Python", "GitHub Pages"],
-        "status": {"tr": "Geliştiriliyor", "en": "In progress"},
+        "status": {"tr": "Yayında · geliştiriliyor", "en": "Live · in progress"},
         "link": REPO,
-        "review": "verified",
     },
     {
         "id": "mac-analiz",
         "group": "progress",
         "cats": ["software"],
+        "cover": "generic",
         "name": {"tr": "Maç Verisi Analiz Aracı", "en": "Match Data Analysis Tool"},
         "desc": {
             "tr": "Futbol maç verilerini ve oranlarını düzenleyip görüntülemek için masaüstü uygulaması.",
@@ -60,24 +388,89 @@ PROJECTS = [
         "link": None,
     },
     {
-        "id": "create-and-rate",
-        "group": "progress",
-        "cats": ["games"],
-        "name": {"tr": "Create&Rate (Roblox)", "en": "Create&Rate (Roblox)"},
+        "id": "hicaz-studyosu",
+        "group": "experiment",
+        "cats": ["software"],
+        "date": "2026-11",
+        "cover": "hicaz",
+        "name": {"tr": "Hicaz Stüdyosu", "en": "Hicaz Studio"},
         "desc": {
-            "tr": "Roblox üzerinde 3D oyun projesi; oynanış (gameplay) kodlaması.",
-            "en": "3D game project on Roblox; gameplay scripting.",
+            "tr": "Aynı melodiyi sekiz farklı Hicaz dizisinde çalıp karşılaştırmaya yarayan web uygulaması.",
+            "en": "Web app for playing and comparing the same melody in eight different Hicaz scales.",
         },
-        "role": {"tr": "Scripter (takım projesi)", "en": "Scripter (team project)"},
-        "stack": ["Roblox Studio", "Luau"],
-        "status": {"tr": "Geliştirme aşamasında", "en": "In development"},
+        "overview": {
+            "tr": [
+                "Batı ve Doğu müziğindeki Hicaz yorumlarının arasındaki farkı kulakla duyulur hale getirmek için yapılmış bir ses deneyi. Melodi çalarken dizi değiştirildiğinde fark anında duyuluyor.",
+            ],
+            "en": [
+                "A sound experiment that makes the differences between Western and Eastern interpretations of Hicaz audible. Switching scales while a melody plays makes the difference immediately clear.",
+            ],
+        },
+        "features": {
+            "tr": [
+                "8 dizi: Majör, Batı akordunda Hicaz, iki Arap Hicazı, Hicazkâr, Türk Hicazı, Hümayun ve Zirgüleli Hicaz",
+                "Dokunarak melodi yazılan ızgara",
+                "Ud, ney ve synth sesleri; dem sesi ve darbuka ritmi",
+                "Tempo ve karar sesi ayarı, seçili dizide canlı çalınabilen tuşlar",
+            ],
+            "en": [
+                "8 scales: Major, Hicaz in Western tuning, two Arabic Hijaz variants, Hicazkâr, Turkish Hicaz, Hümayun and Zirgüleli Hicaz",
+                "Tap-to-write melody grid",
+                "Oud, ney and synth voices; drone and darbuka rhythm",
+                "Tempo and tonic controls, live keys in the selected scale",
+            ],
+        },
+        "notes": {
+            "tr": "Arap ve Türk Hicaz perde değerleri nazari yaklaşımlardır; gerçek icrada değişir.",
+            "en": "Arabic and Turkish Hicaz pitch values are theoretical approximations; they vary in performance.",
+        },
+        "role": AI_ROLE_APP,
+        "stack": ["JavaScript", "Web Audio API"],
+        "status": {"tr": "Deney", "en": "Experiment"},
         "link": None,
-        "nolink": {"tr": "Yayın bağlantısı henüz eklenmedi", "en": "No public link yet"},
     },
+    {
+        "id": "matlab-ogretim",
+        "group": "experiment",
+        "cats": ["software"],
+        "date": "2026-11",
+        "cover": "matlab",
+        "name": {"tr": "MATLAB Öğretim Aracı", "en": "MATLAB Teaching Tool"},
+        "desc": {
+            "tr": "MATLAB'e girişi yanlış ve doğru örnekleri yan yana göstererek anlatan sunum aracı.",
+            "en": "Presenter tool that teaches MATLAB basics by showing wrong and right examples side by side.",
+        },
+        "overview": {
+            "tr": [
+                "Ekran paylaşarak MATLAB anlatırken kullanılmak üzere hazırlandı. Karşı taraf komutları kendi MATLAB'ine yazar, araç da her adımda sonucun nedenini açar.",
+            ],
+            "en": [
+                "Built for teaching MATLAB over screen sharing. The learner types each command into their own MATLAB, and the tool reveals why each result happens.",
+            ],
+        },
+        "features": {
+            "tr": [
+                "14 konu ve 45 yanlış/doğru örnek çifti",
+                "Soru → yanlış kod → çıktı → açıklama → doğru kod → kural sırasıyla aşamalı anlatım",
+                "Klavye ile ilerleme ve plansız sorular için küçük komut penceresi simülatörü",
+            ],
+            "en": [
+                "14 topics and 45 wrong/right example pairs",
+                "Step-by-step reveal: question → wrong code → output → explanation → right code → rule",
+                "Keyboard navigation and a small command-window simulator for unplanned questions",
+            ],
+        },
+        "role": AI_ROLE_APP,
+        "stack": ["HTML", "JavaScript"],
+        "status": {"tr": "Çalışıyor · özel kullanım", "en": "Working · private use"},
+        "link": None,
+    },
+    # --------------------------------------------------------------------- AI
     {
         "id": "g-line-ai",
         "group": "experiment",
         "cats": ["ai", "software"],
+        "cover": "generic",
         "name": {"tr": "G-LINE AI", "en": "G-LINE AI"},
         "desc": {
             "tr": "Birden fazla yapay zekâ servisini ve sesli etkileşimi bir araya getirmeyi araştıran deneysel asistan.",
@@ -92,6 +485,7 @@ PROJECTS = [
         "id": "sesli-asistan",
         "group": "experiment",
         "cats": ["ai", "software"],
+        "cover": "generic",
         "name": {"tr": "Python Sesli Asistan", "en": "Python Voice Assistant"},
         "desc": {
             "tr": "Python ile sesli asistan geliştirme denemesi.",
@@ -106,6 +500,7 @@ PROJECTS = [
         "id": "akilli-ev",
         "group": "experiment",
         "cats": ["ai"],
+        "cover": "generic",
         "name": {"tr": "Akıllı Ev Asistanı", "en": "Smart Home Assistant"},
         "desc": {
             "tr": "Raspberry Pi 5 üzerinde yerel ev otomasyonunu yapay zekâ destekli asistanlarla birleştirmeyi araştıran prototip.",
@@ -116,55 +511,12 @@ PROJECTS = [
         "status": {"tr": "Prototip", "en": "Prototype"},
         "link": None,
     },
-    {
-        "id": "gemini-firebase",
-        "group": "experiment",
-        "cats": ["ai", "software"],
-        "name": {
-            "tr": "Vaka: HTML uygulamasını Gemini API + Firebase'e taşımak",
-            "en": "Case study: moving an HTML app to Gemini API + Firebase",
-        },
-        "desc": {
-            "tr": "Tarayıcıda çalışan bir uygulamayı yapay zekâ API'si ve Firebase tabanlı bir mimariye geçirme denemesi.",
-            "en": "Migrating a browser-only app to an AI API and a Firebase-based architecture.",
-        },
-        "role": {"tr": "Mimari ve entegrasyon", "en": "Architecture and integration"},
-        "stack": ["HTML", "JavaScript", "Gemini API", "Firebase"],
-        "status": {"tr": "Deney", "en": "Experiment"},
-        "link": None,
-    },
-    {
-        "id": "futbol-duello",
-        "group": "experiment",
-        "cats": ["games"],
-        "name": {"tr": "2D Futbol Düellosu", "en": "2D Football Duel"},
-        "desc": {
-            "tr": "Futbol temalı 2D oyun mekaniği ve hızlı prototipleme denemesi. Resmî bir ürün değildir.",
-            "en": "Football-themed 2D game-mechanics and rapid-prototyping experiment. Not an official product.",
-        },
-        "role": {"tr": "Geliştirme", "en": "Development"},
-        "stack": ["LÖVE / Pygame"],
-        "status": {"tr": "Deney", "en": "Experiment"},
-        "link": None,
-    },
-    {
-        "id": "night-shift",
-        "group": "concept",
-        "cats": ["games"],
-        "name": {"tr": "NIGHT SHIFT: Son Vardiya", "en": "NIGHT SHIFT: Son Vardiya"},
-        "desc": {
-            "tr": "Oyuncunun benzin istasyonu ve market işlettiği, kararların hikâyeyi etkilediği psikolojik korku oyunu fikri. Planlanan platform: mobil.",
-            "en": "Game concept: run a gas station and market where choices shape a psychological-horror story. Planned platform: mobile.",
-        },
-        "role": {"tr": "Oyun tasarımı", "en": "Game design"},
-        "stack": [],
-        "status": {"tr": "Konsept", "en": "Concept"},
-        "link": None,
-    },
+    # --------------------------------------------------------------- CONCEPTS
     {
         "id": "insaat-pm",
         "group": "concept",
         "cats": ["software"],
+        "cover": "generic",
         "name": {"tr": "İnşaat Proje Yönetimi", "en": "Construction Project Management"},
         "desc": {
             "tr": "İnşaat projelerinin takibi için bir yazılım fikri; araştırma aşamasında.",
@@ -177,37 +529,72 @@ PROJECTS = [
     },
 ]
 
-# Held back until the owner confirms (not rendered): findate, Sıfır Bir-inspired game,
-# Frogie, Shadow Protocol, İplik.
+# Held back until the owner confirms (not rendered): findate.
+
+LOG = [
+    ("2026-11-23", {"tr": "runia0-site GitHub Pages'te yayına alındı; İplik'in Android sürümü hazırlandı.",
+                    "en": "runia0-site went live on GitHub Pages; İplik's Android version was prepared."}),
+    ("2026-11-15", {"tr": "Hicaz Stüdyosu ses deneyi tamamlandı.", "en": "Hicaz Studio sound experiment completed."}),
+    ("2026-11-13", {"tr": "Shadow Protocol 5 görevlik sürüme genişletildi; tanıtım videoları hazırlandı.",
+                    "en": "Shadow Protocol expanded to 5 missions; promo videos produced."}),
+    ("2026-11-12", {"tr": "Sokakların Kanunu oynanabilir sürüme ve fragmana ulaştı.",
+                    "en": "Sokakların Kanunu reached a playable build and a trailer."}),
+    ("2026-11-10", {"tr": "Frogie: 100 bölüm, boss savaşları, hikâye modu ve Android derleme hattı.",
+                    "en": "Frogie: 100 levels, boss fights, story mode and Android build pipeline."}),
+    ("2026-11-08", {"tr": "MATLAB öğretim aracı hazırlandı.", "en": "MATLAB teaching tool built."}),
+    ("2026-11-04", {"tr": "İplik'in Firebase tabanlı web sürümü tamamlandı.",
+                    "en": "İplik's Firebase-based web version completed."}),
+]
 
 T = {
     "tr": {
-        "lang_name": "Türkçe",
         "other": "en",
         "other_label": "English",
         "other_short": "EN",
         "title": "Runia0 — Bağımsız teknoloji stüdyosu",
         "description": "Runia0, Berat Çetin'in bağımsız teknoloji stüdyosu: yazılım geliştirme, yapay zekâ, oyun geliştirme ve dijital ürünler.",
         "skip": "İçeriğe geç",
-        "nav_focus": "Odak",
+        "nav_label": "Ana menü",
+        "nav_work": "Öne çıkanlar",
         "nav_projects": "Projeler",
+        "nav_process": "Süreç",
         "nav_about": "Hakkında",
         "nav_contact": "İletişim",
         "hero_kicker": "Bağımsız teknoloji stüdyosu",
         "hero_lead": "Runia0; yazılım, yapay zekâ ve oyun alanında fikirleri çalışan ürünlere dönüştürmeye odaklanan bağımsız bir stüdyo.",
         "cta_projects": "Projeleri gör",
         "cta_github": "GitHub",
+        "stat_projects": "proje",
+        "stat_games": "oynanabilir oyun",
+        "stat_langs": "dil (TR · EN)",
+        "featured_title": "Öne çıkan işler",
+        "featured_note": "Görseller temsilîdir; oyun içi ekran görüntüleri yakında eklenecek.",
+        "all_projects": "Tüm projeler",
+        "details": "Ayrıntılar",
         "focus_title": "Odak alanları",
         "focus": [
-            ("Software Development", "Masaüstü, web ve backend uygulamaları."),
+            ("Software Development", "Masaüstü, web, mobil ve backend uygulamaları."),
             ("Artificial Intelligence", "Yapay zekâ servisleri, asistanlar ve entegrasyonlar."),
-            ("Game Development", "Oyun mekaniği, prototipler ve oynanış kodu."),
-            ("Digital Products", "Fikirden kullanılabilir ürüne giden süreç."),
+            ("Game Development", "3D oyunlar, oyun mekaniği, prototipler ve oynanış kodu."),
+            ("Digital Products", "Fikirden mağazaya giden süreç: paketleme, tanıtım, yayın."),
         ],
+        "process_title": "Nasıl çalışıyorum",
+        "process": [
+            ("Fikir", "Fikri tek cümlelik bir hedefe ve net bir kapsama indirgemek."),
+            ("Prototip", "En kısa sürede oynanabilir ya da kullanılabilir bir sürüm çıkarmak."),
+            ("Test", "Otomatik tarayıcı testleri, ekran görüntüsü kontrolleri ve hata ayıklama."),
+            ("Yayın", "Paketleme, derleme hattı, mağaza metinleri ve tanıtım materyalleri."),
+        ],
+        "process_ai": "Runia0, yapay zekâyı geliştirme sürecinin bir parçası olarak açıkça kullanır: kod üretimi, test otomasyonu ve tanıtım materyalleri yapay zekâ araçlarıyla birlikte hazırlanır; ürün kararları, tasarım yönü ve kalite kontrolü stüdyodadır.",
+        "stack_title": "Kullanılan teknolojiler",
+        "log_title": "Geliştirme günlüğü",
         "projects_title": "Projeler",
+        "projects_desc": "Runia0 projeleri: oyunlar, uygulamalar, yapay zekâ deneyleri ve konseptler — her biri gerçek durumuyla.",
         "projects_note": "Her proje gerçek durumuyla etiketlenir. Herkese açık kodu veya demosu olmayan projelerde bağlantı verilmez.",
         "filter_label": "Projeleri filtrele",
-        "filters": [("all", "Tümü"), ("software", "Yazılım"), ("ai", "Yapay Zekâ"), ("games", "Oyunlar"), ("experiment", "Deneyler")],
+        "search_label": "Projelerde ara",
+        "search_ph": "Ara: oyun, Three.js, Python…",
+        "filters": [("all", "Tümü"), ("games", "Oyunlar"), ("software", "Yazılım"), ("ai", "Yapay Zekâ"), ("experiment", "Deneyler")],
         "groups": {
             "released": "Yayında / Teslim edildi",
             "progress": "Geliştiriliyor / Prototip",
@@ -217,9 +604,18 @@ T = {
         "role": "Rol",
         "stack": "Teknoloji",
         "status": "Durum",
+        "date": "Tarih",
         "no_link": "Herkese açık repo veya demo yok",
         "view_code": "Kodu gör",
         "empty": "Bu filtrede proje yok.",
+        "shown": "proje gösteriliyor",
+        "overview": "Genel bakış",
+        "features": "Öne çıkan özellikler",
+        "next": "Sıradaki adımlar",
+        "notes": "Not",
+        "back_projects": "Tüm projeler",
+        "breadcrumb": "Konum",
+        "home": "Ana sayfa",
         "about_title": "Hakkında",
         "about_name": "Berat Çetin",
         "about_role": "Founder & Independent Developer at Runia0",
@@ -239,34 +635,56 @@ T = {
         "privacy_github": "GitHub Gizlilik Bildirimi",
         "back_home": "Ana sayfaya dön",
         "nf_title": "Sayfa bulunamadı",
+        "cover_alt": "{name} için temsilî kapak görseli",
     },
     "en": {
-        "lang_name": "English",
         "other": "tr",
         "other_label": "Türkçe",
         "other_short": "TR",
         "title": "Runia0 — Independent technology studio",
         "description": "Runia0 is Berat Çetin's independent technology studio: software development, artificial intelligence, game development and digital products.",
         "skip": "Skip to content",
-        "nav_focus": "Focus",
+        "nav_label": "Main",
+        "nav_work": "Featured",
         "nav_projects": "Projects",
+        "nav_process": "Process",
         "nav_about": "About",
         "nav_contact": "Contact",
         "hero_kicker": "Independent technology studio",
         "hero_lead": "Runia0 is an independent studio focused on turning ideas in software, AI and games into products that work.",
         "cta_projects": "See projects",
         "cta_github": "GitHub",
+        "stat_projects": "projects",
+        "stat_games": "playable games",
+        "stat_langs": "languages (TR · EN)",
+        "featured_title": "Featured work",
+        "featured_note": "Images are illustrative; in-game screenshots are coming soon.",
+        "all_projects": "All projects",
+        "details": "Details",
         "focus_title": "Focus areas",
         "focus": [
-            ("Software Development", "Desktop, web and backend applications."),
+            ("Software Development", "Desktop, web, mobile and backend applications."),
             ("Artificial Intelligence", "AI services, assistants and integrations."),
-            ("Game Development", "Game mechanics, prototypes and gameplay code."),
-            ("Digital Products", "The path from idea to usable product."),
+            ("Game Development", "3D games, game mechanics, prototypes and gameplay code."),
+            ("Digital Products", "From idea to store: packaging, promotion, release."),
         ],
+        "process_title": "How I work",
+        "process": [
+            ("Idea", "Reduce the idea to a one-sentence goal and a clear scope."),
+            ("Prototype", "Ship a playable or usable version as early as possible."),
+            ("Test", "Automated browser tests, screenshot checks and debugging."),
+            ("Release", "Packaging, build pipelines, store listings and promo material."),
+        ],
+        "process_ai": "Runia0 openly uses AI as part of its development process: code generation, test automation and promotional material are produced together with AI tools, while product decisions, design direction and quality control stay with the studio.",
+        "stack_title": "Technologies used",
+        "log_title": "Development log",
         "projects_title": "Projects",
+        "projects_desc": "Runia0 projects: games, apps, AI experiments and concepts — each with its real status.",
         "projects_note": "Every project is labelled with its real status. Projects without public code or a demo carry no link.",
         "filter_label": "Filter projects",
-        "filters": [("all", "All"), ("software", "Software"), ("ai", "AI"), ("games", "Games"), ("experiment", "Experiments")],
+        "search_label": "Search projects",
+        "search_ph": "Search: game, Three.js, Python…",
+        "filters": [("all", "All"), ("games", "Games"), ("software", "Software"), ("ai", "AI"), ("experiment", "Experiments")],
         "groups": {
             "released": "Released / Delivered",
             "progress": "In Progress / Prototype",
@@ -276,9 +694,18 @@ T = {
         "role": "Role",
         "stack": "Stack",
         "status": "Status",
+        "date": "Date",
         "no_link": "No public repo or demo",
         "view_code": "View code",
-        "empty": "No projects in this filter.",
+        "empty": "No projects match.",
+        "shown": "projects shown",
+        "overview": "Overview",
+        "features": "Highlights",
+        "next": "Next steps",
+        "notes": "Note",
+        "back_projects": "All projects",
+        "breadcrumb": "Breadcrumb",
+        "home": "Home",
         "about_title": "About",
         "about_name": "Berat Çetin",
         "about_role": "Founder & Independent Developer at Runia0",
@@ -298,5 +725,6 @@ T = {
         "privacy_github": "GitHub Privacy Statement",
         "back_home": "Back to home",
         "nf_title": "Page not found",
+        "cover_alt": "Illustrative cover image for {name}",
     },
 }

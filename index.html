@@ -22,7 +22,6 @@
 <meta property="og:image" content="https://runia0.github.io/runia0-site/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Runia0 — Ideas into things that work.">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
@@ -34,165 +33,112 @@
 <header class="site-header">
 <div class="wrap bar">
 <a class="brand" href="./"><svg class="logo" aria-hidden="true" viewBox="0 0 64 64" width="32" height="32"><rect width="64" height="64" rx="14" fill="#0b1f14"/><path d="M17 46V18h13a8 8 0 010 16H17m12 0l9 12" fill="none" stroke="#e8f2ec" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="38" r="7" fill="none" stroke="#39ff88" stroke-width="4"/></svg><span>Runia0</span></a>
-<nav aria-label="Ana menü">
-  <ul>
-    <li><a href="#focus">Odak</a></li>
-    <li><a href="#projects">Projeler</a></li>
-    <li><a href="#about">Hakkında</a></li>
-    <li><a href="#contact">İletişim</a></li>
-  </ul>
-</nav>
+<nav aria-label="Ana menü"><ul><li><a href="#work">Öne çıkanlar</a></li><li><a href="projeler.html">Projeler</a></li><li><a href="#process">Süreç</a></li><li><a href="#about">Hakkında</a></li><li><a href="#contact">İletişim</a></li></ul></nav>
 <a class="lang" href="en/" hreflang="en" lang="en"><span aria-hidden="true">EN</span><span class="sr">English</span></a>
 </div>
 </header>
 <main id="main">
 <section class="hero">
-<div class="wrap">
+<div class="hero-grid" aria-hidden="true"></div>
+<div class="wrap hero-in">
+<div>
 <p class="kicker mono">Bağımsız teknoloji stüdyosu</p>
 <h1>Ideas into things that <span class="hl">work.</span></h1>
 <p class="sub mono">Independent by nature. Built through code.</p>
 <p class="lead">Runia0; yazılım, yapay zekâ ve oyun alanında fikirleri çalışan ürünlere dönüştürmeye odaklanan bağımsız bir stüdyo.</p>
-<p class="ctas"><a class="btn btn--primary" href="#projects">Projeleri gör</a>
+<p class="ctas"><a class="btn btn--primary" href="projeler.html">Projeleri gör</a>
 <a class="btn" href="https://github.com/Runia0" rel="me"><svg aria-hidden="true" viewBox="0 0 16 16" width="18" height="18"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></p>
+</div>
+<div class="term" aria-hidden="true">
+<div class="term-bar"><i></i><i></i><i></i><span class="mono">runia0 ~ build</span></div>
+<pre class="mono"><span class="c">$</span> runia0 status
+<span class="ok">●</span> frogie            <span class="d">playable</span>
+<span class="ok">●</span> shadow-protocol   <span class="d">playable</span>
+<span class="ok">●</span> sokaklarin-kanunu <span class="d">playable</span>
+<span class="wip">●</span> iplik             <span class="d">pre-release</span>
+<span class="wip">●</span> night-shift       <span class="d">early dev</span>
+<span class="c">$</span> <span class="cursor">▍</span></pre>
+</div>
+</div>
+<div class="wrap">
+<ul class="stats" role="list">
+<li><b>16</b><span>proje</span></li>
+<li><b>3</b><span>oynanabilir oyun</span></li>
+<li><b>2</b><span>dil (TR · EN)</span></li>
+</ul>
+</div>
+</section>
+
+<section id="work" class="section" aria-labelledby="work-h">
+<div class="wrap">
+<div class="sec-head"><h2 id="work-h">Öne çıkan işler</h2>
+<a class="link-more" href="projeler.html">Tüm projeler <span aria-hidden="true">→</span></a></div>
+<ul class="feats" role="list"><li class="feat">
+<article>
+<div class="feat-img"><img src="assets/covers/frogie.svg" alt="Frogie için temsilî kapak görseli" width="1200" height="675" loading="lazy" decoding="async"></div>
+<div class="feat-body">
+<p class="feat-meta"><span class="badge badge--progress">Oynanabilir sürüm · yayın hazırlığı</span><span class="mono muted">Three.js · JavaScript · HTML5</span></p>
+<h3><a class="stretch" href="projeler/frogie.html">Frogie</a></h3>
+<p>Tarayıcıda ve mobilde oynanan 3D aksiyon-platform oyunu: 100 bölüm, 5 biyom ve boss savaşları.</p>
+<span class="more">Ayrıntılar <span aria-hidden="true">→</span></span>
+</div>
+</article>
+</li><li class="feat">
+<article>
+<div class="feat-img"><img src="assets/covers/shadow-protocol.svg" alt="Shadow Protocol için temsilî kapak görseli" width="1200" height="675" loading="lazy" decoding="async"></div>
+<div class="feat-body">
+<p class="feat-meta"><span class="badge badge--progress">Oynanabilir prototip</span><span class="mono muted">Three.js · JavaScript · Web Audio API</span></p>
+<h3><a class="stretch" href="projeler/shadow-protocol.html">Shadow Protocol</a></h3>
+<p>Hikâyeli 3D sniper oyunu: 5 görev, gerçekçi balistik ve silah geliştirme sistemi.</p>
+<span class="more">Ayrıntılar <span aria-hidden="true">→</span></span>
+</div>
+</article>
+</li><li class="feat">
+<article>
+<div class="feat-img"><img src="assets/covers/sokaklarin-kanunu.svg" alt="Sokakların Kanunu için temsilî kapak görseli" width="1200" height="675" loading="lazy" decoding="async"></div>
+<div class="feat-body">
+<p class="feat-meta"><span class="badge badge--progress">Oynanabilir prototip</span><span class="mono muted">Three.js · JavaScript · Web Audio API</span></p>
+<h3><a class="stretch" href="projeler/sokaklarin-kanunu.html">Sokakların Kanunu</a></h3>
+<p>Adana&#x27;da kurgusal bir mahallede geçen, kararların finali belirlediği özgün 3D aile ve suç draması.</p>
+<span class="more">Ayrıntılar <span aria-hidden="true">→</span></span>
+</div>
+</article>
+</li><li class="feat">
+<article>
+<div class="feat-img"><img src="assets/covers/iplik.svg" alt="İplik için temsilî kapak görseli" width="1200" height="675" loading="lazy" decoding="async"></div>
+<div class="feat-body">
+<p class="feat-meta"><span class="badge badge--progress">Yayın hazırlığı</span><span class="mono muted">JavaScript · HTML/CSS · Capacitor</span></p>
+<h3><a class="stretch" href="projeler/iplik.html">İplik</a></h3>
+<p>Türkçe özlü söz ve atasözü uygulaması: günün sözü, atasözü oyunu ve paylaşılabilir görseller.</p>
+<span class="more">Ayrıntılar <span aria-hidden="true">→</span></span>
+</div>
+</article>
+</li></ul>
+<p class="note small">Görseller temsilîdir; oyun içi ekran görüntüleri yakında eklenecek.</p>
 </div>
 </section>
 
 <section id="focus" class="section" aria-labelledby="focus-h">
 <div class="wrap">
 <h2 id="focus-h">Odak alanları</h2>
-<ul class="focus" role="list"><li class="focus-item"><span class="idx mono" aria-hidden="true">01</span><h3>Software Development</h3><p>Masaüstü, web ve backend uygulamaları.</p></li><li class="focus-item"><span class="idx mono" aria-hidden="true">02</span><h3>Artificial Intelligence</h3><p>Yapay zekâ servisleri, asistanlar ve entegrasyonlar.</p></li><li class="focus-item"><span class="idx mono" aria-hidden="true">03</span><h3>Game Development</h3><p>Oyun mekaniği, prototipler ve oynanış kodu.</p></li><li class="focus-item"><span class="idx mono" aria-hidden="true">04</span><h3>Digital Products</h3><p>Fikirden kullanılabilir ürüne giden süreç.</p></li></ul>
+<ul class="focus" role="list"><li class="focus-item"><span class="idx mono" aria-hidden="true">01</span><h3>Software Development</h3><p>Masaüstü, web, mobil ve backend uygulamaları.</p></li><li class="focus-item"><span class="idx mono" aria-hidden="true">02</span><h3>Artificial Intelligence</h3><p>Yapay zekâ servisleri, asistanlar ve entegrasyonlar.</p></li><li class="focus-item"><span class="idx mono" aria-hidden="true">03</span><h3>Game Development</h3><p>3D oyunlar, oyun mekaniği, prototipler ve oynanış kodu.</p></li><li class="focus-item"><span class="idx mono" aria-hidden="true">04</span><h3>Digital Products</h3><p>Fikirden mağazaya giden süreç: paketleme, tanıtım, yayın.</p></li></ul>
 </div>
 </section>
 
-<section id="projects" class="section" aria-labelledby="projects-h">
+<section id="process" class="section" aria-labelledby="process-h">
 <div class="wrap">
-<h2 id="projects-h">Projeler</h2>
-<p class="note">Her proje gerçek durumuyla etiketlenir. Herkese açık kodu veya demosu olmayan projelerde bağlantı verilmez.</p>
-<div class="filters" role="group" aria-label="Projeleri filtrele"><button type="button" data-filter="all" aria-pressed="true">Tümü</button><button type="button" data-filter="software" aria-pressed="false">Yazılım</button><button type="button" data-filter="ai" aria-pressed="false">Yapay Zekâ</button><button type="button" data-filter="games" aria-pressed="false">Oyunlar</button><button type="button" data-filter="experiment" aria-pressed="false">Deneyler</button></div>
-<p class="empty" hidden>Bu filtrede proje yok.</p>
-<p class="sr" aria-live="polite" id="filter-status"></p>
-<section class="group group--released" aria-labelledby="g-released" data-group-section="released"><h3 id="g-released">Yayında / Teslim edildi</h3><ul class="cards" role="list"><li class="card" data-cats="software" data-group="released" id="p-pazarim-gelsin">
-<article>
-<h4>Pazarım Gelsin</h4>
-<p>Yerel market siparişleri ve teslimat akışları için geliştirilen uygulamanın backend tarafı.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--released">Müşteriye teslim edildi</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Backend geliştirme</dd></div>
+<h2 id="process-h">Nasıl çalışıyorum</h2>
+<ol class="steps" role="list"><li class="step"><span class="idx mono" aria-hidden="true">01</span><h3>Fikir</h3><p>Fikri tek cümlelik bir hedefe ve net bir kapsama indirgemek.</p></li><li class="step"><span class="idx mono" aria-hidden="true">02</span><h3>Prototip</h3><p>En kısa sürede oynanabilir ya da kullanılabilir bir sürüm çıkarmak.</p></li><li class="step"><span class="idx mono" aria-hidden="true">03</span><h3>Test</h3><p>Otomatik tarayıcı testleri, ekran görüntüsü kontrolleri ve hata ayıklama.</p></li><li class="step"><span class="idx mono" aria-hidden="true">04</span><h3>Yayın</h3><p>Paketleme, derleme hattı, mağaza metinleri ve tanıtım materyalleri.</p></li></ol>
+<p class="ai-note">Runia0, yapay zekâyı geliştirme sürecinin bir parçası olarak açıkça kullanır: kod üretimi, test otomasyonu ve tanıtım materyalleri yapay zekâ araçlarıyla birlikte hazırlanır; ürün kararları, tasarım yönü ve kalite kontrolü stüdyodadır.</p>
+<h3 class="sub-h">Kullanılan teknolojiler</h3>
+<ul class="tags tags--lg" role="list"><li>Android</li><li>Capacitor</li><li>CSS</li><li>Firebase</li><li>Gemini / Google Assistant</li><li>Gemini API</li><li>GitHub Actions</li><li>GitHub Pages</li><li>Home Assistant</li><li>HTML</li><li>HTML/CSS</li><li>HTML5</li><li>JavaScript</li><li>Luau</li><li>LÖVE / Pygame</li><li>OpenAI API</li><li>Playwright</li><li>PWA</li><li>Python</li><li>Python 3.11</li><li>Raspberry Pi 5</li><li>Roblox Studio</li><li>SQLite</li><li>Three.js</li><li>Tkinter</li><li>TTS</li><li>Web Audio API</li><li>xAI API</li></ul>
+</div>
+</section>
 
-</dl>
-<p class="nolink">Özel proje · herkese açık kod yok</p>
-</article>
-</li></ul></section><section class="group group--progress" aria-labelledby="g-progress" data-group-section="progress"><h3 id="g-progress">Geliştiriliyor / Prototip</h3><ul class="cards" role="list"><li class="card" data-cats="software" data-group="progress" id="p-runia0-site">
-<article>
-<h4>runia0-site</h4>
-<p>Bu site: statik, çift dilli, erişilebilir ve izleme kodu içermeyen portföy.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--progress">Geliştiriliyor</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Tasarım ve geliştirme</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>Python</li><li>GitHub Pages</li></ul></dd></div>
-</dl>
-<a class="ext" href="https://github.com/Runia0/runia0-site"><svg aria-hidden="true" viewBox="0 0 16 16" width="18" height="18"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Kodu gör<span class="sr"> — runia0-site</span></a>
-</article>
-</li><li class="card" data-cats="software" data-group="progress" id="p-mac-analiz">
-<article>
-<h4>Maç Verisi Analiz Aracı</h4>
-<p>Futbol maç verilerini ve oranlarını düzenleyip görüntülemek için masaüstü uygulaması.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--progress">Prototip</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Geliştirme</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>Python</li><li>Tkinter</li><li>SQLite</li></ul></dd></div>
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li><li class="card" data-cats="games" data-group="progress" id="p-create-and-rate">
-<article>
-<h4>Create&amp;Rate (Roblox)</h4>
-<p>Roblox üzerinde 3D oyun projesi; oynanış (gameplay) kodlaması.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--progress">Geliştirme aşamasında</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Scripter (takım projesi)</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>Roblox Studio</li><li>Luau</li></ul></dd></div>
-</dl>
-<p class="nolink">Yayın bağlantısı henüz eklenmedi</p>
-</article>
-</li></ul></section><section class="group group--experiment" aria-labelledby="g-experiment" data-group-section="experiment"><h3 id="g-experiment">Deneyler</h3><ul class="cards" role="list"><li class="card" data-cats="ai software" data-group="experiment" id="p-g-line-ai">
-<article>
-<h4>G-LINE AI</h4>
-<p>Birden fazla yapay zekâ servisini ve sesli etkileşimi bir araya getirmeyi araştıran deneysel asistan.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--experiment">Deney</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Geliştirme</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>Gemini API</li><li>OpenAI API</li><li>xAI API</li><li>TTS</li></ul></dd></div>
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li><li class="card" data-cats="ai software" data-group="experiment" id="p-sesli-asistan">
-<article>
-<h4>Python Sesli Asistan</h4>
-<p>Python ile sesli asistan geliştirme denemesi.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--experiment">Deney</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Geliştirme</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>Python 3.11</li></ul></dd></div>
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li><li class="card" data-cats="ai" data-group="experiment" id="p-akilli-ev">
-<article>
-<h4>Akıllı Ev Asistanı</h4>
-<p>Raspberry Pi 5 üzerinde yerel ev otomasyonunu yapay zekâ destekli asistanlarla birleştirmeyi araştıran prototip.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--experiment">Prototip</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Kurulum ve entegrasyon</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>Raspberry Pi 5</li><li>Home Assistant</li><li>Gemini / Google Assistant</li></ul></dd></div>
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li><li class="card" data-cats="ai software" data-group="experiment" id="p-gemini-firebase">
-<article>
-<h4>Vaka: HTML uygulamasını Gemini API + Firebase&#x27;e taşımak</h4>
-<p>Tarayıcıda çalışan bir uygulamayı yapay zekâ API&#x27;si ve Firebase tabanlı bir mimariye geçirme denemesi.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--experiment">Deney</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Mimari ve entegrasyon</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>HTML</li><li>JavaScript</li><li>Gemini API</li><li>Firebase</li></ul></dd></div>
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li><li class="card" data-cats="games" data-group="experiment" id="p-futbol-duello">
-<article>
-<h4>2D Futbol Düellosu</h4>
-<p>Futbol temalı 2D oyun mekaniği ve hızlı prototipleme denemesi. Resmî bir ürün değildir.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--experiment">Deney</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Geliştirme</dd></div>
-<div class="meta"><dt>Teknoloji</dt><dd><ul class="tags"><li>LÖVE / Pygame</li></ul></dd></div>
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li></ul></section><section class="group group--concept" aria-labelledby="g-concept" data-group-section="concept"><h3 id="g-concept">Konseptler</h3><ul class="cards" role="list"><li class="card card--concept" data-cats="games" data-group="concept" id="p-night-shift">
-<article>
-<h4>NIGHT SHIFT: Son Vardiya</h4>
-<p>Oyuncunun benzin istasyonu ve market işlettiği, kararların hikâyeyi etkilediği psikolojik korku oyunu fikri. Planlanan platform: mobil.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--concept">Konsept</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Oyun tasarımı</dd></div>
-
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li><li class="card card--concept" data-cats="software" data-group="concept" id="p-insaat-pm">
-<article>
-<h4>İnşaat Proje Yönetimi</h4>
-<p>İnşaat projelerinin takibi için bir yazılım fikri; araştırma aşamasında.</p>
-<dl>
-<div class="meta"><dt>Durum</dt><dd><span class="badge badge--concept">Konsept</span></dd></div>
-<div class="meta"><dt>Rol</dt><dd>Ürün araştırması</dd></div>
-
-</dl>
-<p class="nolink">Herkese açık repo veya demo yok</p>
-</article>
-</li></ul></section>
+<section id="log" class="section" aria-labelledby="log-h">
+<div class="wrap">
+<h2 id="log-h">Geliştirme günlüğü</h2>
+<ol class="log" role="list"><li><time datetime="2026-11-23" class="mono">2026-11-23</time><p>runia0-site GitHub Pages&#x27;te yayına alındı; İplik&#x27;in Android sürümü hazırlandı.</p></li><li><time datetime="2026-11-15" class="mono">2026-11-15</time><p>Hicaz Stüdyosu ses deneyi tamamlandı.</p></li><li><time datetime="2026-11-13" class="mono">2026-11-13</time><p>Shadow Protocol 5 görevlik sürüme genişletildi; tanıtım videoları hazırlandı.</p></li><li><time datetime="2026-11-12" class="mono">2026-11-12</time><p>Sokakların Kanunu oynanabilir sürüme ve fragmana ulaştı.</p></li><li><time datetime="2026-11-10" class="mono">2026-11-10</time><p>Frogie: 100 bölüm, boss savaşları, hikâye modu ve Android derleme hattı.</p></li><li><time datetime="2026-11-08" class="mono">2026-11-08</time><p>MATLAB öğretim aracı hazırlandı.</p></li><li><time datetime="2026-11-04" class="mono">2026-11-04</time><p>İplik&#x27;in Firebase tabanlı web sürümü tamamlandı.</p></li></ol>
 </div>
 </section>
 
@@ -219,6 +165,7 @@
 <div class="wrap foot">
 <p class="mono">© 2026 Runia0 · Ideas into things that work.</p>
 <ul>
+<li><a href="projeler.html">Projeler</a></li>
 <li><a href="gizlilik.html">Gizlilik</a></li>
 <li><a href="https://github.com/Runia0" rel="me">GitHub</a></li>
 </ul>
