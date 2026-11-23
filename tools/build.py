@@ -312,6 +312,15 @@ def home(lang):
 </div>
 </section>
 
+<section id="film" class="section" aria-labelledby="film-h">
+<div class="wrap">
+<h2 id="film-h">{e(t['film_title'])}</h2>
+<video class="film" controls preload="none" playsinline poster="{rel(me, 'assets/video/runia0-film-poster.jpg')}" width="1920" height="1080">
+<source src="{rel(me, 'assets/video/runia0-film.mp4')}" type="video/mp4"></video>
+<p class="note small">{e(t['film_note'])}</p>
+</div>
+</section>
+
 <section id="focus" class="section" aria-labelledby="focus-h">
 <div class="wrap">
 <h2 id="focus-h">{e(t['focus_title'])}</h2>
