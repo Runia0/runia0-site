@@ -221,3 +221,12 @@ ul { margin: 0; padding: 0; }
 .pager a { text-decoration: none; color: var(--muted); }
 .pager a:hover { color: var(--accent); }
 .detail-body + p { margin-top: 2rem; }
+
+/* play buttons */
+.play { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .45rem; min-height: 40px; padding: .45rem 1rem; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 700; text-decoration: none; }
+.play:hover { background: #6bffa6; color: var(--accent-ink); }
+.actions { margin: auto 0 0; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.actions .ext { margin-top: 0; }
+.feat-actions { margin: auto 0 0; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+.feat-actions .more { margin-top: 0; }
+.btn--play svg { width: 16px; height: 16px; }

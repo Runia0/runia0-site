@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Sokakların Kanunu — Bir Adana Hikâyesi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0c0e;--ink:#e9e4d8;--dim:#9a958a;--acc:#d9a441;--line:rgba(233,228,216,.14);--panel:rgba(12,13,15,.86);--sub:18px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-user-select:none;user-select:none;touch-action:none}
+h1,h2,h3,.t{font-family:Oswald,"Arial Narrow",sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hide{display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+/* MENU */
+#menu{position:fixed;inset:0;display:flex;background:linear-gradient(90deg,rgba(8,9,10,.94) 0,rgba(8,9,10,.78) 38%,rgba(8,9,10,.15) 75%)}
+#menu .col{width:min(520px,100%);padding:7vh 6vw;display:flex;flex-direction:column;justify-content:center;gap:26px;overflow:auto}
+.brand small{display:block;color:var(--acc);font-family:Oswald,sans-serif;letter-spacing:.34em;font-size:12px;margin-bottom:10px}
+.brand h1{font-size:clamp(34px,6vw,58px);line-height:1;font-weight:600;letter-spacing:.04em}
+.brand p{color:var(--dim);margin-top:10px;font-size:14px;letter-spacing:.06em}
+.list{display:flex;flex-direction:column}
+.list button{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:19px;text-align:left;padding:11px 14px;border-left:2px solid transparent;color:#c9c4b8;transition:.15s}
+.list button:hover,.list button:focus-visible{color:#fff;border-left-color:var(--acc);background:rgba(255,255,255,.04);outline:0;padding-left:22px}
+.list button:disabled{opacity:.3;pointer-events:none}
+.panel h2{font-size:22px;margin-bottom:14px;color:var(--acc)}
+.panel .back{margin-top:18px;font-family:Oswald,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding:8px 0}
+.panel .back:hover{color:#fff}
+.row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.row input[type=range]{width:170px;accent-color:var(--acc)}
+.seg{display:flex;border:1px solid var(--line)}
+.seg button{padding:6px 12px;font-size:13px;color:var(--dim)}
+.seg button.on{background:var(--acc);color:#111;font-weight:600}
+.ch{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ch b{font-family:Oswald,sans-serif;color:var(--acc);width:26px;font-weight:500}
+.ch span{flex:1;font-size:14px}.ch i{font-style:normal;font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.ch.lock span{color:#6d6a63}
+.btn{border:1px solid var(--line);padding:8px 16px;font-family:Oswald,sans-serif;letter-spacing:.12em;text-transform:uppercase;font-size:13px}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.note{font-size:12.5px;color:var(--dim);line-height:1.55}
+.keys{font-size:12px;color:var(--dim);line-height:1.9}
+.keys kbd{border:1px solid var(--line);padding:1px 6px;font-family:inherit;color:var(--ink);margin-right:4px}
+/* overlays */
+.overlay{position:fixed;inset:0;background:rgba(6,7,8,.82);display:flex;align-items:center;justify-content:center;z-index:30;padding:20px}
+.card{width:min(460px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);padding:28px}
+.card h2{font-size:24px;color:var(--acc);margin-bottom:14px}
+/* HUD */
+#hud{position:fixed;inset:0;pointer-events:none}
+#obj{position:absolute;top:18px;left:18px;max-width:min(360px,70vw);background:linear-gradient(90deg,rgba(8,9,10,.8),rgba(8,9,10,0));padding:10px 26px 10px 12px;border-left:2px solid var(--acc)}
+#obj small{font-family:Oswald,sans-serif;letter-spacing:.2em;font-size:11px;color:var(--acc);text-transform:uppercase}
+#obj div{font-size:14.5px;margin-top:3px;line-height:1.35}
+#obj em{font-style:normal;color:var(--dim);font-size:12px}
+#mini{position:absolute;left:18px;bottom:18px;width:168px;height:168px;border-radius:50%;border:1px solid rgba(233,228,216,.3);background:#101214;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+#mini canvas{width:100%;height:100%}
+#stat{position:absolute;left:200px;bottom:22px;width:150px}
+#stat .lbl{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;color:var(--dim);font-family:Oswald,sans-serif;text-transform:uppercase}
+#stat .bar{height:4px;background:rgba(255,255,255,.14);margin-top:4px}
+#stat .bar i{display:block;height:100%;background:var(--acc);width:100%}
+#clock{font-family:Oswald,sans-serif;font-size:20px;letter-spacing:.08em;margin-bottom:8px}
+#prompt{position:absolute;left:50%;bottom:21%;transform:translateX(-50%);background:rgba(8,9,10,.78);border:1px solid var(--line);padding:8px 16px;font-size:14px;white-space:nowrap}
+#prompt kbd{display:inline-block;border:1px solid var(--acc);color:var(--acc);padding:0 7px;margin-right:9px;font-family:Oswald,sans-serif}
+#bark{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);max-width:min(720px,88vw);text-align:center;font-size:var(--sub);line-height:1.4;text-shadow:0 2px 4px #000,0 0 12px #000;background:rgba(0,0,0,.35);padding:6px 14px}
+#bark b{color:var(--acc);font-weight:600}
+#toast{position:absolute;top:18px;right:18px;background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--acc);padding:10px 14px;font-size:13.5px;max-width:300px;transition:.3s;opacity:0;transform:translateY(-8px)}
+#toast.on{opacity:1;transform:none}
+#hint{position:absolute;right:18px;bottom:18px;font-size:11.5px;color:var(--dim);text-align:right;line-height:1.7}
+#hint kbd{border:1px solid var(--line);padding:0 5px;color:var(--ink);font-family:inherit}
+/* cinematic */
+.bar-t,.bar-b{position:fixed;left:0;right:0;height:0;background:#000;transition:height .5s;z-index:5}
+.bar-t{top:0}.bar-b{bottom:0}
+body.cine .bar-t,body.cine .bar-b{height:11vh}
+body.cine #hud{opacity:0}
+#hud{transition:opacity .4s}
+#cinetitle{position:fixed;left:6vw;top:16vh;z-index:6;opacity:0;transition:opacity 1.2s}
+#cinetitle.on{opacity:1}
+#cinetitle small{font-family:Oswald,sans-serif;letter-spacing:.4em;color:var(--acc);font-size:13px}
+#cinetitle h2{font-size:clamp(36px,7vw,72px);font-weight:600;text-shadow:0 4px 24px #000}
+#dlg{position:fixed;left:50%;bottom:calc(11vh + 14px);transform:translateX(-50%);width:min(780px,92vw);z-index:21;text-align:center}
+#dlg .who{font-family:Oswald,sans-serif;letter-spacing:.2em;color:var(--acc);font-size:14px;text-transform:uppercase}
+#dlg .txt{font-size:var(--sub);line-height:1.45;margin-top:6px;text-shadow:0 2px 4px #000,0 0 14px #000;min-height:2.9em}
+#dlg .more{font-size:11px;color:var(--dim);letter-spacing:.16em;margin-top:4px;text-transform:uppercase}
+#choices{display:flex;flex-direction:column;gap:8px;margin-top:10px;align-items:center}
+#choices button{width:min(620px,100%);text-align:left;background:rgba(10,11,12,.86);border:1px solid var(--line);padding:10px 14px;font-size:15px;line-height:1.35;display:flex;gap:12px;align-items:baseline}
+#choices button:hover{border-color:var(--acc);background:rgba(30,26,18,.92)}
+#choices .n{font-family:Oswald,sans-serif;color:var(--acc)}
+#choices .tag{font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.16em;color:var(--dim);white-space:nowrap;min-width:92px}
+#skip{position:fixed;right:20px;bottom:calc(11vh + 12px);z-index:9;font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+#fade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .7s;z-index:20}
+#fade.on{opacity:1}
+/* phone */
+#phone{position:fixed;right:22px;bottom:22px;width:300px;height:min(560px,88vh);background:#0d0e10;border:2px solid #2a2c30;border-radius:30px;z-index:12;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.7);transform:translateY(110%);transition:transform .28s}
+#phone.on{transform:none}
+#phone header{padding:14px 18px 8px;display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
+#phone .body{flex:1;overflow:auto;padding:6px 16px 12px}
+#phone nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line)}
+#phone nav button{padding:11px 0;font-size:11px;letter-spacing:.06em;color:var(--dim);position:relative}
+#phone nav button.on{color:var(--acc)}
+#phone nav button sup{position:absolute;top:5px;right:14px;background:#b33;color:#fff;border-radius:8px;font-size:9px;padding:0 5px}
+#phone h3{font-size:17px;margin:6px 0 10px}
+.th{margin-bottom:14px}.th .nm{font-size:12px;color:var(--acc);letter-spacing:.06em;margin-bottom:5px;font-weight:600}
+.msg{background:#1b1d21;border-radius:12px 12px 12px 3px;padding:8px 11px;font-size:13px;line-height:1.4;margin-bottom:5px;width:fit-content;max-width:95%}
+.msg small{display:block;color:var(--dim);font-size:10px;margin-top:3px}
+.msg.new{border:1px solid var(--acc)}
+.ct{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.ct small{color:var(--dim)}
+.q{padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.4}
+.q.done{color:var(--dim);text-decoration:line-through}
+#bigmap{width:100%;aspect-ratio:1;background:#101214;border:1px solid var(--line)}
+#ebar{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:min(320px,50vw);text-align:center;font-family:Oswald,sans-serif;letter-spacing:.16em;font-size:13px;text-transform:uppercase}
+#ebar .bar{height:5px;background:rgba(255,255,255,.16);margin-top:5px}#ebar .bar i{display:block;height:100%;background:#b8423a;width:100%;transition:width .15s}
+#hurt{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(120,0,0,0) 45%,rgba(150,10,10,.75) 100%);z-index:3}
+.cb{display:none}body.fight .cb{display:block}
+#tHit{right:92px;bottom:126px}#tKick{right:162px;bottom:70px}#tBlk{right:162px;bottom:146px}#tDg{right:22px;bottom:36px}#tGun{right:92px;bottom:200px}#tCr{right:162px;bottom:222px}
+#cross{position:fixed;left:50%;top:50%;width:18px;height:18px;margin:-9px;border:1.5px solid rgba(233,228,216,.85);border-radius:50%;z-index:4;pointer-events:none}#cross:after{content:'';position:absolute;left:50%;top:50%;width:2px;height:2px;margin:-1px;background:#fff}
+#ammo{font-size:11.5px;margin-top:7px;color:var(--ink);letter-spacing:.04em}#job{font-size:12px;color:#7fc0e8;margin-top:4px}
+#fps{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+/* touch */
+#touch{position:fixed;inset:0;z-index:4;pointer-events:none}
+#touch .tb{position:absolute;pointer-events:auto;width:58px;height:58px;border-radius:50%;border:1px solid rgba(233,228,216,.4);background:rgba(8,9,10,.5);font-family:Oswald,sans-serif;font-size:13px;letter-spacing:.06em}
+#tE{right:22px;bottom:110px}#tRun{right:92px;bottom:54px}#tTel{right:22px;bottom:186px}#tP{right:18px;top:64px;width:44px!important;height:44px!important}
+#tRun.on{background:var(--acc);color:#111}
+#joy{position:absolute;width:110px;height:110px;border-radius:50%;border:1px solid rgba(233,228,216,.3);display:none}
+#joy i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px;border-radius:50%;background:rgba(233,228,216,.35)}
+body.touch #hint{display:none}body.touch #mini{width:120px;height:120px;top:74px;left:14px;bottom:auto}
+body.touch #stat{left:14px;top:204px;bottom:auto;width:120px}
+@media (max-width:900px){#ebar{top:92px}}
+@media (max-width:640px){#menu{background:rgba(8,9,10,.86)}#phone{right:8px;bottom:8px}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="bar-t"></div><div class="bar-b"></div>
+
+<div id="hud" class="hide">
+  <div id="obj"><small id="objch">Bölüm 1 · Dönüş</small><div id="objt"></div><em id="objd"></em><div id="job"></div></div>
+  <div id="mini"><canvas id="minic" width="336" height="336"></canvas></div>
+  <div id="stat"><div id="clock">18:00</div><div class="lbl"><span>Can</span></div><div class="bar" style="margin-bottom:7px"><i id="hp" style="background:#b8423a"></i></div><div class="lbl"><span>Dayanıklılık</span></div><div class="bar"><i id="stam"></i></div><div id="ammo" class="hide"></div></div>
+  <div id="ebar" class="hide"><span id="ename"></span><div class="bar"><i id="ehp"></i></div></div>
+  <div id="prompt" class="hide"></div>
+  <div id="bark" class="hide"></div>
+  <div id="toast"></div>
+  <div id="fps" class="hide"></div>
+  <div id="hint"></div>
+</div>
+
+<div id="touch" class="hide">
+  <div id="joy"><i></i></div>
+  <button class="tb" id="tE">E</button><button class="tb" id="tRun">KOŞ</button><button class="tb" id="tTel">TEL</button><button class="tb" id="tP">II</button><button class="tb cb" id="tHit">VUR</button><button class="tb cb" id="tKick">TEKME</button><button class="tb cb" id="tBlk">BLOK</button><button class="tb cb" id="tDg">KAÇ</button><button class="tb cb" id="tGun">SİLAH</button><button class="tb cb" id="tCr">ÇÖM</button>
+</div>
+
+<div id="cinetitle"><small id="ctS"></small><h2 id="ctH"></h2></div>
+<div id="dlg" class="hide"><div class="who" id="dwho"></div><div class="txt" id="dtxt"></div><div class="more" id="dmore">devam ▸</div><div id="choices"></div></div>
+<div id="skip" class="hide">Boşluk / dokun: geç</div>
+
+<div id="phone">
+  <header><span id="phclock">18:00</span><span>Yıldıztepe · 4G</span></header>
+  <div class="body" id="phbody"></div>
+  <nav><button data-app="msg">Mesajlar</button><button data-app="ct">Kişiler</button><button data-app="q">Görevler</button><button data-app="map">Harita</button><button data-app="ph">Foto</button></nav>
+</div>
+
+<div id="menu">
+  <div class="col">
+    <div class="brand"><small>BİR ADANA HİKÂYESİ</small><h1>Sokakların<br>Kanunu</h1><p>Yıldıztepe Mahallesi · 10 bölüm · 3 final</p></div>
+    <div class="list" id="mMain">
+      <button data-a="new">Yeni Oyun</button>
+      <button data-a="cont" id="bCont">Oyuna Devam Et</button>
+      <button data-a="chapters">Bölümler</button>
+      <button data-a="settings">Ayarlar</button>
+      <button data-a="saves">Kayıtlar</button>
+      <button data-a="quit">Oyundan Çık</button>
+    </div>
+    <div class="panel hide" id="mChapters"><h2>Bölümler</h2><div id="chList"></div>
+      <p class="note" style="margin-top:12px">Üç final planlandı: <b>Usta</b> (dükkânı ve mahalleyi koru), <b>Yeni Reis</b> (Cemal'in yerine geç), <b>Tek Bilet</b> (her şeyi bırak, git). Hangisine gideceğini 1. bölümden itibaren verdiğin kararlar belirler.</p>
+      <button class="back" data-a="back">‹ Geri</button></div>
+    <div class="panel hide" id="mSaves"><h2>Kayıtlar</h2><div id="saveBox"></div><button class="back" data-a="back">‹ Geri</button></div>
+    <div class="panel hide" id="mQuit"><h2>Oyundan çıkıldı</h2><p class="note">Oturum kapatıldı. Kaydın bu tarayıcıda duruyor; sekmeyi kapatabilirsin.</p><button class="back" data-a="back">‹ Menüye dön</button></div>
+    <div class="keys" id="mKeys"><kbd>WASD</kbd>yürü <kbd>Shift</kbd>koş <kbd>E</kbd>etkileşim <kbd>T</kbd>telefon <kbd>Esc</kbd>duraklat</div>
+  </div>
+</div>
+
+<div class="overlay hide" id="pause"><div class="card"><h2>Duraklatıldı</h2>
+  <div class="list"><button data-p="resume">Devam Et</button><button data-p="save">Oyunu Kaydet</button><button data-p="settings">Ayarlar</button><button data-p="menu">Ana Menü</button></div></div></div>
+
+<div class="overlay hide" id="settings"><div class="card"><h2>Ayarlar</h2>
+  <div class="row"><span>Ses seviyesi</span><input type="range" id="sVol" min="0" max="1" step="0.05"></div>
+  <div class="row"><span>Kamera hassasiyeti</span><input type="range" id="sSens" min="0.3" max="2.5" step="0.1"></div>
+  <div class="row"><span>Grafik kalitesi</span><div class="seg" id="sQ"><button data-v="0">Düşük</button><button data-v="1">Orta</button><button data-v="2">Yüksek</button></div></div>
+  <div class="row"><span>Dinamik gölgeler</span><div class="seg" id="sSh"><button data-v="1">Açık</button><button data-v="0">Kapalı</button></div></div>
+  <div class="row"><span>Otomatik çözünürlük</span><div class="seg" id="sAuto"><button data-v="1">Açık</button><button data-v="0">Kapalı</button></div></div>
+  <div class="row"><span>FPS göstergesi</span><div class="seg" id="sFps"><button data-v="1">Açık</button><button data-v="0">Kapalı</button></div></div>
+  <div class="row"><span>Seslendirme (cihazın Türkçe sesi)</span><div class="seg" id="sTts"><button data-v="1">Açık</button><button data-v="0">Kapalı</button></div></div>
+  <div class="row"><span>Altyazı boyutu</span><div class="seg" id="sSub"><button data-v="15">Küçük</button><button data-v="18">Orta</button><button data-v="22">Büyük</button></div></div>
+  <button class="btn" id="sClose" style="margin-top:18px">Tamam</button></div></div>
+
+<div class="overlay hide" id="endc"><div class="card"><small class="t" id="endS" style="color:var(--dim);font-size:12px"></small><h2 style="margin-top:4px" id="endH"></h2>
+  <div id="endBody" class="note" style="font-size:14px;color:var(--ink)"></div>
+  <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap"><button class="btn" id="endNext"></button><button class="btn" id="endMenu">Ana menü</button></div></div></div>
+
+<div class="overlay hide" id="err"><div class="card"><h2>Oyun başlatılamadı</h2><p class="note" id="errT"></p></div></div>
+<div class="overlay hide" id="dead"><div class="card"><h2>Yere serildin</h2><p class="note">Blok (Q / sağ tık) darbelerin çoğunu emer; üst üste yumruk yiyen rakip gardını kaldırır, gardı tekme (G) kırar. rakip kolunu geriye çektiğinde kaçın (Boşluk) ya da blokla, sonra karşılık ver.</p><button class="btn" id="retry" style="margin-top:16px">Tekrar dene</button></div></div>
+<div id="hurt"></div>
+<div id="cross" class="hide"></div>
+<div id="fade"></div>
+
+<script src="../vendor/three.min.js"></script>
+<script>
+"use strict";
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+if(!window.THREE){ $('#err').classList.remove('hide'); $('#errT').textContent='3D kütüphanesi yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.'; return; }
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t, sstep=(a,b,x)=>{x=clamp((x-a)/(b-a),0,1);return x*x*(3-2*x)};
+function rngf(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=rngf(1001), pick=(a,r=R)=>a[Math.floor(r()*a.length)];
+const IS_TOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+if(IS_TOUCH) document.body.classList.add('touch');
+
+/* ================= SETTINGS & SAVE ================= */
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const SKEY='sk_settings_v1', GKEY='sk_save_v1';
+const S=Object.assign({vol:.7,sens:1,q:1,sh:1,sub:18,auto:1,fps:0,tts:0},store.get(SKEY)||{});
+const newGame=()=>({v:1,para:150,step:0,rel:{hasan:0,selim:0,nuri:0,riza:0},saygi:0,flags:{},met:{},time:18.1,pos:[0,50],yaw:0,done:[],
+  msgs:[{th:'Selim (Abi)',text:'Kerem babam hastanede. Ara beni.',when:'47 gün önce'},{th:'Selim (Abi)',text:'Aç şu telefonu. Doktor ameliyat diyor.',when:'45 gün önce'},{th:'Selim (Abi)',text:'Babamı kaybettik.',when:'40 gün önce'}],unread:0,stamp:0});
+let G=newGame();
+function saveGame(){G.pos=[P.pos.x,P.pos.z];storeV();G.vehs=VEHS.map(v=>[v.g.position.x,v.g.position.z,v.rot]);G.car=G.vehs[0];G.yaw=cam.yaw;G.time=W.time;G.stamp=Date.now();return store.set(GKEY,G)}
+const loadSave=()=>{const s=store.get(GKEY);return s&&s.v===1?s:null};
+
+/* ================= AUDIO (tamamı sentez) ================= */
+const A={ctx:null,
+  init(){ if(this.ctx){ if(this.ctx.state==='suspended')this.ctx.resume().catch(()=>{}); return; }
+    try{ const C=window.AudioContext||window.webkitAudioContext; const c=this.ctx=new C();
+      this.master=c.createGain(); this.master.gain.value=S.vol; this.master.connect(c.destination);
+      const n=c.createBuffer(1,c.sampleRate*2,c.sampleRate), d=n.getChannelData(0); let b=0; for(let i=0;i<d.length;i++){const w=Math.random()*2-1;b=(b+.02*w)/1.02;d[i]=b*3.2} this.brown=n;
+      const wn=c.createBuffer(1,c.sampleRate*.5,c.sampleRate), wd=wn.getChannelData(0); for(let i=0;i<wd.length;i++)wd[i]=Math.random()*2-1; this.white=wn;
+      // şehir uğultusu
+      const hum=c.createBufferSource(); hum.buffer=n; hum.loop=true; const hf=c.createBiquadFilter(); hf.type='lowpass'; hf.frequency.value=420; this.humG=c.createGain(); this.humG.gain.value=.22; hum.connect(hf).connect(this.humG).connect(this.master); hum.start();
+      const rn=c.createBufferSource(); rn.buffer=wn; rn.loop=true; const rf=c.createBiquadFilter(); rf.type='highpass'; rf.frequency.value=1800; this.rainG=c.createGain(); this.rainG.gain.value=0; rn.connect(rf).connect(this.rainG).connect(this.master); rn.start();
+      // cırcır böcekleri (gece)
+      const cr=c.createOscillator(); cr.frequency.value=4300; const cg=c.createGain(); cg.gain.value=0; const lfo=c.createOscillator(); lfo.type='square'; lfo.frequency.value=17; const lg=c.createGain(); lg.gain.value=1; this.crG=c.createGain(); this.crG.gain.value=0; lfo.connect(lg).connect(cg.gain); cr.connect(cg).connect(this.crG).connect(this.master); cr.start(); lfo.start();
+      // motor
+      const en=c.createOscillator(); en.type='sawtooth'; en.frequency.value=58; const ef=c.createBiquadFilter(); ef.type='lowpass'; ef.frequency.value=260; this.enG=c.createGain(); this.enG.gain.value=0; en.connect(ef).connect(this.enG).connect(this.master); en.start(); this.en=en;
+      // atmosferik müzik (La minör dron)
+      this.muG=c.createGain(); this.muG.gain.value=0; const mf=c.createBiquadFilter(); mf.type='lowpass'; mf.frequency.value=520; mf.Q.value=2; mf.connect(this.muG).connect(this.master);
+      [110,110.6,164.8,220.4,261.6].forEach((f,i)=>{const o=c.createOscillator(); o.type=i<2?'sawtooth':'triangle'; o.frequency.value=f; const g=c.createGain(); g.gain.value=i<2?.25:.18; o.connect(g).connect(mf); o.start()});
+      const ml=c.createOscillator(); ml.frequency.value=.07; const mlg=c.createGain(); mlg.gain.value=180; ml.connect(mlg).connect(mf.frequency); ml.start();
+    }catch(e){this.ctx=null} },
+  burst(freq,q,dur,vol,type='bandpass'){ if(!this.ctx)return; const c=this.ctx,s=c.createBufferSource(); s.buffer=this.white; const f=c.createBiquadFilter(); f.type=type; f.frequency.value=freq; f.Q.value=q; const g=c.createGain(); const t=c.currentTime; g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.001,t+dur); s.connect(f).connect(g).connect(this.master); s.start(t); s.stop(t+dur+.02) },
+  tone(f1,f2,dur,vol,type='sine'){ if(!this.ctx)return; const c=this.ctx,o=c.createOscillator(),g=c.createGain(),t=c.currentTime; o.type=type; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+dur); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.001,t+dur); o.connect(g).connect(this.master); o.start(t); o.stop(t+dur+.02) },
+  step(run){this.burst(run?520:380,1.2,.07,run?.5:.32)},
+  blip(){this.tone(660,880,.07,.12,'triangle')},
+  buzz(){this.tone(150,150,.18,.25,'square'); setTimeout(()=>this.tone(150,150,.18,.25,'square'),260)},
+  sting(){this.tone(98,49,1.6,.35,'sawtooth')},
+  setVol(v){ if(this.master)this.master.gain.value=v },
+  birdT:3,
+  update(dt,night,carD,tense){ if(!this.ctx)return; const t=this.ctx.currentTime;
+    this.crG.gain.setTargetAtTime(night*.012,t,.5); this.humG.gain.setTargetAtTime(.22-night*.1,t,.5);
+    this.enG.gain.setTargetAtTime(clamp(1-carD/30,0,1)**2*.12,t,.15); this.en.frequency.setTargetAtTime(52+clamp(1-carD/30,0,1)*30,t,.2);
+    this.muG.gain.setTargetAtTime(tense?.11:.03,t,1.2);
+    this.birdT-=dt; if(this.birdT<0){ this.birdT=2+Math.random()*7; if(night<.3){ const f=2400+Math.random()*1500; this.tone(f,f*1.3,.09,.035); setTimeout(()=>this.tone(f*1.2,f,.08,.03),120) } } }
+};
+
+/* ================= RENDERER / SCENE ================= */
+const canvas=$('#c');
+let renderer; try{ renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'}); }catch(e){ $('#err').classList.remove('hide'); $('#errT').textContent='Bu cihazda WebGL açılamadı. Güncel bir tarayıcıyla tekrar dene.'; return; }
+renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate=false;
+const scene=new THREE.Scene(); scene.fog=new THREE.Fog(0x8899aa,30,150);
+const camera=new THREE.PerspectiveCamera(58,1,.1,700);
+const hemi=new THREE.HemisphereLight(0xbcd6ee,0x5a5046,.7); scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xffffff,1); sun.castShadow=true; sun.shadow.bias=-.0006; sun.shadow.normalBias=.04;
+const sc=sun.shadow.camera; sc.left=-45; sc.right=45; sc.top=45; sc.bottom=-45; sc.near=1; sc.far=220; scene.add(sun); scene.add(sun.target);
+const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,uniforms:{top:{value:new THREE.Color()},bot:{value:new THREE.Color()}},
+  vertexShader:'varying vec3 p;void main(){p=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:'uniform vec3 top;uniform vec3 bot;varying vec3 p;void main(){float h=clamp(normalize(p).y*1.5+.05,0.,1.);gl_FragColor=vec4(mix(bot,top,pow(h,.55)),1.);}'});
+const sky=new THREE.Mesh(new THREE.SphereGeometry(500,24,12),skyMat); scene.add(sky);
+const starG=new THREE.BufferGeometry(); { const p=[]; const r=rngf(7); for(let i=0;i<600;i++){ const a=r()*6.283, e=r()*1.4+.1; p.push(Math.cos(a)*Math.cos(e)*480,Math.sin(e)*480,Math.sin(a)*Math.cos(e)*480) } starG.setAttribute('position',new THREE.Float32BufferAttribute(p,3)); }
+const starM=new THREE.PointsMaterial({color:0xffffff,size:1.6,sizeAttenuation:false,transparent:true,opacity:0,fog:false,depthWrite:false}); const stars=new THREE.Points(starG,starM); scene.add(stars);
+
+let BASEPR=1,dyn=1;
+function applyGfx(){ const dpr=window.devicePixelRatio||1; BASEPR=[Math.min(dpr,1)*.75,Math.min(dpr,1.25),Math.min(dpr,2)][S.q]; if(!S.auto)dyn=1; renderer.setPixelRatio(BASEPR*dyn); $('#fps').classList.toggle('hide',!S.fps);
+  renderer.shadowMap.enabled=!!S.sh; sun.castShadow=!!S.sh; const ms=[1024,2048,2048][S.q]; if(sun.shadow.mapSize.x!==ms){sun.shadow.mapSize.set(ms,ms); if(sun.shadow.map){sun.shadow.map.dispose(); sun.shadow.map=null}}
+  scene.fog.far=[110,150,190][S.q]; W.lamps.forEach((l,i)=>l.visible=S.q>0||i<2); scene.traverse(o=>{if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.needsUpdate=true)}});
+  document.documentElement.style.setProperty('--sub',S.sub+'px'); onResize(); }
+function onResize(){ const w=window.innerWidth,h=window.innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+window.addEventListener('resize',onResize);
+
+/* ================= TEXTURES ================= */
+const cv=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+const tex=(c,rep)=>{const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;if(rep){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rep[0],rep[1])}return t};
+function noiseTex(base,amt,rep,extra){ const c=cv(256,256),g=c.getContext('2d'); g.fillStyle=base; g.fillRect(0,0,256,256); const r=rngf(base.length*77+amt*100);
+  for(let i=0;i<5000;i++){ const v=r(); g.fillStyle=v<.5?`rgba(0,0,0,${r()*amt})`:`rgba(255,255,255,${r()*amt*.6})`; g.fillRect(r()*256,r()*256,1+r()*2.5,1+r()*2.5) } if(extra)extra(g,r); return tex(c,rep) }
+const std=(o)=>new THREE.MeshStandardMaterial(Object.assign({roughness:.9,metalness:0},o));
+const M={
+  ground:std({map:noiseTex('#6b6253',.12,[40,40])}),
+  asphalt:std({map:noiseTex('#33353a',.16,[1,1],(g,r)=>{for(let i=0;i<10;i++){g.strokeStyle='rgba(0,0,0,.25)';g.beginPath();let x=r()*256,y=r()*256;g.moveTo(x,y);for(let k=0;k<5;k++){x+=r()*50-25;y+=r()*50-25;g.lineTo(x,y)}g.stroke()}})}),
+  paving:std({map:noiseTex('#8a8378',.1,[1,1],(g)=>{g.strokeStyle='rgba(0,0,0,.28)';for(let i=0;i<=256;i+=32){g.beginPath();g.moveTo(i,0);g.lineTo(i,256);g.moveTo(0,i);g.lineTo(256,i);g.stroke()}})}),
+  grass:std({map:noiseTex('#4a5a34',.2,[12,12])}), dirt:std({map:noiseTex('#5e5140',.22,[10,8])}),
+  roof:std({color:0x4a4640}), concrete:std({color:0x8b877f}), metal:std({color:0x555a60,metalness:.6,roughness:.5}), dark:std({color:0x15171a}),
+  wood:std({color:0x6b4a2e}), trunk:std({color:0x4e3b2a}), leaf:std({color:0x3c5a2b,roughness:1}), leaf2:std({color:0x4f6d2f,roughness:1}), palm:std({color:0x4a6a35,side:THREE.DoubleSide}),
+  white:std({color:0xdedad0}), tin:std({color:0x7d8388,metalness:.5,roughness:.6}), orange:std({color:0xe8861c}), tire:std({color:0x101010,roughness:1}),
+  lamp:new THREE.MeshStandardMaterial({color:0x333333,emissive:0xffb45e,emissiveIntensity:0}), glass:std({color:0x1a2530,roughness:.2,metalness:.4}),
+  fire:new THREE.MeshBasicMaterial({color:0xff7a18,toneMapped:false}), marker:new THREE.MeshBasicMaterial({color:0xd9a441,transparent:true,opacity:.9,fog:false})
+};
+function textTex(text,o={}){ const w=o.w||512,h=o.h||128,c=cv(w,h),g=c.getContext('2d'); g.fillStyle=o.bg||'#7a1f1f'; g.fillRect(0,0,w,h);
+  if(o.border){g.strokeStyle=o.fg||'#fff';g.lineWidth=5;g.strokeRect(7,7,w-14,h-14)}
+  g.fillStyle=o.fg||'#f2e9d8'; g.textAlign='center'; g.textBaseline='middle'; let fs=o.fs||Math.floor(h*.5); g.font=`bold ${fs}px "Arial Narrow",Arial,Helvetica,sans-serif`;
+  while(g.measureText(text).width>w*.9&&fs>10){fs-=2;g.font=`bold ${fs}px "Arial Narrow",Arial,Helvetica,sans-serif`}
+  g.fillText(text,w/2,o.sub?h*.4:h/2); if(o.sub){g.font=`${Math.floor(h*.2)}px Arial,sans-serif`;g.fillText(o.sub,w/2,h*.78)} return tex(c) }
+
+/* ================= WORLD ================= */
+const W={time:18.1,night:0,colliders:[],circles:[],shapes:[],labels:[],nightMats:[],lamps:[],benches:[],lampPos:[],spots:[],rain:0,rainT:0,hud:''};
+const world=new THREE.Group(); scene.add(world);
+function add(mesh,cast=true,recv=true){mesh.castShadow=cast;mesh.receiveShadow=recv;world.add(mesh);return mesh}
+function box(w,h,d,mat,x,y,z,ry){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);if(ry)m.rotation.y=ry;return add(m)}
+function cyl(rt,rb,h,mat,x,y,z,seg=10){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),mat);m.position.set(x,y,z);return add(m)}
+function flat(w,d,mat,x,z,y=.02,rep){ if(rep){mat=mat.clone();mat.map=mat.map.clone();mat.map.needsUpdate=true;mat.map.repeat.set(w/rep,d/rep);mat.map.wrapS=mat.map.wrapT=THREE.RepeatWrapping} const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),mat);m.rotation.x=-Math.PI/2;m.position.set(x,y,z);return add(m,false,true)}
+const solid=(x,z,w,d,h=3)=>W.colliders.push({x0:x-w/2,x1:x+w/2,z0:z-d/2,z1:z+d/2,h});
+const round=(x,z,r)=>W.circles.push({x,z,r});
+const shape=(t,x,z,w,d)=>W.shapes.push({t,x,z,w,d});
+function sign(text,x,y,z,face,w,h,o){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshStandardMaterial({map:textTex(text,o),roughness:.7}));m.position.set(x,y,z);m.rotation.y=face;return add(m,false,false)}
+
+function facadeMat(w,h,base,r,ground){ const Sx=18,cw=Math.max(32,Math.round(w*Sx)),ch=Math.max(32,Math.round(h*Sx)); const c=cv(cw,ch),g=c.getContext('2d'),e=cv(cw,ch),ge=e.getContext('2d');
+  g.fillStyle=base; g.fillRect(0,0,cw,ch); ge.fillStyle='#000'; ge.fillRect(0,0,cw,ch);
+  for(let i=0;i<260;i++){g.fillStyle=`rgba(0,0,0,${r()*.07})`;g.fillRect(r()*cw,r()*ch,2+r()*8,6+r()*46)}
+  const floors=Math.max(1,Math.round(h/3)),fh=ch/floors,n=Math.max(1,Math.floor(w/2.6)),cw1=cw/n;
+  for(let f=0;f<floors;f++){ const y0=ch-(f+1)*fh; g.fillStyle='rgba(0,0,0,.2)'; g.fillRect(0,y0+fh-2,cw,2);
+    for(let k=0;k<n;k++){ const x0=k*cw1;
+      if(f===0&&ground==='shop'){ g.fillStyle=pick(['#555b62','#3b4752','#6a5947','#4d4d4d'],r); g.fillRect(x0+cw1*.1,y0+fh*.22,cw1*.8,fh*.78); g.fillStyle='rgba(0,0,0,.25)'; for(let s=0;s<8;s++)g.fillRect(x0+cw1*.1,y0+fh*.22+s*fh*.1,cw1*.8,1.5); continue }
+      if(f===0&&k===Math.floor(n/2)&&ground!=='none'){ g.fillStyle='#3a2c20'; g.fillRect(x0+cw1*.3,y0+fh*.25,cw1*.4,fh*.75); continue }
+      const ww=cw1*.44,wh=fh*.46,wx=x0+(cw1-ww)/2,wy=y0+fh*.2; g.fillStyle='#cfc8b8'; g.fillRect(wx-2,wy-2,ww+4,wh+4); g.fillStyle='#18222c'; g.fillRect(wx,wy,ww,wh);
+      if(r()<.55){g.fillStyle='rgba(225,215,195,.4)';g.fillRect(wx,wy,ww*(.3+r()*.3),wh)} g.fillStyle='#cfc8b8'; g.fillRect(wx+ww/2-1,wy,2,wh);
+      if(r()<.42){ge.fillStyle=pick(['#ffc86e','#ffdca0','#ffd9a0','#8fb4ee'],r);ge.fillRect(wx,wy,ww,wh)}
+      if(r()<.22){g.fillStyle='#c9c9c4';g.fillRect(wx+ww+4,wy+wh-9,15,10);g.fillStyle='#777';g.fillRect(wx+ww+6,wy+wh-7,11,6)}
+      if(f>0&&r()<.3){g.fillStyle='rgba(60,50,40,.9)';g.fillRect(wx-5,wy+wh+3,ww+10,fh*.14)} } }
+  const m=new THREE.MeshStandardMaterial({map:tex(c),emissiveMap:tex(e),emissive:0xffffff,emissiveIntensity:0,roughness:.93}); W.nightMats.push(m); return m }
+const balc=[]; // instanced balkonlar
+const WALLS=['#b9a98f','#a8998a','#c2b59c','#9c8f80','#b0a08c','#a39a8e','#bfae93','#8f8a80','#c7b08f','#a89684'];
+function building(x,z,w,d,h,o={}){ const r=rngf(Math.round(x*31+z*17+h*7)); const base=o.color||pick(WALLS,r); const fw=facadeMat(w,h,base,r,o.ground), fd=facadeMat(d,h,base,r,o.ground==='shop'?undefined:o.ground);
+  const bgm=new THREE.BoxGeometry(w,h,d); bgm.clearGroups(); bgm.addGroup(0,12,0); bgm.addGroup(12,12,1); bgm.addGroup(24,12,2); const m=new THREE.Mesh(bgm,[fd,M.roof,fw]); m.position.set(x,h/2,z); add(m); solid(x,z,w,d,h); shape('b',x,z,w,d);
+  box(w+.3,.35,d+.3,M.concrete,x,h+.17,z);
+  if(h>7&&!o.plain){ const floors=Math.round(h/3),n=Math.max(1,Math.floor(w/2.6)); for(let f=1;f<floors;f++)for(let k=0;k<n;k++)if((k+f)%2===0){ const bx=x-w/2+(k+.5)*w/n; balc.push([bx,f*h/floors+.45,z+d/2+.45],[bx,f*h/floors+.45,z-d/2-.45]) }
+    // çatı: güneş enerjisi + su deposu
+    const sx=x+(r()-.5)*w*.5, sz=z+(r()-.5)*d*.5; const pn=box(1.8,.08,1.1,M.glass,sx,h+.85,sz); pn.rotation.x=-.6; const tk=cyl(.3,.3,1.5,M.white,sx,h+1.35,sz-.5); tk.rotation.z=Math.PI/2; box(.9,1,.9,M.white,sx+2.2,h+.85,sz) }
+  return m }
+
+function tree(x,z,s=1,kind=0){ const r=rngf(Math.round(x*13+z*29)); cyl(.16*s,.24*s,3*s,M.trunk,x,1.5*s,z,7); const mat=kind?M.leaf2:M.leaf;
+  for(let i=0;i<4;i++){ const g=new THREE.Mesh(new THREE.IcosahedronGeometry((1.3+r()*.8)*s,1),mat); g.position.set(x+(r()-.5)*1.8*s,(3.3+r()*1.6)*s,z+(r()-.5)*1.8*s); g.rotation.set(r()*3,r()*3,0); add(g) }
+  if(kind===2){ const og=new THREE.SphereGeometry(.09,6,5); for(let i=0;i<14;i++){const o=new THREE.Mesh(og,M.orange); o.position.set(x+(r()-.5)*2.6*s,(2.6+r()*2)*s,z+(r()-.5)*2.6*s); world.add(o)} }
+  round(x,z,.35*s) }
+function palmTree(x,z){ cyl(.16,.26,7,M.trunk,x,3.5,z,7); for(let i=0;i<8;i++){ const l=new THREE.Mesh(new THREE.PlaneGeometry(.7,3.4),M.palm); const a=i/8*6.283; l.position.set(x+Math.sin(a)*1.4,7-.5,z+Math.cos(a)*1.4); l.rotation.order='YXZ'; l.rotation.y=a; l.rotation.x=Math.PI/2+.45; add(l,true,false) } round(x,z,.3) }
+function lamp(x,z,light){ cyl(.07,.1,5.5,M.metal,x,2.75,z,6); box(.09,.09,1.2,M.metal,x,5.5,z+.5); const b=new THREE.Mesh(new THREE.SphereGeometry(.2,8,6),M.lamp); b.position.set(x,5.4,z+1); world.add(b);
+  W.lampPos.push([x,z+1]); round(x,z,.15) }
+function bench(x,z,ry){ const g=new THREE.Group(); const s=new THREE.Mesh(new THREE.BoxGeometry(1.8,.07,.5),M.wood); s.position.y=.45; const b=new THREE.Mesh(new THREE.BoxGeometry(1.8,.5,.06),M.wood); b.position.set(0,.8,-.24);
+  const l1=new THREE.Mesh(new THREE.BoxGeometry(.08,.45,.5),M.metal); l1.position.set(-.8,.22,0); const l2=l1.clone(); l2.position.x=.8; g.add(s,b,l1,l2); g.traverse(o=>{o.castShadow=true;o.receiveShadow=true}); g.position.set(x,0,z); g.rotation.y=ry; world.add(g);
+  W.benches.push({x,z,ry}); }
+const CARCOL=[0x8a8f96,0xdcdcd6,0x23262b,0x6a1f1f,0x2d4a6a,0xb9a56a,0x3f5a48];
+const PLATE=[],PLG=new THREE.PlaneGeometry(.52,.13); let plateN=0;
+const RIM=new THREE.MeshStandardMaterial({color:0xb4b8bc,metalness:.8,roughness:.3});
+function makeCar(kind,color){ const g=new THREE.Group(); const body=std({color,roughness:.36,metalness:.55});
+  if(kind==='moto'){ const w1=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.12,14),M.tire); w1.rotation.z=Math.PI/2; w1.position.set(0,.3,.68); const w2=w1.clone(); w2.position.z=-.66; const r1=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.13,10),RIM); r1.rotation.z=Math.PI/2; r1.position.copy(w1.position); const r2=r1.clone(); r2.position.copy(w2.position);
+    const fr=new THREE.Mesh(new THREE.BoxGeometry(.2,.26,.7),body); fr.position.set(0,.62,.12); const eng=new THREE.Mesh(new THREE.BoxGeometry(.26,.26,.4),M.metal); eng.position.set(0,.42,0); const st=new THREE.Mesh(new THREE.BoxGeometry(.28,.09,.62),M.dark); st.position.set(0,.8,-.28);
+    const fk=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.75,6),M.metal); fk.position.set(0,.66,.6); fk.rotation.x=-.42; const hb=new THREE.Mesh(new THREE.BoxGeometry(.62,.04,.04),M.metal); hb.position.set(0,1.02,.46); const hl=new THREE.Mesh(new THREE.SphereGeometry(.08,8,6),new THREE.MeshStandardMaterial({color:0xfff2cc,emissive:0xffe9a8,emissiveIntensity:.4})); hl.position.set(0,.88,.62);
+    const fd=new THREE.Mesh(new THREE.BoxGeometry(.14,.03,.5),body); fd.position.set(0,.6,-.66); const ex=new THREE.Mesh(new THREE.CylinderGeometry(.035,.045,.6,8),M.metal); ex.rotation.x=Math.PI/2; ex.position.set(.14,.36,-.45);
+    g.add(w1,w2,r1,r2,fr,eng,st,fk,hb,hl,fd,ex); g.userData.len=1.9; g.userData.wid=.7 }
+  else{ const van=kind==='van', L=van?4.6:kind==='sport'?4.3:4.2, Wd=van?1.9:kind==='sport'?1.82:1.75, h=L/2;
+    const ext=(pts,w,mat)=>{ const sh=new THREE.Shape(); pts.forEach((p,i)=>i?sh.lineTo(p[0],p[1]):sh.moveTo(p[0],p[1])); const ge=new THREE.ExtrudeGeometry(sh,{depth:w,bevelEnabled:false}); ge.rotateY(-Math.PI/2); ge.translate(w/2,0,0); const m=new THREE.Mesh(ge,mat); g.add(m); return m };
+    const B={sedan:[[-h,.32],[-h,.8],[-L*.3,.87],[L*.22,.85],[h-.08,.74],[h,.6],[h,.32]],old:[[-h,.34],[-h,.85],[L*.2,.85],[h-.04,.8],[h,.68],[h,.34]],sport:[[-h,.28],[-h,.7],[-L*.3,.8],[L*.16,.74],[h-.12,.58],[h,.46],[h,.28]],van:[[-h,.34],[-h,1.78],[L*.2,1.78],[L*.39,1.12],[h-.03,1.02],[h,.8],[h,.34]]}[kind];
+    const Cb={sedan:[[-L*.32,.86],[-L*.2,1.3],[L*.07,1.31],[L*.25,.85]],old:[[-L*.31,.85],[-L*.25,1.34],[L*.09,1.34],[L*.21,.85]],sport:[[-L*.33,.79],[-L*.12,1.13],[L*.02,1.13],[L*.21,.74]]}[kind];
+    ext(B,Wd,body);
+    if(Cb){ ext(Cb,Wd*.9,M.glass); const a=Cb[1],b=Cb[2]; const rf=new THREE.Mesh(new THREE.BoxGeometry(Wd*.915,.045,b[0]-a[0]+.12),body); rf.position.set(0,a[1]+.018,(a[0]+b[0])/2); const pl=new THREE.Mesh(new THREE.BoxGeometry(Wd*.91,a[1]-.84,.075),body); pl.position.set(0,(a[1]+.84)/2,(a[0]+b[0])/2-.12); g.add(rf,pl) }
+    else { const ws=new THREE.Mesh(new THREE.PlaneGeometry(Wd*.86,.84),M.glass); ws.position.set(0,1.45,L*.295+.012); ws.rotation.x=-.92; const sw=new THREE.Mesh(new THREE.BoxGeometry(Wd+.02,.42,.72),M.glass); sw.position.set(0,1.42,L*.1); g.add(ws,sw) }
+    const tg=new THREE.CylinderGeometry(.31,.31,.2,16), rg=new THREE.CylinderGeometry(.18,.18,.215,10); for(const sx of[-1,1])for(const sz of[-1,1]){ const w=new THREE.Mesh(tg,M.tire); w.rotation.z=Math.PI/2; w.position.set(sx*(Wd*.5-.07),.31,sz*L*.31); const r=new THREE.Mesh(rg,RIM); r.rotation.z=Math.PI/2; r.position.copy(w.position); g.add(w,r) }
+    for(const sz of[-1,1]){ const bp=new THREE.Mesh(new THREE.BoxGeometry(Wd+.03,.13,.14),M.dark); bp.position.set(0,.4,sz*(h+.02)); g.add(bp) }
+    const hy=van?.9:kind==='sport'?.5:.63, ty=van?1:kind==='sport'?.6:.72;
+    const hl=new THREE.MeshStandardMaterial({color:0xfff2cc,emissive:0xffe9a8,emissiveIntensity:.2}), tl=new THREE.MeshStandardMaterial({color:0x661010,emissive:0xff2a1a,emissiveIntensity:.2});
+    for(const sx of[-1,1]){ const h1=new THREE.Mesh(new THREE.BoxGeometry(.32,.12,.06),hl); h1.position.set(sx*Wd*.34,hy,h+.012); const t1=new THREE.Mesh(new THREE.BoxGeometry(.3,.11,.06),tl); t1.position.set(sx*Wd*.34,ty,-h-.012); const mr=new THREE.Mesh(new THREE.BoxGeometry(.1,.07,.05),body); mr.position.set(sx*(Wd/2+.045),van?1.3:kind==='sport'?.84:.93,L*.2); g.add(h1,t1,mr) }
+    const gr=new THREE.Mesh(new THREE.BoxGeometry(Wd*.36,.09,.04),M.dark); gr.position.set(0,hy,h+.008); g.add(gr);
+    g.userData.lights=[hl,tl]; g.userData.len=L; g.userData.wid=Wd;
+    if(!PLATE.length)['01 KRM 27','01 ADN 01','01 SK 1994'].forEach(t=>PLATE.push(new THREE.MeshStandardMaterial({map:textTex(t,{bg:'#f2f2ec',fg:'#111111',w:256,h:64,fs:44}),roughness:.6})));
+    const pm=PLATE[(plateN++)%3]; for(const sz of[1,-1]){ const pl=new THREE.Mesh(PLG,pm); pl.position.set(0,.42,sz*(h+.095)); if(sz<0)pl.rotation.y=Math.PI; g.add(pl) } }
+  g.traverse(o=>{o.castShadow=true;o.receiveShadow=true}); world.add(g); return g }
+function parked(x,z,ry,kind,ci){ const c=makeCar(kind,CARCOL[ci%CARCOL.length]); c.position.set(x,0,z); c.rotation.y=ry; const L=c.userData.len,Wd=c.userData.wid; const ax=Math.abs(Math.sin(ry))>.7; solid(x,z,ax?L:Wd,ax?Wd:L,1.5); return c }
+
+function buildWorld(){
+  flat(260,260,M.ground,0,0,0);
+  // yollar
+  const roads=[[0,60,220,12],[0,36,7,36],[-57,0,78,6],[35,0,34,6],[0,-56,7,76],[50,28,5,50]];
+  roads.forEach(([x,z,w,d])=>{flat(w,d,M.asphalt,x,z,.02,8);shape('r',x,z,w,d)});
+  flat(36,36,M.paving,0,0,.03,3); shape('p',0,0,36,36);
+  flat(220,2.4,M.paving,0,52.8,.03,2.4); flat(220,2.4,M.paving,0,67.2,.03,2.4);
+  const dash=new THREE.MeshBasicMaterial({color:0xd8d4c8}); for(let x=-100;x<100;x+=8){const m=new THREE.Mesh(new THREE.PlaneGeometry(3,.18),dash);m.rotation.x=-Math.PI/2;m.position.set(x,.035,60);world.add(m)}
+  flat(40,42,M.grass,72,-1,.025); shape('g',72,-1,40,42); flat(36,26,M.dirt,73,38,.025); shape('d',73,38,36,26);
+  flat(28,13,M.asphalt,36,46.5,.022,8); shape('r',36,46.5,28,13);
+
+  // --- meydan çevresi
+  building(12,-27,14,12,15); building(26,11,10,14,12,{ground:'shop'}); building(-26,-10,12,14,13,{ground:'shop'}); building(-26,11,12,14,10);
+  building(-12,27,14,12,14,{ground:'shop'}); building(12,27,14,12,11,{ground:'shop'}); building(-12,42,14,12,9); building(12,42,14,12,16);
+  building(40,-10,14,12,13); building(40,10,14,12,10,{ground:'shop'}); building(34,30,16,14,12); building(-34,30,16,14,15); building(-34,46,14,10,7,{plain:1});
+  building(-42,-10,14,12,8,{plain:1,ground:'shop'}); building(-42,11,14,12,12); building(28,-28,12,12,9); building(-30,-28,14,12,11);
+  sign('ADANA KEBAP · CİĞER',12,3.3,33.06,0,7,1,{bg:'#1d3b2a'}); sign('BERBER SALONU',-12,3.3,20.94,Math.PI,5,.9,{bg:'#20304a'}); sign('TERZİ',26,3.2,3.94,Math.PI,3,.8,{bg:'#4a3a20'}); sign('ŞIRDANCI',12,3.3,20.94,Math.PI,4,.9,{bg:'#5a2a12'});
+  // arka plan blokları
+  const far=[[-70,82,22,14,18],[-40,82,20,14,13],[-12,82,22,14,21],[18,82,20,14,15],[46,82,22,14,19],[76,82,20,14,12],[-88,40,14,22,10],[-66,36,16,18,6],[92,60,0,0,0],
+    [60,-34,16,12,14],[84,-34,16,12,10],[-60,-34,18,12,7],[-84,-34,16,12,6],[100,0,10,30,16],[100,36,10,24,11],[44,-52,14,14,12],[-46,-52,14,14,9]];
+  far.forEach(a=>{if(a[2])building(a[0],a[1],a[2],a[3],a[4],{plain:a[4]<8})});
+
+  // --- KIRAATHANE (meydanın kuzeyi)
+  { const m=building(-11,-25,14,10,4.2,{color:'#b8a888',ground:'none',plain:1});
+    box(13,.12,2.6,std({color:0x6d2a22}),-11,3.25,-18.8).rotation.x=.12; box(10,2.2,.1,M.glass,-12.5,1.5,-19.94); box(1.3,2.4,.12,M.wood,-5.6,1.2,-19.92);
+    sign('YILDIZ KIRAATHANESİ',-11,3.85,-19.9,0,9,.9,{bg:'#2a2a26',fg:'#e4c98a',border:1}); W.labels.push(['Kıraathane',-11,-25]);
+    const tm=std({color:0x8b2f2a}); [[-15,-17],[-11.5,-16.4],[-8,-17]].forEach(([x,z])=>{cyl(.45,.45,.05,tm,x,.74,z,14);cyl(.04,.04,.74,M.metal,x,.37,z,6);round(x,z,.5); for(let i=0;i<4;i++){const a=i*1.5708+.4;cyl(.17,.15,.46,M.wood,x+Math.cos(a)*.85,.23,z+Math.sin(a)*.85,8)} });
+    cyl(.05,.05,.12,M.white,-15.1,.82,-17.1,8); cyl(.05,.05,.12,M.white,-14.8,.82,-16.8,8); }
+  // --- BAKKAL (meydanın doğusu, batıya bakıyor)
+  { building(26,-10,10,12,4,{color:'#a9a08c',ground:'none',plain:1}); box(2.4,.1,10,std({color:0x1f5a3c}),19.9,3,-10).rotation.z=-.14; box(.1,2.3,5,M.glass,20.95,1.45,-11.5); box(.12,2.3,1.2,M.wood,20.94,1.15,-6.5);
+    sign('NURİ BAKKAL',20.93,3.6,-10,-Math.PI/2,7,.8,{bg:'#f0e6c8',fg:'#a01818',sub:'Gazete · Tekel · Veresiye yok'}); W.labels.push(['Bakkal',26,-10]);
+    const og=new THREE.SphereGeometry(.1,6,5); [[19.6,-13.5,M.orange],[19.6,-12.3,std({color:0xb22a1e})],[19.6,-11.1,std({color:0x6f8f2a})]].forEach(([x,z,mt])=>{box(.9,.5,.9,M.wood,x,.3,z);for(let i=0;i<14;i++){const o=new THREE.Mesh(og,mt);o.position.set(x+(R()-.5)*.7,.62+R()*.08,z+(R()-.5)*.7);world.add(o)}}); solid(19.6,-12.3,1,3.4,1);
+    box(.8,1.9,.8,std({color:0xd0d6da,metalness:.3}),20.4,.95,-5.2); solid(20.4,-5.2,.8,.8,2); }
+  // --- AYDIN OTO (sanayi sokağı, güneye bakıyor)
+  { building(-62,-11,16,14,5.2,{color:'#8d8a82',ground:'none',plain:1}); box(7,3.4,.1,M.dark,-64,1.7,-3.94); box(7.4,.3,.3,M.metal,-64,3.5,-3.85);
+    sign('AYDIN OTO TAMİR',-62,4.5,-3.9,0,11,1.1,{bg:'#1c2c44',fg:'#f0f0e8',sub:'Motor · Kaporta · Elektrik — İsmail Usta, 1994'}); W.labels.push(['Aydın Oto',-62,-11]);
+    const c=parked(-66.5,-.9,Math.PI/2,'old',3); const hood=new THREE.Mesh(new THREE.BoxGeometry(1.6,.05,1.1),c.children[0].material); hood.position.set(0,1.5,1.55); hood.rotation.x=-.9; c.add(hood);
+    for(let i=0;i<4;i++){const t=new THREE.Mesh(new THREE.TorusGeometry(.3,.13,6,12),M.tire);t.rotation.x=Math.PI/2;t.position.set(-56.2,.13+i*.26,-3);add(t)} round(-56.2,-3,.5);
+    cyl(.3,.3,.9,std({color:0x2a4a6a,metalness:.4}),-55,.45,-3.2,12); cyl(.3,.3,.9,std({color:0x7a3020,metalness:.4}),-54.3,.45,-3.3,12); round(-54.65,-3.25,.65);
+    building(-62,11,18,14,6,{color:'#7f8388',ground:'shop',plain:1}); sign('ÖZ ADANA ROT BALANS',-62,5,3.94,Math.PI,10,1,{bg:'#b33a1a'});
+    building(-84,-11,14,16,6,{color:'#8a8478',ground:'shop',plain:1}); building(-86,11,14,14,5,{color:'#77706a',ground:'shop',plain:1}); sign('HURDA ALINIR',-86,4.2,3.94,Math.PI,6,.8,{bg:'#333',fg:'#e8c040'});
+    parked(-76,2.2,Math.PI/2,'van',1); }
+  // --- gecekondular (kuzey)
+  { const r=rngf(55); const cols=['#9a8f7c','#b0a090','#8f9a8c','#a88a78','#9aa0a6','#b5a27a'];
+    for(let i=0;i<9;i++)for(const s of[-1,1]){ const w=5.5+r()*2,d=5+r()*2,h=2.7+r()*.8,x=s*(3.6+w/2+r()*1.2),z=-42-i*5.6-r(); if(i*5.6>48)continue; if(s>0&&z>-62&&z<-46)continue;
+      building(x,z,w,d,h,{color:pick(cols,r),ground:'x',plain:1}); const rf=box(w+.6,.08,d+.7,M.tin,x,h+.42,z); rf.rotation.z=s*.09; }
+    // cami
+    box(10,6,10,std({color:0xcfc6b2}),17,3,-54); solid(17,-54,10,10,6); shape('b',17,-54,10,10); const dm=new THREE.Mesh(new THREE.SphereGeometry(4,16,10,0,6.283,0,1.5708),std({color:0x7f8a8c,metalness:.3})); dm.position.set(17,6,-54); add(dm);
+    cyl(.7,.8,17,std({color:0xd8d0bd}),10.5,8.5,-48.5,10); cyl(1,1,.4,M.concrete,10.5,12.5,-48.5,10); const cn=new THREE.Mesh(new THREE.ConeGeometry(.8,3.2,10),std({color:0x55646a})); cn.position.set(10.5,18.6,-48.5); add(cn); round(10.5,-48.5,.9) }
+  // --- meydan
+  { cyl(2.6,2.6,.5,M.concrete,0,.25,0,18); round(0,0,2.7); cyl(.45,.6,5,M.trunk,0,2.5,0,8); const r=rngf(3); for(let i=0;i<9;i++){const g=new THREE.Mesh(new THREE.IcosahedronGeometry(2.4+r()*1.4,1),M.leaf);g.position.set((r()-.5)*6,6+r()*3,(r()-.5)*6);add(g)}
+    bench(-7,8,Math.PI*.75); bench(7,-8,-Math.PI*.25); bench(-9,-6,Math.PI/2); bench(9,9,-Math.PI/2);
+    // şalgam arabası
+    box(1.6,.8,.9,std({color:0x7a1626}),8,.8,4); box(1.8,.06,1.1,M.white,8,2.1,4); for(const s of[-1,1]){cyl(.03,.03,1.3,M.metal,8+s*.75,1.5,3.6,5);cyl(.03,.03,1.3,M.metal,8+s*.75,1.5,4.4,5)} const wh=cyl(.3,.3,.08,M.tire,8,.3,4.5,12); wh.rotation.x=Math.PI/2; const wh2=cyl(.3,.3,.08,M.tire,8,.3,3.5,12); wh2.rotation.x=Math.PI/2;
+    sign('ŞALGAM · ACILI / ACISIZ',8,1.95,4.57,0,1.7,.26,{bg:'#f0e6c8',fg:'#7a1626',h:64}); solid(8,4,1.7,1,2);
+    for(let i=0;i<5;i++)cyl(.06,.06,.22,std({color:0x5a0f22}),7.4+i*.3,1.31,4,8);
+    // bayrak direği
+    cyl(.05,.07,9,M.white,-13,4.5,13,6); round(-13,13,.15); const fc=cv(192,128),fg=fc.getContext('2d'); fg.fillStyle='#d01c1f'; fg.fillRect(0,0,192,128); fg.fillStyle='#fff'; fg.beginPath(); fg.arc(70,64,32,0,6.3); fg.fill(); fg.fillStyle='#d01c1f'; fg.beginPath(); fg.arc(79,64,26,0,6.3); fg.fill(); fg.fillStyle='#fff'; fg.beginPath(); for(let i=0;i<5;i++){const a=i*2.513-1.9; fg.lineTo(112+Math.cos(a)*15,64+Math.sin(a)*15)} fg.fill();
+    const fl=new THREE.Mesh(new THREE.PlaneGeometry(2.4,1.6),new THREE.MeshStandardMaterial({map:tex(fc),side:THREE.DoubleSide,roughness:.8})); fl.position.set(-11.75,8.1,13); add(fl,true,false); W.flag=fl;
+    [[-16,-16],[16,-16],[-16,16],[16,16]].forEach(([x,z])=>lamp(x,z,true)); tree(14,14,.9,2); tree(-15,-13,.9,2); tree(15,-3,.8,2) }
+  // --- sokak lambaları, palmiyeler, direkler
+  [[4.2,26,1],[-4.2,44,1],[-30,3.6,1],[-52,-3.6,1],[-72,3.6,0],[30,3.6,1],[48,-3.6,0],[4.2,-34,1],[-4.2,-58,0],[53.5,22,0],[53.5,44,1]].forEach(([x,z,l])=>lamp(x,z,!!l));
+  for(let x=-90;x<=90;x+=20){ if(Math.abs(x)>6)palmTree(x,52.6); lamp(x+10,67.4,false) }
+  { const lm=new THREE.LineBasicMaterial({color:0x111111}); const poles=[[-4.3,-22],[-4.3,-40],[-4.3,-58],[-4.3,-76]]; poles.forEach(([x,z])=>{cyl(.09,.11,7,M.trunk,x,3.5,z,6);box(1.4,.08,.08,M.trunk,x,6.6,z);round(x,z,.15)});
+    for(let i=0;i<poles.length-1;i++)for(const s of[-.6,.6]){ const pts=[]; for(let k=0;k<=8;k++){const t=k/8; pts.push(new THREE.Vector3(poles[i][0]+s,6.6-Math.sin(t*Math.PI)*.5,lerp(poles[i][1],poles[i+1][1],t)))} world.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),lm)) } }
+  // --- park
+  { W.labels.push(['Park',72,-4]); const r=rngf(91); for(let i=0;i<14;i++){tree(55+r()*34,-19+r()*36,.8+r()*.5,i%3===0?2:1)} bench(60,-6,Math.PI/2); bench(60,6,Math.PI/2); bench(74,2,Math.PI); bench(82,-10,-Math.PI/2);
+    flat(3,30,M.paving,66,-2,.03,3); box(1.4,.9,.8,M.white,58,.75,12); box(1.6,.05,1,std({color:0xd04a6a}),58,1.9,12); sign('BİCİ BİCİ',58,1.75,12.42,0,1.3,.24,{bg:'#fff',fg:'#d04a6a',h:64}); solid(58,12,1.5,.9,2);
+    // salıncak
+    const sw=std({color:0x2a5a8a,metalness:.4}); box(.08,2.4,.08,sw,78,1.2,10); box(.08,2.4,.08,sw,81,1.2,10); box(3.1,.08,.08,sw,79.5,2.4,10); box(.5,.05,.25,M.wood,79,.6,10); box(.5,.05,.25,M.wood,80.2,.6,10); round(78,10,.2); round(81,10,.2) }
+  // --- boş arsa
+  { W.labels.push(['Boş Arsa',73,38]); const r=rngf(17); for(let i=0;i<22;i++){const s=.3+r()*.8;const b=box(s*1.4,s*.6,s,i%3?M.concrete:std({color:0x8a5a40}),57+r()*30,s*.25,27+r()*22,r()*3);b.rotation.z=(r()-.5)*.4}
+    const wr=parked(84,31,.5,'old',2); wr.rotation.z=.06; wr.children[0].material=std({color:0x5a4a3a,roughness:1});
+    cyl(.32,.3,.9,std({color:0x3a3a3a,metalness:.5}),74,.45,39.5,12); round(74,39.5,.4); [[63,35.5,2.6,.9],[69,43,.9,2.4],[60.5,42,2.2,.9],[79,33.5,2.4,.9]].forEach(([x,z,w,d])=>{ box(w,1,d,M.concrete,x,.5,z); solid(x,z,w,d,1) }); const fm=new THREE.Mesh(new THREE.ConeGeometry(.24,.6,7),M.fire); fm.position.set(74,1.1,39.5); world.add(fm); W.flame=fm;
+    W.fire=new THREE.PointLight(0xff7a2a,0,16,1.5); W.fire.position.set(74,1.5,39.5); world.add(W.fire);
+    box(.1,2,12,M.tin,91,1,38); solid(91,38,.3,12,2); tree(60,48,1,1); tree(88,47,1.1,1) }
+  // --- hurdalık (sanayinin arkası)
+  { flat(40,9,M.dirt,-75,22.5,.025); shape('d',-75,22.5,40,9); W.labels.push(['Hurdalık',-75,24.5]); const r=rngf(41); const rust=std({color:0x6a4a36,roughness:1});
+    const w=parked(-63.5,24.6,1.35,'old',5); w.children[0].material=rust; w.rotation.z=-.05; parked(-88.5,24.3,1.7,'van',1).children[0].material=std({color:0x5a5a52,roughness:1});
+    for(let i=0;i<16;i++){ const sz=.4+r()*.9; const b=box(sz*1.5,sz*.7,sz,i%2?rust:M.metal,-93+r()*8,sz*.3,19.2+r()*2,r()*3); b.rotation.z=(r()-.5)*.5 }
+    for(let k=0;k<3;k++)for(let i=0;i<4;i++){const t=new THREE.Mesh(new THREE.TorusGeometry(.3,.13,6,12),M.tire);t.rotation.x=Math.PI/2;t.position.set(-68+k*.9,.13+i*.26,19.3+(k%2)*.3);add(t)} solid(-67.1,19.4,2.8,1.2,1.2);
+    cyl(.3,.3,.9,std({color:0x4a3a2a,metalness:.4}),-81,.45,26,12); round(-81,26,.4); box(.1,2,9,M.tin,-95,1,22.5); solid(-95,22.5,.3,9,2); lamp(-70,18.6,true) }
+  // --- otopark / park halindeki araçlar
+  parked(2.5,30,0,'sedan',0); parked(-36,2.1,Math.PI/2,'sedan',2); parked(31,-2.1,-Math.PI/2,'old',6); parked(2.5,-30,0,'van',1); parked(-2.4,-66,0,'old',0);
+  parked(26,44,0,'sedan',3); parked(30,44,0,'sport',2); parked(34,48,Math.PI,'old',1); parked(42,44,0,'van',5); parked(46,49,0,'sedan',4);
+  parked(5.2,22.5,.2,'moto',3); parked(-18.6,-19,1.2,'moto',2); parked(-53,3.4,1.5,'moto',5);
+  // durak
+  box(3,.1,1.4,M.metal,6,2.5,53); box(.08,2.5,.08,M.metal,4.6,1.25,53.6); box(.08,2.5,.08,M.metal,7.4,1.25,53.6); box(3,2,.06,M.glass,6,1.3,53.65); sign('YILDIZTEPE',6,2.75,52.29,Math.PI,2.4,.4,{bg:'#1c2c44',h:64}); solid(6,53.65,3,.2,2.5);
+  // çöp konteyneri, kasalar
+  box(1.6,1.1,1,std({color:0x2f5a3a,metalness:.3}),-5.4,.55,19.4); solid(-5.4,19.4,1.6,1,1.2); box(1.6,1.1,1,std({color:0x2f5a3a,metalness:.3}),20,.55,19); solid(20,19,1.6,1,1.2);
+  // balkon instanced mesh
+  { const im=new THREE.InstancedMesh(new THREE.BoxGeometry(1.9,.9,.9),std({color:0x8f887c}),balc.length); const mt=new THREE.Matrix4(); balc.forEach((p,i)=>{mt.makeTranslation(p[0],p[1],p[2]);im.setMatrixAt(i,mt)}); im.castShadow=true; im.receiveShadow=true; world.add(im) }
+  W.labels.push(['Meydan',0,6]);
+}
+
+/* ================= İNSAN MODELİ ================= */
+const SKIN=[0xc99673,0xb8845f,0xd3a583,0xa87552];
+const HUMAT=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.78});
+function bakeGroup(grp){ const ms=grp.children.filter(c=>c.isMesh); if(!ms.length)return; let n=0; const gs=ms.map(m=>{ m.updateMatrix(); const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone(); g.applyMatrix4(m.matrix); n+=g.attributes.position.count; return g });
+  const pos=new Float32Array(n*3),nor=new Float32Array(n*3),col=new Float32Array(n*3); let i=0; gs.forEach((g,k)=>{ const c=ms[k].material.color.clone().convertSRGBToLinear(),cnt=g.attributes.position.count; pos.set(g.attributes.position.array,i*3); nor.set(g.attributes.normal.array,i*3); for(let j=0;j<cnt;j++){ col[(i+j)*3]=c.r; col[(i+j)*3+1]=c.g; col[(i+j)*3+2]=c.b } i+=cnt; g.dispose() });
+  ms.forEach(m=>grp.remove(m)); const bg=new THREE.BufferGeometry(); bg.setAttribute('position',new THREE.BufferAttribute(pos,3)); bg.setAttribute('normal',new THREE.BufferAttribute(nor,3)); bg.setAttribute('color',new THREE.BufferAttribute(col,3)); grp.add(new THREE.Mesh(bg,HUMAT)) }
+function makeHuman(o={}){ const g=new THREE.Group(), fat=o.fat||1, zs=.66+(fat-1)*.55;
+  const sk=std({color:o.skin||SKIN[0],roughness:.62}), top=std({color:o.top||0x30343a,roughness:.85}), bot=std({color:o.bot||0x22262c,roughness:.9}), shoe=std({color:o.shoe||0xe8e8e8,roughness:.55}), hair=std({color:o.hair||0x15120f,roughness:.95});
+  const dark=std({color:0x121212}), white=std({color:0xf2efe8}), lip=std({color:0x7a4438}), topD=std({color:new THREE.Color(o.top||0x30343a).multiplyScalar(.68)});
+  const body=new THREE.Group(); g.add(body);
+  const add=(par,geo,mat,x,y,z,sx,sy,sz)=>{ const m=new THREE.Mesh(geo,mat); m.position.set(x||0,y||0,z||0); if(sx)m.scale.set(sx,sy,sz); par.add(m); return m };
+  const C=(rt,rb,h,seg=14)=>new THREE.CylinderGeometry(rt,rb,h,seg), Sp=(r,a=14,b=10,ts,tl)=>new THREE.SphereGeometry(r,a,b,0,6.2832,ts||0,tl==null?Math.PI:tl), Bx=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
+  // gövde
+  add(body,C(.186*fat,.153*fat,.32,16),top,0,1.14,0,1.12,1,zs); add(body,C(.2,.186*fat,.14,16),top,0,1.37,0,1.12,1,zs); add(body,Sp(.2,16,8,0,Math.PI/2),top,0,1.44,0,1.12,.46,zs);
+  add(body,C(.153*fat,.166,.17,16),bot,0,.905,0,1.12,1,.72); add(body,Sp(.166,14,8,Math.PI/2,Math.PI/2),bot,0,.82,0,1.12,.45,.72);
+  if(!o.skirt)add(body,C(.157*fat,.157*fat,.035,16),dark,0,.99,0,1.13,1,zs+.01);
+  add(body,C(.047,.056,.11,10),sk,0,1.575,0); const col=add(body,new THREE.TorusGeometry(.062,.017,6,14),topD,0,1.535,.004); col.rotation.x=Math.PI/2;
+  if(!o.short&&!o.apron)add(body,Bx(.011,.42,.008),topD,0,1.25,.19*fat*zs+.002);
+  if(o.skirt)add(body,C(.19,.27,.78,14),bot,0,.6,0,1,1,.8);
+  if(o.apron)add(body,Bx(.3,.62,.016),std({color:o.apron}),0,1.1,.186*fat*zs+.006);
+  // baş
+  const head=new THREE.Group(); head.position.y=1.725; head.scale.setScalar(1.09); body.add(head);
+  add(head,Sp(.104,20,16),sk,0,0,0,.9,1.1,1); add(head,Sp(.082,14,12),sk,0,-.06,.012,.86,.95,.9);
+  for(const s of[-1,1]){ add(head,Sp(.022,8,6),sk,s*.093,-.012,-.004,.5,1,.7); add(head,Sp(.0135,8,6),white,s*.036,.012,.0885); add(head,Sp(.0078,6,5),dark,s*.036,.012,.0985); const br=add(head,Bx(.038,.007,.01),hair,s*.036,.037,.094); br.rotation.z=-s*.12 }
+  add(head,Sp(.016,8,6),sk,0,-.014,.101,.8,1.5,1.1); add(head,Bx(.04,.006,.006),lip,0,-.062,.083);
+  if(o.cap){ const cm=std({color:o.cap}); add(head,C(.112,.118,.035,16),cm,0,.082,-.004); add(head,Sp(.112,16,6,0,Math.PI/2),cm,0,.098,-.004,1,.34,1); add(head,Bx(.13,.012,.075),cm,0,.068,.122) }
+  else if(!o.bald){ const h=add(head,Sp(.11,18,12,0,1.68),hair,0,.012,-.008,.93,1.12,1.03); h.rotation.x=-.22 }
+  if(o.scarf){ const sm=std({color:o.scarf}); add(head,Sp(.122,16,12,0,2.25),sm,0,.004,-.02,.95,1.12,1.02).rotation.x=-.35; add(head,C(.1,.16,.15,12),sm,0,-.14,-.01) }
+  if(o.stache)add(head,Bx(.066,.014,.012),hair,0,-.046,.094);
+  if(o.beard)add(head,Sp(.089,14,10,1.45,1.7),hair,0,-.058,.012,.9,1,.94);
+  // kollar
+  const mk=side=>{ const arm=new THREE.Group(); arm.position.set(side*.192*(.6+fat*.4),1.43,0); body.add(arm); add(arm,Sp(.06,10,8),top,0,0,0,1,1.15,1);
+    if(o.short){ add(arm,C(.056,.053,.14,10),top,0,-.08,0); add(arm,C(.046,.042,.17,10),sk,0,-.215,0) } else add(arm,C(.051,.044,.28,10),top,0,-.15,0);
+    const el=new THREE.Group(); el.position.y=-.29; arm.add(el); const fm=o.short?sk:top; add(el,Sp(.043,8,6),fm); add(el,C(.042,.034,.26,10),fm,0,-.13,0); add(el,Sp(.04,8,6),sk,0,-.305,.005,.72,1.25,.45);
+    if(o.stripe&&!o.short){ const st=std({color:o.stripe}); add(arm,Bx(.007,.26,.022),st,side*.05,-.15,0); add(el,Bx(.007,.24,.02),st,side*.04,-.13,0) } return {arm,el} };
+  const aL=mk(-1), aR=mk(1);
+  // bacaklar
+  const lg=side=>{ const th=new THREE.Group(); th.position.set(side*.092,.93,0); body.add(th); add(th,C(.087,.066,.44,12),bot,0,-.22,0);
+    const kn=new THREE.Group(); kn.position.y=-.45; th.add(kn); add(kn,Sp(.064,8,6),bot); add(kn,C(.062,.046,.42,12),bot,0,-.21,0);
+    add(kn,Bx(.095,.07,.25),shoe,0,-.435,.045); add(kn,Sp(.048,8,6),shoe,0,-.44,.155,1,.72,1.1); add(kn,Bx(.1,.02,.27),dark,0,-.475,.05);
+    if(o.stripe){ const st=std({color:o.stripe}); add(th,Bx(.007,.42,.022),st,side*.082,-.22,0); add(kn,Bx(.007,.4,.02),st,side*.058,-.21,0) } return {th,kn} };
+  const legL=lg(-1), legR=lg(1);
+  if(!o.nobake)[body,head,aL.arm,aR.arm,aL.el,aR.el,legL.th,legL.kn,legR.th,legR.kn].forEach(bakeGroup);
+  g.scale.setScalar(o.h||1); g.traverse(m=>{if(m.isMesh){m.castShadow=true}}); scene.add(g);
+  return {g,body,head,armL:aL.arm,armR:aR.arm,elL:aL.el,elR:aR.el,legL,legR,ph:R()*6,sit:false,eL:-.12,eR:-.12,mats:{top,bot,shoe}} }
+function animHuman(H,speed,dt,t){ if(H.crA){ H.legL.th.rotation.x+=1; H.legR.th.rotation.x+=1; H.legL.kn.rotation.x-=1.75; H.legR.kn.rotation.x-=1.75; H.body.position.y+=.34; H.crA=false }
+  animBase(H,H.down?0:speed,dt,t); const ke=1-Math.exp(-dt*18); if(H.sit){ H.elL.rotation.x=lerp(H.elL.rotation.x,-1.05,ke); H.elR.rotation.x=lerp(H.elR.rotation.x,-1.05,ke); return }
+  H.dn=lerp(H.dn||0,H.down?1:0,1-Math.exp(-dt*7));
+  const p=H.dn>.5?null:H.pose,u=clamp(H.pu||0,0,1),s=Math.sin(Math.PI*u); let by=0,eL=H.eL,eR=H.eR,fast=false; const L=H.armL.rotation,Rr=H.armR.rotation;
+  if(p==='guard'){L.x=Rr.x=-.5;L.z=.25;Rr.z=-.25;eL=eR=-1.9}
+  else if(p==='block'){L.x=Rr.x=-1.15;L.z=.45;Rr.z=-.45;eL=eR=-1.75}
+  else if(p==='yield'){L.x=Rr.x=-2.9;L.z=-.35;Rr.z=.35;eL=eR=-.2}
+  else if(p==='punch'){ const A=H.ps?L:Rr,B=H.ps?Rr:L,sg=H.ps?1:-1; A.x=-.5-1.05*s; A.z=sg*.25*(1-s); B.x=-.5; B.z=-sg*.25; by=sg*.5*s; fast=true; if(H.ps){eL=-1.9*(1-s);eR=-1.9}else{eR=-1.9*(1-s);eL=-1.9} }
+  else if(p==='kick'){ L.x=Rr.x=-.5; eL=eR=-1.6; H.legR.th.rotation.x=-1.5*s; H.legR.kn.rotation.x=.8*(1-s); H.body.rotation.x=-.22*s; by=-.3*s }
+  else if(p==='wind'){ Rr.x=.9; eR=-1.7; L.x=-.5; L.z=.25; eL=-1.9; by=-.5 }
+  else if(p==='strike'){ Rr.x=-1.55; eR=-.1; L.x=-.4; eL=-1.6; by=.45; fast=true }
+  else if(p==='stag'){ L.x=Rr.x=.3; L.z=-.5; Rr.z=.5; eL=eR=-.5; H.body.rotation.x=-.3 }
+  else if(p==='dodge'){ H.body.position.y=-.32*s; H.body.rotation.x=.55*s; L.x=Rr.x=-.5; eL=eR=-1.2 }
+  else if(p==='aim'){ Rr.x=-1.5; Rr.z=-.1; eR=-.05; L.x=-1.25; L.z=.5; eL=-.45 }
+  if(H.cr&&H.dn<.5){ H.legL.th.rotation.x-=1; H.legR.th.rotation.x-=1; H.legL.kn.rotation.x+=1.75; H.legR.kn.rotation.x+=1.75; H.body.position.y-=.34; H.crA=true }
+  const kk=fast?1:ke; H.elL.rotation.x=lerp(H.elL.rotation.x,eL,kk); H.elR.rotation.x=lerp(H.elR.rotation.x,eR,kk);
+  H.body.rotation.y=lerp(H.body.rotation.y,by,1-Math.exp(-dt*22));
+  if(H.dn>.01){ H.body.rotation.x=lerp(H.body.rotation.x,-1.5,H.dn); H.body.position.y=lerp(H.body.position.y,.13,H.dn) } }
+function animBase(H,speed,dt,t){ if(H.sit){ H.body.position.y=-.46; H.legL.th.rotation.x=H.legR.th.rotation.x=-1.5; H.legL.kn.rotation.x=H.legR.kn.rotation.x=1.5; H.armL.rotation.x=H.armR.rotation.x=-.4+Math.sin(t*.8+H.ph)*.03; H.armL.rotation.z=-.07; H.armR.rotation.z=.07; H.body.rotation.x=0; return }
+  const run=speed>3.6, amp=speed<.1?0:(run?.95:.55); H.ph+=dt*(speed<.1?0:(run?speed*1.55:speed*2.9)); const s=Math.sin(H.ph), c=Math.cos(H.ph);
+  const k=1-Math.exp(-dt*14); const to=(o,p,v)=>{o.rotation[p]=lerp(o.rotation[p],v,k)};
+  to(H.legL.th,'x',-s*amp); to(H.legR.th,'x',s*amp); to(H.legL.kn,'x',Math.max(0,c)*amp*1.5+(run?.25:0)*+(amp>0)); to(H.legR.kn,'x',Math.max(0,-c)*amp*1.5+(run?.25:0)*+(amp>0));
+  const ab=run?-.3:0; to(H.armL,'x',s*amp*.8+ab*+(amp>0)); to(H.armR,'x',-s*amp*.8+ab*+(amp>0)); H.armL.rotation.z=-.07; H.armR.rotation.z=.07;
+  H.eL=amp?(run?-1.45:-.22-Math.max(0,-s)*.5):-.14; H.eR=amp?(run?-1.45:-.22-Math.max(0,s)*.5):-.14;
+  H.body.position.y=lerp(H.body.position.y,amp?Math.abs(c)*(run?.07:.035)-.02:Math.sin(t*1.4+H.ph)*.006,k); to(H.body,'x',run?.16:amp?.04:0) }
+
+/* ================= OYUNCU & KAMERA ================= */
+const P={pos:new THREE.Vector3(0,0,50),rot:Math.PI,speed:0,stam:1,H:null,sit:null,stepT:0,hp:100,act:null,buf:null,block:false,hurtT:0,lastHurt:-99,combo:0};
+const cam={yaw:0,pitch:.22,dist:4.6,pos:new THREE.Vector3(0,3,56),look:new THREE.Vector3(0,1.5,50),ov:null};
+const keys={}; const inp={x:0,y:0,run:false};
+function collide(p,r,skipV){ for(const c of W.colliders){ const cx=clamp(p.x,c.x0,c.x1),cz=clamp(p.z,c.z0,c.z1),dx=p.x-cx,dz=p.z-cz,d2=dx*dx+dz*dz; if(d2<r*r){ if(d2>1e-9){const d=Math.sqrt(d2);p.x=cx+dx/d*r;p.z=cz+dz/d*r} else { const l=p.x-c.x0,rr=c.x1-p.x,t=p.z-c.z0,b=c.z1-p.z,m=Math.min(l,rr,t,b); if(m===l)p.x=c.x0-r; else if(m===rr)p.x=c.x1+r; else if(m===t)p.z=c.z0-r; else p.z=c.z1+r } } }
+  const circ=(x,z,cr)=>{const dx=p.x-x,dz=p.z-z,d=Math.hypot(dx,dz),m=r+cr; if(d<m&&d>1e-6){p.x=x+dx/d*m;p.z=z+dz/d*m}};
+  for(const c of W.circles)circ(c.x,c.z,c.r); for(const n of NPCS)if(n.H.g.visible)circ(n.pos.x,n.pos.z,.32); for(const c of CARS)circ(c.g.position.x,c.g.position.z,1.7);
+  VEHS.forEach((v,i)=>{ if((skipV||V.on)&&i===V.cur)return; const q=v.g.position; if(v.def.kind==='moto'){ circ(q.x,q.z,.6); return } const sx=Math.sin(v.rot)*1.1,cz=Math.cos(v.rot)*1.1; circ(q.x+sx,q.z+cz,1.05); circ(q.x-sx,q.z-cz,1.05) }); if(RZ.g.visible)circ(RZ.g.position.x,RZ.g.position.z,1.8);
+  p.x=clamp(p.x,-96,96); p.z=clamp(p.z,-92,70) }
+function inside(x,y,z){ for(const c of W.colliders) if(y<c.h+.3&&x>c.x0-.25&&x<c.x1+.25&&z>c.z0-.25&&z<c.z1+.25) return true; return false }
+function updatePlayer(dt,t){ let mx=inp.x,my=inp.y; if(keys.KeyW||keys.ArrowUp)my+=1; if(keys.KeyS||keys.ArrowDown)my-=1; if(keys.KeyD||keys.ArrowRight)mx+=1; if(keys.KeyA||keys.ArrowLeft)mx-=1;
+  let len=Math.hypot(mx,my); if(len>1){mx/=len;my/=len;len=1}
+  if(P.sit){ if(len>.2){P.sit=null;P.H.sit=false;P.H.body.position.y=0;P.pos.x+=Math.sin(P.rot)*.5;P.pos.z+=Math.cos(P.rot)*.5} else {P.speed=0;P.stam=Math.min(1,P.stam+dt*.3);return} }
+  P.block=!!(keys.KeyQ||inp.block)&&!P.act&&P.hurtT<=0&&!P.gunUp;
+  if(P.hurtT>0){ P.hurtT-=dt; P.H.pose='stag'; len=0 }
+  else if(P.act){ const a=P.act; a.t+=dt; P.H.pose=a.k; P.H.pu=a.t/a.dur; P.H.ps=a.side;
+    if(a.k==='dodge'){ const v=7.4*(1-a.t/a.dur*.6); P.pos.x+=a.dx*v*dt; P.pos.z+=a.dz*v*dt; collide(P.pos,.38) }
+    else if(!a.hit&&a.t>=a.dur*.42){ a.hit=true; strike(a.k) }
+    len=0; if(a.t>=a.dur){ P.act=null; if(P.buf){const b=P.buf;P.buf=null;attack(b)} } }
+  else P.H.pose=P.gunUp?'aim':P.block?'block':F.on?'guard':null;
+  if(T-P.lastHurt>6&&P.hp<100)P.hp=Math.min(100,P.hp+dt*5);
+  const wantRun=(keys.ShiftLeft||keys.ShiftRight||inp.run)&&len>.3&&P.stam>.02&&!P.block&&!P.gunUp; if(wantRun)P.crouch=false; const target=len*(wantRun?6.4:P.block?1.2:P.crouch?1.4:2.5); P.speed=lerp(P.speed,target,1-Math.exp(-dt*9));
+  if(wantRun)P.stam=Math.max(0,P.stam-dt*.11); else if(!P.block)P.stam=Math.min(1,P.stam+dt*(len<.1&&!P.act?.2:.1));
+  if(len>.05){ const fx=-Math.sin(cam.yaw),fz=-Math.cos(cam.yaw),rx=Math.cos(cam.yaw),rz=-Math.sin(cam.yaw); const dx=fx*my+rx*mx,dz=fz*my+rz*mx; const want=Math.atan2(dx,dz); let d=want-P.rot; d=Math.atan2(Math.sin(d),Math.cos(d)); P.rot+=d*(1-Math.exp(-dt*11));
+    if(P.gunUp){ const l2=Math.hypot(dx,dz)||1; P.pos.x+=dx/l2*P.speed*dt; P.pos.z+=dz/l2*P.speed*dt; P.rot=cam.yaw+Math.PI } else { P.pos.x+=Math.sin(P.rot)*P.speed*dt; P.pos.z+=Math.cos(P.rot)*P.speed*dt } collide(P.pos,.38);
+    P.stepT-=dt*P.speed; if(P.stepT<0){P.stepT=wantRun?2.1:1.25;A.step(wantRun)} } }
+function updateFollowCam(dt){ if(P.gunUp&&!P.act)P.rot=cam.yaw+Math.PI; cam.pitch=clamp(cam.pitch,-.25,1.1); const tx=P.pos.x,ty=V.on?(V.view?1.14:1.75):P.sit?1.25:P.crouch?1.2:1.55,tz=P.pos.z; const cp=Math.cos(cam.pitch),dx=Math.sin(cam.yaw)*cp,dy=Math.sin(cam.pitch),dz=Math.cos(cam.yaw)*cp;
+  const CD=V.on?(V.view?.3:V.def.kind==='moto'?5.2:7.2):P.gunUp?2.8:cam.dist; let d=CD; for(let s=.6;s<=CD;s+=.25){ if(inside(tx+dx*s,ty+dy*s,tz+dz*s)){d=Math.max(.6,s-.35);break} }
+  const k=1-Math.exp(-dt*14); cam.pos.x=lerp(cam.pos.x,tx+dx*d+Math.cos(cam.yaw)*.35,k); cam.pos.y=lerp(cam.pos.y,Math.max(.4,ty+dy*d),k); cam.pos.z=lerp(cam.pos.z,tz+dz*d-Math.sin(cam.yaw)*.35,k);
+  cam.look.x=lerp(cam.look.x,tx+Math.cos(cam.yaw)*.35,k); cam.look.y=lerp(cam.look.y,ty,k); cam.look.z=lerp(cam.look.z,tz-Math.sin(cam.yaw)*.35,k) }
+
+/* ================= DÖVÜŞ ================= */
+const F={on:false,list:[],cfg:null,onWin:null,check:null}; let shake=0,hitStop=0;
+const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
+function nearestFoe(r){ let b=null,bd=r; for(const n of F.list){ if(n.fx.st==='down')continue; const d=Math.hypot(n.pos.x-P.pos.x,n.pos.z-P.pos.z); if(d<bd){bd=d;b=n} } return b }
+function attack(k){ if(state!=='play'||P.sit||P.hp<=0||P.hurtT>0)return; if(k==='punch'&&P.gunUp){ fire(); return } if(P.act){ if(P.act.k!=='dodge'&&P.act.t>P.act.dur*.4)P.buf=k; return }
+  const cost=k==='kick'?.09:.035; if(P.stam<cost)return; P.stam-=cost; const e=F.on?nearestFoe(3.4):null; if(e)P.rot=Math.atan2(e.pos.x-P.pos.x,e.pos.z-P.pos.z);
+  P.combo++; P.act={k,t:0,dur:k==='kick'?.5:.3,side:P.combo%2,hit:false}; P.pos.x+=Math.sin(P.rot)*.18; P.pos.z+=Math.cos(P.rot)*.18; collide(P.pos,.38); A.burst(1400,.7,.09,.1,'highpass') }
+function strike(k){ if(!F.on)return; for(const n of F.list){ if(n.fx.st==='down')continue; const dx=n.pos.x-P.pos.x,dz=n.pos.z-P.pos.z,d=Math.hypot(dx,dz); if(d>(k==='kick'?2:1.75))continue; if(Math.abs(wrap(Math.atan2(dx,dz)-P.rot))>1.05)continue; hitEnemy(n,k==='kick'?20:11,k==='kick'?5.5:2.4) } }
+function dodge(){ if(state!=='play'||P.sit||P.hp<=0||(P.act&&P.act.k==='dodge')||P.stam<.14)return; let mx=inp.x,my=inp.y; if(keys.KeyW)my+=1; if(keys.KeyS)my-=1; if(keys.KeyD)mx+=1; if(keys.KeyA)mx-=1; const l=Math.hypot(mx,my); let dx,dz;
+  if(l>.2){ mx/=l; my/=l; dx=-Math.sin(cam.yaw)*my+Math.cos(cam.yaw)*mx; dz=-Math.cos(cam.yaw)*my-Math.sin(cam.yaw)*mx } else { dx=-Math.sin(P.rot); dz=-Math.cos(P.rot) }
+  P.stam-=.14; P.buf=null; P.hurtT=0; P.act={k:'dodge',t:0,dur:.36,dx,dz}; A.burst(900,.6,.14,.12,'highpass') }
+function hitEnemy(n,dmg,kb){ const f=n.fx; if(f.st==='down')return;
+  if(f.guardT>0&&dmg<15){ f.hp-=dmg*.25; shake=.1; A.burst(520,2,.07,.45); if(f.hp>0)return; }
+  f.hits=(T-(f.lastHit||-9)<.75?(f.hits||0):0)+1; f.lastHit=T; if(f.hits>=3&&dmg<15){ f.guardT=1.1; f.hits=0; f.cd=.2 } else if(dmg>=15)f.guardT=0;
+  f.hp-=dmg; f.kx=Math.sin(P.rot)*kb; f.kz=Math.cos(P.rot)*kb; f.st='stag'; f.t=f.guardT>0?.12:dmg>15?.55:.3; shake=dmg>15?.42:.24; hitStop=.07; A.burst(240,1,.13,.9,'lowpass'); A.tone(130,48,.12,.35);
+  if(f.hp<=0){ f.hp=0; f.st='down'; if(F.cfg.spar){n.H.pose='yield'} else n.H.down=true; if(F.list.every(x=>x.fx.st==='down')){ if(F.cfg.waves&&F.cfg.waves.length)setTimeout(nextWave,1300); else setTimeout(()=>endFight(),1400) } } }
+function hitPlayer(n,dmg,bul){ if(P.act&&P.act.k==='dodge')return; const a=wrap(Math.atan2(n.pos.x-P.pos.x,n.pos.z-P.pos.z)-P.rot);
+  if(!bul&&P.block&&Math.abs(a)<1.35){ P.hp-=dmg*.15; P.stam=Math.max(0,P.stam-.1); shake=.14; A.burst(520,2,.07,.5) } else { P.hp-=dmg; P.act=null; P.buf=null; P.hurtT=.28; shake=.45; A.burst(180,1,.15,1,'lowpass'); A.tone(90,40,.16,.4) }
+  P.lastHurt=T; if(P.hp<=0){ P.hp=0; P.H.down=true; P.H.pose=null; setState('dead'); releaseLock(); setTimeout(()=>{if(state==='dead')$('#dead').classList.remove('hide')},1300) } }
+function mkFx(n,i,c){ const st=(c.stats&&c.stats[n.id])||{}; n.prev=n.mode==='fight'||n.mode==='out'?'idle':n.mode; n.mode='fight'; n.H.down=false; n.H.dn=0; n.H.sit=false; n.H.g.visible=true; const hp=st.hp||c.hp; n.fx={hp,max:hp,dmg:st.dmg||c.dmg,gun:!!(c.guns&&c.guns.includes(n.id)),sdir:1,st:'approach',t:0,cd:.9+i*1.1,kx:0,kz:0,sx:n.pos.x,sz:n.pos.z} }
+function startFight(cfg,onWin){ exitCar(true); F.cfg0=JSON.parse(JSON.stringify(cfg)); F.cfg=cfg; F.onWin=onWin; F.on=true; F.check={x:P.pos.x,z:P.pos.z}; F.list=cfg.who.map(id=>byId[id]); F.list.forEach((n,i)=>mkFx(n,i,cfg));
+  P.ammo=8; P.mags=1; P.reload=0; P.hp=100; P.lastHurt=T; $('#objt').textContent=cfg.obj; document.body.classList.add('fight'); $('#ebar').classList.remove('hide');
+  toast(IS_TOUCH?'<b>VUR</b> · <b>TEKME</b> · <b>BLOK</b> (basılı tut) · <b>KAÇ</b>':'<b>F</b>/sol tık yumruk · <b>G</b> tekme · <b>Q</b>/sağ tık blok · <b>Boşluk</b> kaçın'); toastT=6 }
+function nextWave(){ if(!F.on||P.hp<=0||!F.cfg.waves||!F.cfg.waves.length)return; const ids=F.cfg.waves.shift(),sp=F.cfg.spawn||[P.pos.x+9,P.pos.z]; ids.forEach((id,i)=>{ const n=byId[id]; n.pos.set(sp[0]+i*1.6,0,sp[1]+i*1.2); n.H.pose=null; mkFx(n,i,F.cfg); F.list.push(n) }); P.hp=Math.min(100,P.hp+25); toast('Yenileri geliyor!'); A.sting() }
+function endFight(){ if(!F.on||P.hp<=0)return; F.on=false; document.body.classList.remove('fight'); $('#ebar').classList.add('hide'); F.list.forEach(n=>{ if(F.cfg.spar){n.mode=n.prev;n.H.pose=null} else n.mode='out' }); P.H.pose=null; refreshObjective(); const w=F.onWin; F.onWin=null; if(w)w() }
+function abortFight(){ F.on=false; F.onWin=null; document.body.classList.remove('fight'); $('#ebar').classList.add('hide'); $('#dead').classList.add('hide'); NPCS.forEach(n=>{ if(n.mode==='fight'||n.mode==='out'){ n.mode=n.prev||'idle'; if(n.fx){n.pos.x=n.fx.sx;n.pos.z=n.fx.sz} } n.H.down=false; n.H.pose=null }); P.H.down=false; P.H.pose=null; P.act=null; P.hp=100 }
+function retryFight(){ $('#dead').classList.add('hide'); const c=JSON.parse(JSON.stringify(F.cfg0)),w=F.onWin; F.list.forEach(n=>{ n.pos.x=n.fx.sx; n.pos.z=n.fx.sz; n.H.down=false; n.H.dn=0; n.H.pose=null; n.mode=n.prev||'idle'; if(!c.who.includes(n.id))n.H.g.visible=false });
+  P.H.down=false; P.act=null; P.hurtT=0; P.stam=1; P.pos.x=F.check.x; P.pos.z=F.check.z; setState('play'); startFight(c,w); grabLock() }
+function updateFighter(n,dt,dx,dz,d){ const f=n.fx,c=F.cfg,H=n.H; f.t-=dt; f.cd-=dt; if(f.guardT>0)f.guardT-=dt; if(f.st==='down')return 0; if(P.hp<=0){H.pose='guard';return 0}
+  const face=Math.atan2(dx,dz), turn=k=>{n.rot+=wrap(face-n.rot)*(1-Math.exp(-dt*k))}; let sp=0;
+  if(f.gun&&f.st!=='stag'){ H.pose='aim'; turn(8);
+    if(f.st==='aimg'){ if(f.t<=0){ shootAt(n,f,d); f.st='approach'; f.cd=1.2+R()*1.3 } }
+    else { f.st='approach'; if(d>17){ sp=c.spd; n.pos.x+=Math.sin(n.rot)*sp*dt; n.pos.z+=Math.cos(n.rot)*sp*dt } else if(d<5){ n.pos.x-=dx/d*1.6*dt; n.pos.z-=dz/d*1.6*dt; sp=1.6 } else { n.pos.x+=dz/d*f.sdir*1.1*dt; n.pos.z-=dx/d*f.sdir*1.1*dt; sp=1.1; if(R()<dt*.5)f.sdir*=-1 } if(f.cd<=0&&d<24){ f.st='aimg'; f.t=.7 } }
+    collide(n.pos,.35); return sp }
+  if(f.st==='stag'){ H.pose='stag'; n.pos.x+=f.kx*dt; n.pos.z+=f.kz*dt; const e=Math.exp(-dt*6); f.kx*=e; f.kz*=e; if(f.t<=0){f.st='approach';f.cd=Math.max(f.cd,.4)} }
+  else if(f.st==='approach'){ H.pose=f.guardT>0?'block':'guard'; turn(8); const busy=F.list.some(o=>o!==n&&(o.fx.st==='wind'||o.fx.st==='strike'));
+    if(d>1.45){ sp=c.spd; n.pos.x+=Math.sin(n.rot)*sp*dt; n.pos.z+=Math.cos(n.rot)*sp*dt } else if(f.cd<=0&&!busy){ f.st='wind'; f.t=.46 } }
+  else if(f.st==='wind'){ H.pose='wind'; turn(5); if(f.t<=0){ f.st='strike'; f.t=.2; A.burst(1200,.7,.08,.1,'highpass'); if(d<1.9)hitPlayer(n,f.dmg) } }
+  else if(f.st==='strike'){ H.pose='strike'; if(f.t<=0){f.st='rec';f.t=.5} }
+  else if(f.st==='rec'){ H.pose='guard'; if(f.t<=0){ f.st='approach'; f.cd=c.cd*(.6+R()*.9) } }
+  collide(n.pos,.35); if(d<.78&&d>1e-4){ n.pos.x-=dx/d*(.78-d); n.pos.z-=dz/d*(.78-d) } return sp }
+const fleeing=n=>F.on&&!F.cfg.spar&&Math.hypot(n.pos.x-P.pos.x,n.pos.z-P.pos.z)<17;
+function flee(n,dt){ const a=Math.atan2(n.pos.x-P.pos.x,n.pos.z-P.pos.z); n.rot+=wrap(a-n.rot)*(1-Math.exp(-dt*8)); n.pos.x+=Math.sin(n.rot)*3.6*dt; n.pos.z+=Math.cos(n.rot)*3.6*dt; collide(n.pos,.35); return 3.6 }
+
+/* ================= NPC ================= */
+const NPCS=[]; const byId={};
+function npc(id,name,x,z,rot,look,o={}){ const H=makeHuman(look); const n={id,name,H,pos:new THREE.Vector3(x,0,z),rot,home:rot,mode:o.path?'walk':'idle',path:o.path||null,pi:0,spd:o.spd||1.15,story:!!o.story,barks:o.barks,speed:0,wait:0,hx:x,hz:z,hr:rot};
+  if(o.sit){H.sit=true;n.mode='sit'} H.g.position.copy(n.pos); H.g.rotation.y=rot; NPCS.push(n); byId[id]=n; return n }
+function buildNPCs(){
+  npc('hasan','Hasan Dayı',-9.5,-18.3,0,{top:0x6a6456,bot:0x3a3a36,shoe:0x2a2018,hair:0x9a9a96,stache:1,cap:0x4a4a44,fat:1.18,skin:SKIN[1],h:.98},{story:1});
+  npc('selim','Selim',-62.5,-1.9,0,{top:0x2c3e55,bot:0x2c3e55,shoe:0x1a1a1a,hair:0x1a1410,beard:1,skin:SKIN[3],h:1.03,fat:1.08},{story:1});
+  npc('nuri','Nuri Bakkal',19.6,-8.6,-Math.PI/2,{top:0xd8d2c0,bot:0x4a4238,shoe:0x3a2a1a,bald:1,stache:1,apron:0x24486a,fat:1.25,short:1,h:.96},{story:1});
+  const rz=npc('riza','Tilki Rıza',72.6,38.6,-2.2,{top:0x16171a,bot:0x16171a,shoe:0x111,hair:0x2a1c10,skin:SKIN[2],stripe:0x8a8a8a,h:1.02},{story:1}); rz.H.g.visible=false;
+  npc('ayten','Ayten Teyze',-14,14,0,{top:0x6a4a5a,bot:0x3a3440,skirt:1,scarf:0xb8a890,shoe:0x222,fat:1.15,h:.92},{spd:.85,path:[[-13,13],[13,13],[13,-11],[-13,-11]],barks:["Sen… İsmail Usta'nın küçüğü değil misin? Allah rahmet eylesin yavrum, mekânı cennet olsun.","Yine mi sen? Annene benziyorsun; o da yerinde duramazdı.","Akşam ezanından sonra arsa tarafına gitme evladım. Oralar eskisi gibi değil."]});
+  npc('memo','Memo',22,1.4,0,{top:0x8a1f1f,bot:0x1f2228,shoe:0xf0f0f0,hair:0x111,short:1,stripe:0xffffff,h:.97,skin:SKIN[2]},{spd:1.35,path:[[21,1.4],[49,1.4],[58,5],[49,-1.4],[21,-1.4]],barks:["Abi sen Kero değil misin? Senin hikâyelerini anlatırlar burada hâlâ.","Kero abi, bir işin düşerse ben buralardayım. Motorum da var.","Rıza abi sabah beri seni sordu. Benden duymuş olma."]});
+  npc('adam1','Mahalleli',.8,22,0,{top:0x5a6a58,bot:0x3a3a3a,shoe:0x2a2a2a,hair:0x3a3a3a,short:1,stache:1},{path:[[.6,21],[.6,50],[-2,50],[-2,21]],barks:["Sıcak yine bastırdı. Ağustos böyledir Adana'da, akşam bile nefes aldırmaz.","Hoş geldin gardaşım. Başınız sağ olsun.","Dükkânı satmayın. İsmail Usta'nın emeği var o duvarlarda."]});
+  npc('adam2','Sanayi İşçisi',-22,1.5,0,{top:0x3a4a5a,bot:0x2a2f38,shoe:0x1a1a1a,hair:0x1a1410,skin:SKIN[3],cap:0x8a2a1a},{spd:1.2,path:[[-20,1.6],[-74,1.6],[-74,-1.6],[-20,-1.6]],barks:["Selim Usta iyi adamdır ama son zamanlarda dükkâna yabancılar girip çıkıyor.","Sen kardeşi misin? Abine sahip çık, yalnız kaldı.","Cemal'in adamları geçen hafta rot balansçıyı da sıkıştırdı."]});
+  npc('cirak','Çırak Ufuk',-56.5,-1.4,2.2,{top:0x2c3e55,bot:0x2c3e55,shoe:0x222,hair:0x0f0c0a,h:.88,skin:SKIN[2]},{barks:["Selim Usta içerde abi. Bugün pek konuşmuyor.","Abi sen ustanın kardeşi misin? Hiç benzemiyonuz.","Ben bir şey görmedim abi. Rıza abi geldi gitti, o kadar."]});
+  npc('salgam','Şalgamcı Bekir',8,3,Math.PI,{top:0xe8e4d8,bot:0x3a3a3a,shoe:0x222,hair:0x2a2a2a,stache:1,short:1,apron:0x7a1626,fat:1.1},{barks:["Şalgam var, acılı acısız! Buz gibi, iç ferahla gardaşım.","Sana acılı, biliyorum artık. Baban da acılı içerdi.","Bu meydanda otuz yıldır dururum. Kimin kime borcu var, hepsini bilirim; ama söylemem."]});
+  npc('musteri','Müşteri',8.3,5.3,0,{top:0x4a5a7a,bot:0x2a2a30,shoe:0x3a2a1a,hair:0x5a5a5a,short:1,fat:1.1},{barks:["Bir acılı da bana Bekir.","Sen yabancı mısın buralara? Yok… tanıdık bir yüzün var."]});
+  const hid=(...a)=>{ const n=npc(...a); n.H.g.visible=false; return n };
+  hid('cemal','Cemal Karataş',76,37,-1.6,{top:0x3a3d44,bot:0x2a2c32,shoe:0x1a120c,hair:0x8a8a88,stache:1,fat:1.22,skin:SKIN[1]},{barks:['Sırası gelince konuşuruz evlat.']});
+  [[0x22262c,{short:1,fat:1.1}],[0x3a2a22,{beard:1}],[0x1c2a3a,{cap:0x111111}],[0x2a2a2a,{bald:1,fat:1.15}],[0x40352a,{stache:1}]].forEach(([c,o],i)=>hid('t'+(i+1),"Cemal'in Adamı",90,0,0,Object.assign({top:c,bot:0x1a1c20,shoe:0x151515,hair:0x14100c,skin:SKIN[i%4],h:.98+i*.02},o),{barks:['Yürü git.']}));
+  hid('kadir','Boğa Kadir',90,2,0,{top:0x0f0f10,bot:0x18181a,shoe:0x111111,bald:1,beard:1,fat:1.4,h:1.12,skin:SKIN[3]},{barks:['…']});
+  hid('kundak','Kundakçı',90,4,0,{top:0x2a3a2a,bot:0x1a1a1a,shoe:0x222222,cap:0x222222,h:.95,skin:SKIN[2]},{barks:['Ben bir şey yapmadım abi…']});
+  npc('sedat','Sedat',-74,22.6,Math.PI,{top:0x141414,bot:0x2a2c30,shoe:0x111111,bald:1,beard:1,short:1,fat:1.28,h:1.06,skin:SKIN[1]},{story:1}).H.g.visible=false;
+  npc('tayfun','Tayfun',-77.2,23.6,Math.PI-.3,{top:0x7a1a1a,bot:0x7a1a1a,shoe:0xeeeeee,cap:0x111111,stripe:0xffffff,h:.9,skin:SKIN[2]},{barks:['Sedat abiyle konuş. Ben laf taşımam.']}).H.g.visible=false;
+  const sit=(id,name,x,z,rot,look,barks)=>npc(id,name,x,z,rot,look,{sit:1,barks});
+  sit('k1','Okeyci Davut',-15.85,-17,Math.PI/2,{top:0x7a6a4a,bot:0x3a3a36,hair:0x8a8a86,stache:1,fat:1.2,cap:0x3a3a3a},["Okey'e dördüncü lazım. Oturacak mısın?","Geçen sefer de oturmadın. Baban olsa oturmuştu."]);
+  sit('k2','Emekli Şükrü',-14.15,-17,-Math.PI/2,{top:0x5a6a7a,bot:0x2a2a2a,hair:0xb0b0b0,bald:1,fat:1.1},["Senin baban bana bir kere motor yaptı, para almadı. Unutmam.","Otur bir çay iç. Ayakta laf dinlenmez."]);
+  sit('k3','Taksici Orhan',-8,-17.85,0,{top:0x8a8a3a,bot:0x2f2f3a,hair:0x1a1a1a,short:1,beard:1},["Gece arsa tarafında ateş yanıyor yine. İyiye alamet değil.","Bir yere gideceksen söyle, taksi köşede."]);
+  npc('park1','Parktaki Adam',66,-10,0,{top:0x3a3a3a,bot:0x55504a,hair:0x3a2a1a,short:1},{spd:1,path:[[66,-14],[66,10],[78,6],[80,-12]],barks:["Çocuklar artık bu parka gelmiyor. Akşam olunca başka tipler geliyor.","Sen de mi yürüyüşe çıktın? İyi gelir."]});
+}
+function updateNPCs(dt,t){ for(const n of NPCS){ if(!n.H.g.visible)continue; const dx=P.pos.x-n.pos.x,dz=P.pos.z-n.pos.z,dp=Math.hypot(dx,dz); let sp=0;
+    if(V.on&&dp<3.1&&dp>.01&&Math.abs(V.spd)>1.5&&n.mode!=='sit'&&n.mode!=='fight'&&n.mode!=='out'){ n.pos.x-=dx/dp*5*dt; n.pos.z-=dz/dp*5*dt; if(T-(n.hon||-9)>6){ n.hon=T; bark(n.name,pick(['Höst! Yavaş la!','Ula önüne baksana!','Kaldırım mı burası gardaşım?'])) } }
+    if(n.mode==='fight'){ sp=updateFighter(n,dt,dx,dz,dp) } else if(n.mode==='out'){ if(dp>45){ n.H.g.visible=false; n.mode='idle'; n.H.down=false } } else if(n.mode==='walk'&&fleeing(n)){ sp=flee(n,dt) } else if(n.mode==='walk'){ if(dp<1.7||n.wait>0||(state==='dialogue'&&D.npc===n)){ n.wait=dp<1.7?.6:n.wait-dt; if(dp<3){const a=Math.atan2(dx,dz);let d=a-n.rot;d=Math.atan2(Math.sin(d),Math.cos(d));n.rot+=d*(1-Math.exp(-dt*6))} }
+      else{ const p=n.path[n.pi],tx=p[0]-n.pos.x,tz=p[1]-n.pos.z,d=Math.hypot(tx,tz); if(d<.3)n.pi=(n.pi+1)%n.path.length; else{ const a=Math.atan2(tx,tz);let dd=a-n.rot;dd=Math.atan2(Math.sin(dd),Math.cos(dd));n.rot+=dd*(1-Math.exp(-dt*5)); sp=n.spd; n.pos.x+=Math.sin(n.rot)*sp*dt; n.pos.z+=Math.cos(n.rot)*sp*dt } } }
+    else if(n.mode==='idle'){ const want=dp<4?Math.atan2(dx,dz):n.home; let d=want-n.rot; d=Math.atan2(Math.sin(d),Math.cos(d)); n.rot+=d*(1-Math.exp(-dt*4)) }
+    // oyuncuya bakma
+    if(dp<(F.on?16:5)&&n.mode!=='fight'&&n.mode!=='out'){ let a=Math.atan2(dx,dz)-n.rot; a=Math.atan2(Math.sin(a),Math.cos(a)); n.H.head.rotation.y=lerp(n.H.head.rotation.y,clamp(a,-1.1,1.1),1-Math.exp(-dt*5)) } else n.H.head.rotation.y=lerp(n.H.head.rotation.y,0,1-Math.exp(-dt*3));
+    n.speed=sp; n.H.g.position.set(n.pos.x,0,n.pos.z); n.H.g.rotation.y=n.rot; n.H.body.visible=dp<140; if(dp<80)animHuman(n.H,sp,dt,t) } }
+
+/* ================= TRAFİK ================= */
+const CARS=[];
+function buildTraffic(){ [['sedan',0,-80,1],['old',3,-20,1],['van',1,50,1],['sport',2,70,-1],['old',5,10,-1],['sedan',4,-60,-1]].forEach(([k,ci,x,dir])=>{ const g=makeCar(k,CARCOL[ci]); g.position.set(x,0,dir>0?63:57); g.rotation.y=dir>0?Math.PI/2:-Math.PI/2; CARS.push({g,dir,v:9+R()*3,max:9+R()*4}) }) }
+function updateTraffic(dt){ let near=999; for(const c of CARS){ const p=c.g.position; let target=c.max; const ahead=(P.pos.x-p.x)*c.dir; if(Math.abs(P.pos.z-p.z)<2.4&&ahead>0&&ahead<11)target=0;
+    for(const o of CARS){ if(o!==c&&o.dir===c.dir){ const a=(o.g.position.x-p.x)*c.dir; if(a>0&&a<9)target=Math.min(target,o.v*.8) } }
+    c.v=lerp(c.v,target,1-Math.exp(-dt*(target<c.v?4:1))); p.x+=c.dir*c.v*dt; if(p.x>112)p.x=-112; if(p.x<-112)p.x=112; near=Math.min(near,Math.hypot(P.pos.x-p.x,P.pos.z-p.z));
+    if(c.g.userData.lights){c.g.userData.lights[0].emissiveIntensity=.2+W.night*2.2;c.g.userData.lights[1].emissiveIntensity=.2+W.night*1.5} } return near }
+
+/* ================= GÜN-GECE ================= */
+const SKYK=[[0,0x05070f,0x0c1222,0x8fa8d8,.16,.3],[5.4,0x05070f,0x0c1222,0x8fa8d8,.16,.3],[6.6,0x3b5a8a,0xe8a070,0xffc890,.7,.5],[9,0x3a78c8,0xb4cce4,0xfff4e0,1.15,.75],[16,0x3a78c8,0xb4cce4,0xfff0d8,1.15,.75],[18.4,0x34508c,0xf0a058,0xffb070,.9,.6],[19.6,0x161c3c,0x9a4a3c,0xff8858,.3,.42],[20.8,0x05070f,0x0c1222,0x8fa8d8,.16,.3],[24,0x05070f,0x0c1222,0x8fa8d8,.16,.3]];
+const cA=new THREE.Color(),cB=new THREE.Color();
+function updateSky(dt){ W.time=(W.time+dt/75)%24; const h=W.time; let i=0; while(i<SKYK.length-2&&h>=SKYK[i+1][0])i++; const a=SKYK[i],b=SKYK[i+1],t=clamp((h-a[0])/(b[0]-a[0]),0,1);
+  skyMat.uniforms.top.value.copy(cA.setHex(a[1])).lerp(cB.setHex(b[1]),t); skyMat.uniforms.bot.value.copy(cA.setHex(a[2])).lerp(cB.setHex(b[2]),t); scene.fog.color.copy(skyMat.uniforms.bot.value).multiplyScalar(.82);
+  sun.color.copy(cA.setHex(a[3])).lerp(cB.setHex(b[3]),t); sun.intensity=lerp(a[4],b[4],t); hemi.intensity=lerp(a[5],b[5],t); hemi.color.copy(skyMat.uniforms.top.value).lerp(cA.setHex(0xffffff),.45);
+  const n=W.night=h<12?1-sstep(5.6,6.8,h):sstep(18.6,20.4,h); const day=h>5.8&&h<20.2; const ang=day?(h-5.8)/14.4*Math.PI:1.1;
+  const c=state==='menu'?MENU_C:P.pos; sun.position.set(c.x+Math.cos(ang)*90,Math.max(14,Math.sin(ang)*90),c.z+38); sun.target.position.set(c.x,0,c.z);
+  for(const m of W.nightMats)m.emissiveIntensity=n*.95; M.lamp.emissiveIntensity=n*2.6; for(const l of W.lamps)l.intensity=n*1.15; starM.opacity=n*.85;
+  const f=.75+Math.sin(performance.now()*.02)*.12+Math.random()*.2; W.fire.intensity=(.4+n*.9)*f; W.flame.scale.y=.8+f*.5;
+  renderer.toneMappingExposure=1.05+n*.08; if(W.rain>.01){ const k=1-.42*W.rain; skyMat.uniforms.top.value.multiplyScalar(k); skyMat.uniforms.bot.value.multiplyScalar(k); scene.fog.color.multiplyScalar(k); sun.intensity*=1-.55*W.rain } sky.position.copy(camera.position); stars.position.copy(camera.position) }
+const MENU_C=new THREE.Vector3(0,0,0);
+
+/* ================= DİYALOG ================= */
+const D={npc:null,spk:'npc',resolve:null,typing:null,full:'',choosing:null,
+  begin(n){ D.npc=n; setState('dialogue'); document.body.classList.add('cine'); $('#dlg').classList.remove('hide'); $('#prompt').classList.add('hide'); $('#bark').classList.add('hide'); P.speed=0; releaseLock(); if(!n)return;
+    const a=Math.atan2(n.pos.x-P.pos.x,n.pos.z-P.pos.z); P.rot=a; P.speed=0; if(n.mode!=='sit')n.rot=a+Math.PI; const dd=Math.hypot(n.pos.x-P.pos.x,n.pos.z-P.pos.z); if(dd<1.5){P.pos.x-=Math.sin(a)*(1.5-dd);P.pos.z-=Math.cos(a)*(1.5-dd);collide(P.pos,.38)} },
+  end(){ $('#dlg').classList.add('hide'); document.body.classList.remove('cine'); D.npc=null; setState('play'); grabLock(); },
+  say(who,text){ return new Promise(res=>{ D.spk=who==='Kerem'||who==='Kerem (iç ses)'?'player':'npc'; $('#dwho').textContent=who; $('#choices').innerHTML=''; $('#dmore').classList.remove('hide'); D.full=text; speak(who,text); let i=0; const el=$('#dtxt'); el.textContent='';
+      clearInterval(D.typing); D.typing=setInterval(()=>{ i+=2; el.textContent=text.slice(0,i); if(i>=text.length){clearInterval(D.typing);D.typing=null} },22); D.resolve=res }) },
+  advance(){ if(D.choosing)return; if(D.typing){clearInterval(D.typing);D.typing=null;$('#dtxt').textContent=D.full;return} if(D.resolve){const r=D.resolve;D.resolve=null;A.blip();r()} },
+  choose(opts){ return new Promise(res=>{ D.spk='player'; $('#dwho').textContent='Kerem'; $('#dtxt').textContent=''; $('#dmore').classList.add('hide'); const box=$('#choices'); box.innerHTML='';
+      opts.forEach((o,i)=>{ const b=document.createElement('button'); b.innerHTML=`<span class="n">${i+1}</span><span class="tag">${o.tag}</span><span></span>`; b.lastChild.textContent=o.text; b.onclick=()=>D.pick(i); box.appendChild(b) });
+      D.choosing={opts,res} }) },
+  pick(i){ const c=D.choosing; if(!c||!c.opts[i])return; D.choosing=null; $('#choices').innerHTML=''; A.blip(); const o=c.opts[i]; if(o.rel)for(const k in o.rel)G.rel[k]=clamp(G.rel[k]+o.rel[k],-3,3); if(o.saygi)G.saygi+=o.saygi; if(o.flag)G.flags[o.flag[0]]=o.flag[1]; c.res(i) }
+};
+function updateDlgCam(dt){ const n=D.npc; if(!n)return; const sp=D.spk==='player'?P.pos:n.pos, ot=D.spk==='player'?n.pos:P.pos; let dx=ot.x-sp.x,dz=ot.z-sp.z; const d=Math.hypot(dx,dz)||1; dx/=d; dz/=d; const sd=D.spk==='player'?-1:1;
+  const hy=(D.spk==='npc'&&n.mode==='sit')?1.22:1.66; const cd=clamp(d*1.15,1.5,2.1); const tx=sp.x+dx*cd+(-dz)*.8*sd, tz=sp.z+dz*cd+dx*.8*sd; const k=1-Math.exp(-dt*5);
+  cam.pos.x=lerp(cam.pos.x,tx,k); cam.pos.y=lerp(cam.pos.y,hy+.02,k); cam.pos.z=lerp(cam.pos.z,tz,k); cam.look.x=lerp(cam.look.x,sp.x,k); cam.look.y=lerp(cam.look.y,hy,k); cam.look.z=lerp(cam.look.z,sp.z,k) }
+
+/* ================= HİKÂYE — BÖLÜM 1: DÖNÜŞ ================= */
+const K='Kerem';
+const STEPS=[
+  {t:'Meydandaki kıraathaneye git, Hasan Dayı ile konuş',npc:'hasan'},
+  {t:"Sanayi sokağındaki Aydın Oto'ya git, abin Selim ile konuş",npc:'selim'},
+  {t:"Nuri Bakkal'a uğra, babanın bıraktığı zarfı al",npc:'nuri'},
+  {t:'Parkın güneyindeki boş arsaya git, Rıza ile yüzleş',npc:'riza'},
+  {t:'Dükkâna dön, Selim ile konuş',npc:'selim'},
+  {t:"Nuri Bakkal'a git — gece dükkâna girmişler",npc:'nuri'},
+  {t:'Kıraathaneye uğra, Hasan Dayı ile konuş',npc:'hasan'},
+  {t:'Sanayinin arkasındaki hurdalığa git, defteri alanları bul',npc:'sedat'},
+  {t:"Veresiye defterini Nuri Bakkal'a götür",npc:'nuri'},
+  {t:'Dükkâna dön, Selim ile bodrumu konuş',npc:'selim'},
+  {t:'Mahallede serbest dolaş',npc:null}];
+const CONV=[
+ async n=>{ const H=n.name;
+  await D.say(H,"Ula… Kerem? İsmail Usta'nın küçüğü! Gel hele, gel. Gözlerim mi yanılıyor benim?");
+  const c=await D.choose([{tag:'SAYGILI',text:'Benim Hasan Dayı. Elini öpeyim.',rel:{hasan:2}},{tag:'MESAFELİ',text:'Benim. Fazla durmayacağım.'},{tag:'SERT',text:'Cenazede neredeydi bu mahalle? Babamı kim yalnız bıraktı?',rel:{hasan:-1},saygi:1}]);
+  await D.say(K,['Benim Hasan Dayı. Elini öpeyim.','Benim. Fazla durmayacağım.','Cenazede neredeydi bu mahalle? Babamı kim yalnız bıraktı?'][c]);
+  await D.say(H,["Estağfurullah yiğenim. Baban seni çok bekledi, bilesin. Son haftasında her gün şu kapıya baktı.","Durmazsın tabii. Sen hep bir ayağı kapıda adamdın. Baban da öyle derdi.","Ağır konuşma evlat. O tabutun altına ilk ben girdim. Sen neredeydin, asıl onu sor kendine."][c]);
+  await D.say(H,"Baban hastanedeyken Selim çok sıkıştı. Dükkânı ayakta tutacağım diye yanlış kapıları çaldı.");
+  await D.say(K,'Hangi kapıları?');
+  await D.say(H,"Cemal Karataş'ın kapısını. Sen gittiğinde tek bir kahvesi vardı; şimdi bu sokaklarda yaprak kıpırdasa haberi oluyor.");
+  await D.say(H,"Gerisini abinden dinle. Sanayi sokağında, dükkânda bulursun. Bir de… çay parası arama cebinde. İsmail'in oğluna burada hesap kesilmez.");
+ },
+ async n=>{ const H='Selim';
+  await D.say(H,'…Geldin demek. Kırk gün geç kaldın ama geldin.');
+  const c=await D.choose([{tag:'SAKİN KAL',text:'Haklısın abi. Geç kaldım.',rel:{selim:1},flag:['selimIlk','sakin']},{tag:'SERT CEVAP',text:'Haber verseydin erken gelirdim. Öldüğünü komşudan öğrendim!',rel:{selim:-1},saygi:1,flag:['selimIlk','sert']},{tag:'KONUYU DEĞİŞTİR',text:'Dükkân ne halde? Hasan Dayı bir şeyler söyledi.',flag:['selimIlk','konu']}]);
+  await D.say(K,['Haklısın abi. Geç kaldım.','Haber verseydin erken gelirdim. Öldüğünü komşudan öğrendim!','Dükkân ne halde? Hasan Dayı bir şeyler söyledi.'][c]);
+  await D.say(H,["Haklı olmak neye yarıyor Kerem? Babam son gün bile kapıya baktı.","Üç yıl telefonunu açmayan adama mı haber verecektim? Mesajlarım duruyor, aç bak.","Hasan Dayı çok konuşur. Ama yalan söylemez."][c]);
+  await D.say(H,'Hastane, ilaç, ameliyat… Sigorta yarısını karşılamadı. Cemal\'den dört yüz bin aldım. Faiziyle altı yüz olmuş.');
+  await D.say(H,'Cumaya kadar ödemezsem dükkânı istiyor. Babamın otuz yıllık dükkânını.');
+  await D.say(K,'Neden bana söylemedin?');
+  await D.say(H,'Söyleseydim ne yapacaktın? İstanbul\'dan inşaat yevmiyesiyle mi kapatacaktın?');
+  await D.say(H,"Neyse. Nuri Bakkal'a uğra. Babam ölmeden önce ona bir zarf bırakmış. 'Yalnız Kerem'e veririm' diyor, bana vermedi. İçinde ne var, ben de bilmiyorum.");
+ },
+ async n=>{ const H='Nuri Bakkal';
+  await D.say(H,'Buyur gardaşım, ne lazı— Vay! Kerem! Hoş geldin, sefalar getirdin.');
+  await D.say(H,'Başın sağ olsun. İsmail Usta gibi adam bu mahalleye bir daha gelmez.');
+  await D.say(K,'Sağ ol Nuri Abi. Babam sana bir zarf bırakmış.');
+  await D.say(H,"Bıraktı. 'Kerem gelirse ver, gelmezse yak' dedi. Üç haftadır kasanın altında duruyor. Al.");
+  toast('Eşya alındı: <b>Babanın zarfı</b>'); G.flags.zarf=1;
+  await D.say('Kerem (iç ses)',"Tapu. Dükkânın tapusu… benim üstüme yapılmış. Altında babamın el yazısı: “Dükkânı Cemal'e verme. Selim'i de bırakma.”");
+  await D.say(H,'Bir şey daha var. Sabahtan beri Tilki Rıza buralarda dolanıyor. Seni soruyor. Dikkat et.');
+  const c=await D.choose([{tag:'YARDIM TEKLİF ET',text:'Bizim dükkânın sende veresiyesi var mı? Defteri ben kapatayım.',rel:{nuri:2}},{tag:'SORU SOR',text:"Rıza hâlâ Cemal'in yanında mı?",rel:{nuri:1},flag:['rizaBilgi',1]}]);
+  await D.say(K,['Bizim dükkânın sende veresiyesi var mı? Defteri ben kapatayım.',"Rıza hâlâ Cemal'in yanında mı?"][c]);
+  await D.say(H,["Ben deftere 'İsmail Usta' yazmadım hiç. Helal olsun. Sen abine sahip çık, yeter.","Yanında değil, önünde. Tahsilatı o yapıyor. Çocukluk arkadaşındı, bilirim; ama o Rıza gitti gardaşım."][c]);
+ },
+ async n=>{ const H='Tilki Rıza';
+  await D.say(H,'Kero… Üç yılda hiç değişmemişsin. Hâlâ o bakış.');
+  await D.say(H,'Uzatmayacağım. Abin altı yüz bin borçlu. Cemal Abi parayı değil, dükkânı istiyor. Cumaya kadar.');
+  await D.say(K,"Sen ne zamandan beri Cemal'in ayak işlerine bakıyorsun Rıza?");
+  await D.say(H,'Sen gidince biri kalmak zorundaydı. Kalan da karnını doyurmak zorunda.');
+  const c=await D.choose([{tag:'TEHDİT ET',text:"O dükkâna elini süren olursa bileğinden kırarım. Cemal'e de aynen ilet.",rel:{riza:-2},saygi:2,flag:['yol','sert']},{tag:'SAKİN KAL',text:'Cumaya kadar süre ver. Parayı bulacağım.',flag:['yol','sure']},{tag:'ESKİ DOSTLUK',text:'Biz bu arsada top oynadık Rıza. Annen bize ekmek arası yapardı. Sen bu değilsin.',rel:{riza:2},flag:['yol','dost']}]);
+  await D.say(K,["O dükkâna elini süren olursa bileğinden kırarım. Cemal'e de aynen ilet.",'Cumaya kadar süre ver. Parayı bulacağım.','Biz bu arsada top oynadık Rıza. Annen bize ekmek arası yapardı. Sen bu değilsin.'][c]);
+  if(c===0){ A.sting(); await D.say(H,'Bak sen. Büyük konuştun. Bu lafı ben taşırım Kero; ama taşıdığım yerde senin için kapı kalmaz.'); await D.say(H,'Cumayı bekleme o zaman. Daha erken görüşürüz.'); }
+  if(c===1){ await D.say(H,'Bulamazsın. Altı yüz bin bu mahallede ağaçta yetişmiyor.'); await D.say(H,'Ama denemeni izlemek isterim. Cuma, gün batımı. Bir dakika geç kalma.'); }
+  if(c===2){ await D.say(H,'…Annemi karıştırma.'); await D.say(H,"Sana eski günlerin hatırına bir tek şey söyleyeceğim: Cemal'in derdi dükkân değil. Dükkânın altındaki. Gerisini sorma, ben de söylemedim."); }
+  await D.say(H,'Hoş geldin mahallene.');
+ },
+ async n=>{ const H='Selim';
+  await D.say(H,'Yüzün bembeyaz. Rıza\'yı gördün, değil mi?');
+  await D.say(K,G.flags.yol==='sert'?'Gördüm. Lafımı da söyledim. Cumayı beklemeyecekler.':G.flags.yol==='dost'?'Gördüm. Garip bir şey söyledi abi: “Cemal\'in derdi dükkânın altındaki.”':'Gördüm. Cumaya kadar süremiz var.');
+  await D.say(H,G.flags.yol==='sert'?'Ne dedin ona Kerem? …Allah kahretsin. Sen gelince işler hep böyle oluyor.':G.flags.yol==='dost'?'Altındaki mi? Bodrumu babam yıllar önce ördürdü, kimse inmedi oraya…':'Cuma. Dört gün. Dört günde altı yüz bin.');
+  await D.say(H,'Zarfta ne vardı?');
+  const c=await D.choose([{tag:'DOĞRUYU SÖYLE',text:'Tapu. Babam dükkânı benim üstüme yapmış.',flag:['zarfSoz','durust'],rel:{selim:G.flags.selimIlk==='sert'?-1:1}},{tag:'SAKLA',text:'Eski fotoğraflar. Bir de veda mektubu.',flag:['zarfSoz','sakla']}]);
+  await D.say(K,['Tapu. Babam dükkânı benim üstüme yapmış.','Eski fotoğraflar. Bir de veda mektubu.'][c]);
+  if(c===0) await D.say(H,G.flags.selimIlk==='sert'?'Senin üstüne. Otuz yıl o tezgâhta ben yağ yuttum, tapu sana. Güzel. Çok güzel.':'…Senin üstüne. Canım yandı, yalan yok. Ama en azından yüzüme söyledin.');
+  else await D.say(H,'Öyle mi… Babam fotoğraf için zarf bırakacak adam değildi ama. Peki.');
+  await D.say(H,'Yukarıda yatağın duruyor. Yarın konuşuruz. Yarın çok şey konuşacağız.');
+ },
+ // ---------- BÖLÜM 2 ----------
+ async n=>{ const H='Nuri Bakkal';
+  await D.say(H,'Geldin mi gardaşım… Bak şu hâle. Gece camı indirmişler. Kasaya dokunmamışlar bile.');
+  await D.say(K,'Ne almışlar o zaman?');
+  await D.say(H,'Veresiye defterini. Yirmi iki yıllık defter. Bu mahallede kimin kime ne kadar borcu var, hepsi orada yazılı.');
+  const c=await D.choose([{tag:'SÖZ VER',text:'Defteri geri getireceğim Nuri Abi.',rel:{nuri:1}},{tag:'KARŞILIK İSTE',text:'Getirirsem karşılığında ne olacak?',rel:{nuri:-1},flag:['ucret',1]},{tag:'SORU SOR',text:'Bir defter için cam mı indirilir?'}]);
+  await D.say(K,['Defteri geri getireceğim Nuri Abi.','Getirirsem karşılığında ne olacak?','Bir defter için cam mı indirilir?'][c]);
+  await D.say(H,['Allah razı olsun. Baban da böyle derdi; dediğini de yapardı.',"…Yirmi bin veririm. İsmail Usta'nın oğlundan bunu duymak ağır geldi ama veririm.",'O defter kimdeyse mahallenin yarısının yakası onun elinde. Cemal borçları tek elde toplamak istiyor; borçlu adam söz dinler.'][c]);
+  await D.say(H,"Yapanları gördüm. Kasap Halil'in yeğenleri: Sedat'la Tayfun. Sanayinin arkasındaki hurdalıkta takılırlar.");
+  await D.say(H,"Yalnız dikkat et; ikisinin de eli ağırdır. Önce Hasan Dayı'ya uğra. O gençliğinde ring görmüş adamdır.");
+ },
+ async n=>{ const H='Hasan Dayı';
+  await D.say(H,"Duydum. Nuri'nin camını indirmişler. Sen de gidip defteri alacaksın, öyle mi?");
+  await D.say(K,'Başka giden var mı?');
+  await D.say(H,'Yok. Onun için buradasın zaten.');
+  await D.say(H,'Baban sana yumruk atmayı öğretti; korunmayı ben öğrettim. Üç yılda paslanmışsındır. Memo! Gel la buraya.');
+  await D.say(H,'Çocuğu incitme, o da seni incitmeyecek. Vur, korun, çekil. Kolunu geri çektiğini görünce ya blokla ya kaç. Hadi.');
+  byId.memo.pos.set(-7,0,-9.4); P.pos.set(-7,0,-12.8);
+  return {fight:{who:['memo'],hp:48,dmg:5,cd:1.7,spd:2.3,spar:1,obj:"İdman: Memo pes edene kadar dövüş"}};
+ },
+ async n=>{ const H='Sedat';
+  await D.say(H,'Yanlış sokağa girdin hemşerim. Burası özel mülk.');
+  await D.say(K,"Nuri Bakkal'ın defteri sizdeymiş.");
+  await D.say('Tayfun',"Ula bu İsmail Usta'nın oğlu değil mi? Hani şu kaçan.");
+  const o=[{tag:'TEHDİT ET',text:'Defteri verin, ikiniz de bu arsadan yürüyerek çıkın.',saygi:1,flag:['hurda','tehdit']},{tag:'SAKİN KAL',text:'Kavga aramıyorum. Defteri alıp gideceğim.',flag:['hurda','sakin']}];
+  if(G.flags.yol==='dost')o.push({tag:"RIZA'NIN ADI",text:'Rıza burada olduğumu biliyor. İsterseniz ona sorun.',flag:['hurda','riza']});
+  const c=await D.choose(o); await D.say(K,o[c].text); let who=['sedat','tayfun'];
+  if(c===0){ await D.say(H,'Yürüyerek mi? Tayfun, duydun mu? Yürüyerekmiş.') }
+  if(c===1){ await D.say(H,'Kavga aramayan adam buraya gelmez. Defter Cemal Abi\'ye gidiyor; sen de geldiğin yere.') }
+  if(c===2){ await D.say('Tayfun','…Rıza abi mi? Sedat, ben bu işte yokum. Rıza abiyle ters düşmem.'); await D.say(H,'Korkak it! Tek başıma da yeterim ben buna.'); who=['sedat'] }
+  return {fight:{who,hp:66,dmg:11,cd:1.25,spd:2.9,obj:who.length>1?"Sedat ve Tayfun'u yere ser":"Sedat'ı yere ser"}};
+ },
+ async n=>{ const H='Nuri Bakkal';
+  await D.say(H,'Defter! Allah\'ım… Sen ciddi ciddi gidip almışsın.');
+  const c=await D.choose([{tag:'GERİ VER',text:'Al Nuri Abi. Yerine koy.',rel:{nuri:2},saygi:2,flag:['defter','nuri']},{tag:'SAKLA',text:'Defter bende kalacak. Sende durursa yine gelirler.',rel:{nuri:-1},flag:['defter','kerem']},{tag:'ÖNCE OKU',text:'Vereceğim. Ama önce içine bakmam lazım.',saygi:1,flag:['defter','oku']}]);
+  await D.say(K,['Al Nuri Abi. Yerine koy.','Defter bende kalacak. Sende durursa yine gelirler.','Vereceğim. Ama önce içine bakmam lazım.'][c]);
+  await D.say(H,['Bu iyiliği unutmam. Mahalle de unutmaz; akşama herkes duymuş olur.','…Haklısın belki. Ama o defter emanettir Kerem. Emanete hıyanet olmaz, bunu unutma.','Bak tabii. Baban da ara sıra gelir, bakardı.'][c]);
+  if(G.flags.ucret&&c===0){ await D.say(H,'Söz verdiğim yirmi bini akşama hazır ederim.'); await D.say(K,'Kalsın. Cam parasına sayarsın.'); G.rel.nuri=clamp(G.rel.nuri+1,-3,3) }
+  await D.say(H,'Dur. Sana bir sayfa göstereceğim. En arkada, babanın el yazısı var.');
+  await D.say('Kerem (iç ses)','“Bodrum — C.K. emaneti, 2009. Kilit bende, anahtar Hasan\'da.” C.K.… Cemal Karataş.');
+  await D.say(H,"Baban on beş yıl önce Cemal'e ait bir şeyi dükkânın altına koymuş. Cemal şimdi onu geri istiyor; dükkânı o yüzden istiyor.");
+  await D.say(H,'Selim biliyor mu, bilmiyorum. Git abinle konuş.');
+ },
+ async n=>{ const H='Selim';
+  await D.say(H,"Nuri'nin defterini almışsın. Bütün sanayi bunu konuşuyor.");
+  if(G.flags.zarfSoz==='sakla'){ await D.say(H,'Bir şey daha. Ceketin sandalyede duruyordu; cebinden tapu düştü. “Fotoğraf” demiştin.');
+    const c=await D.choose([{tag:'ÖZÜR DİLE',text:'Sana nasıl söyleyeceğimi bilemedim abi.',flag:['tapuKavga','ozur']},{tag:'SERT CEVAP',text:'Babam bana bıraktı. Kimseye hesap vermem gerekmiyor.',rel:{selim:-2},flag:['tapuKavga','sert']}]);
+    await D.say(K,['Sana nasıl söyleyeceğimi bilemedim abi.','Babam bana bıraktı. Kimseye hesap vermem gerekmiyor.'][c]);
+    await D.say(H,['Yalanla başlayan kardeşlik olmaz. Ama geç de olsa söyledin say.','Öyle olsun. O zaman borcu da sen ödersin, tapu sahibi.'][c]) }
+  await D.say(K,'Abi, dükkânın altında ne var?');
+  await D.say(H,'…Kim söyledi sana?');
+  await D.say(K,'Babamın el yazısı söyledi. “C.K. emaneti, 2009.”');
+  await D.say(H,'Bodrumun kapısını babam ördürdü. Ben on yedi yaşındaydım. Bir gece kamyonet geldi; sabah kalktığımda kapı yoktu. Sormak yasaktı.');
+  const c=await D.choose([{tag:'DUVARI KIR',text:'Bu gece o duvarı kırıyoruz.',saygi:1,flag:['bodrum','kir']},{tag:'SAKİN KAL',text:"Önce Hasan Dayı'yla konuşalım. Anahtar ondaymış.",rel:{hasan:1},flag:['bodrum','hasan']}]);
+  await D.say(K,['Bu gece o duvarı kırıyoruz.',"Önce Hasan Dayı'yla konuşalım. Anahtar ondaymış."][c]);
+  await D.say(H,['Kırarız. Balyoz arkada.','Konuşuruz. O bilir, babam ondan bir şey saklamazdı.'][c]);
+  A.sting(); await D.say(H,'Ama önce dışarı bak. O siyah araba yine geldi. Bu sefer motoru durdurdu.');
+ }];
+const IDLE={sedat:['Ne bakıyorsun?'],hasan:['Abin dükkânda. Oyalanma yiğenim.','Bir sıkıntın olursa kapım açık. Babanın hatırı var.'],selim:['İşim var Kerem. Sonra.','Dükkânın kapısını kapatırken kilide iki kere bas.'],nuri:['Bir şey lazım olursa çekinme gardaşım.','Rıza\'ya dikkat et dedim, yine diyorum.'],riza:['Söyleyeceğimi söyledim.']};
+async function talk(n){ if(state!=='play'||busy)return; A.init();
+  const cs=curStep(); if(cs.multi){ const mm=cs.multi.find(x=>x.npc===n.id&&!mdone(x)); if(mm){ D.begin(n); await mm.run(n); D.end(); markMulti(mm); return } }
+  if(cs.npc===n.id){ D.begin(n); const r=await (cs.conv||CONV[G.step])(n); D.end(); if(r&&r.fight)startFight(r.fight,completeStep); else completeStep(); return }
+  if(n.id==='nuri'&&!JOB.on){ offerJob(n); return } if(n.id==='salgam'&&P.hp<95&&(G.para||0)>=40){ buySalgam(n); return }
+  const lines=n.story?IDLE[n.id]:n.barks; if(!lines)return; const m=G.met[n.id]||0; const line=n.story?lines[m%lines.length]:lines[Math.min(m,lines.length-1)]; G.met[n.id]=m+1; bark(n.name,line); A.blip() }
+function afterStep(st,s){ refreshObjective();
+  if(st>=10){ syncCast(); if(s.after)s.after(); enterStep(); saveGame(); if(s.end)setTimeout(()=>showEnd(s.end),2600); else toast('Yeni hedef · oyun kaydedildi'); return }
+  if(st===2){ byId.riza.H.g.visible=true; setTimeout(()=>{ pushMsg('Bilinmeyen Numara','Hoş geldin Kero. Parkın arkasındaki boş arsadayım. Yalnız gel, iki laf edelim. — R.','şimdi') },1800) }
+  if(st===3){ setTimeout(()=>{ if(G.step===4) pushMsg('Selim (Abi)','Neredesin? Dükkânın önünden iki kere siyah araba geçti. Dön.','şimdi') },2500) }
+  if(st===4){ byId.riza.H.g.visible=false; const y=G.flags.yol; setTimeout(()=>pushMsg('Bilinmeyen Numara',y==='sert'?'Lafın yerine ulaştı. Cemal Abi seni yarın değil, bu gece bekliyor.':y==='dost'?'Bu numarayı sil. Bodruma Selim\'den önce in. — R.':'Cuma. Gün batımı. Sayıyoruz.','şimdi'),900); saveGame(); setTimeout(()=>showEnd(1),2600); return }
+  syncCast();
+  if(st===6)setTimeout(()=>bark('Hasan Dayı','Fena değil. Dizlerin hâlâ babanın dizleri. Hadi git; defter bekliyor.'),300);
+  if(st===7){ toast('Eşya alındı: <b>Veresiye defteri</b>'); setTimeout(()=>bark('Sedat','Cemal Abi… bunu yanına koymaz…'),700);
+    setTimeout(()=>pushMsg('Bilinmeyen Numara',G.flags.yol==='dost'?"Sedat'ı yere sermişsin. Defteri Nuri'ye ver, başka kimseye gösterme. — R.":'Defter sende. Cemal Abi yüz bin veriyor; abinin borcundan da düşer. Düşün. — R.','şimdi'),3200); saveGame(); return }
+  if(st===9){ saveGame(); setTimeout(()=>showEnd(2),2400); return }
+  saveGame(); toast('Yeni hedef · oyun kaydedildi') }
+const relT=v=>v<=-2?'Düşman':v<0?'Soğuk':v===0?'Mesafeli':v===1?'Yakın':'Güveniyor';
+function showEnd2(){ if(state!=='play')return; setState('end'); const d=G.flags.defter,b=G.flags.bodrum,h=G.flags.hurda; $('#endS').textContent='Bölüm 2 tamamlandı'; $('#endH').textContent='Veresiye Defteri'; $('#endNext').textContent="Bölüm 3'e geç";
+  $('#endBody').innerHTML=`<p style="margin-bottom:10px">${h==='riza'?"Rıza'nın adı Tayfun'u kavgadan çekti; Sedat'la teke tek kaldın.":h==='tehdit'?'Hurdalığa tehditle girdin, iki kişiyi birden yere serdin.':'Kavga aramadın ama kavga seni buldu; ikisini de yere serdin.'}</p>
+  <p style="margin-bottom:10px">${d==='nuri'?"Defteri Nuri'ye geri verdin. Akşama bütün mahalle duydu.":d==='kerem'?'Defter sende kaldı. Mahallenin yarısının borcu artık senin cebinde.':"Defteri okudun, sonra teslim ettin."}</p>
+  <p style="margin-bottom:12px">${b==='kir'?'Bu gece bodrumun duvarını kırmaya karar verdiniz.':"Bodrum için önce Hasan Dayı'dan anahtarı isteyeceksiniz."}</p>
+  <div class="row"><span>Hasan Dayı</span><b>${relT(G.rel.hasan)}</b></div><div class="row"><span>Selim</span><b>${relT(G.rel.selim)}</b></div><div class="row"><span>Nuri Bakkal</span><b>${relT(G.rel.nuri)}</b></div><div class="row"><span>Tilki Rıza</span><b>${relT(G.rel.riza)}</b></div><div class="row"><span>Mahalledeki saygın</span><b>${G.saygi}</b></div>
+  <p class="note" style="margin-top:12px">Kararların kaydedildi; sonraki bölümler bunlara göre açılıyor.</p>`; $('#endc').classList.remove('hide'); releaseLock() }
+function showEnd(ch){ if(ch===2)return showEnd2(); if(ch>2)return showEndG(ch); if(state!=='play')return; setState('end'); $('#endS').textContent='Bölüm 1 tamamlandı'; $('#endH').textContent='Dönüş'; $('#endNext').textContent="Bölüm 2'ye geç"; const y=G.flags.yol,z=G.flags.zarfSoz; const relT=v=>v<=-2?'Düşman':v<0?'Soğuk':v===0?'Mesafeli':v===1?'Yakın':'Güveniyor';
+  $('#endBody').innerHTML=`<p style="margin-bottom:10px">${y==='sert'?"Rıza'yı tehdit ettin. Cemal artık cumayı beklemeyecek; ama mahalle, İsmail Usta'nın oğlunun geri döndüğünü duydu.":y==='dost'?"Rıza'ya eski günleri hatırlattın. Karşılığında bir sır aldın: mesele dükkân değil, altındaki.":"Rıza'dan cumaya kadar süre kopardın. Dört gün, altı yüz bin lira."}</p>
+  <p style="margin-bottom:12px">${z==='durust'?'Tapuyu Selim\'den saklamadın.':'Tapuyu Selim\'den sakladın. Zarf hâlâ cebinde.'}</p>
+  <div class="row"><span>Hasan Dayı</span><b>${relT(G.rel.hasan)}</b></div><div class="row"><span>Selim</span><b>${relT(G.rel.selim)}</b></div><div class="row"><span>Nuri Bakkal</span><b>${relT(G.rel.nuri)}</b></div><div class="row"><span>Tilki Rıza</span><b>${relT(G.rel.riza)}</b></div><div class="row"><span>Mahalledeki saygın</span><b>${G.saygi}</b></div>
+  <p class="note" style="margin-top:12px">Kararların kaydedildi; Bölüm 2 “Veresiye Defteri” bunlara göre açılıyor.</p>`;
+  $('#endc').classList.remove('hide'); releaseLock() }
+
+/* ================= ADIM / BÖLÜM MOTORU ================= */
+let busy=false; const hyp=Math.hypot;
+const mdone=m=>(m.if&&!m.if())||(G.flags.multi||[]).includes(m.id);
+const curStep=()=>{ const s=STEPS[Math.min(G.step,STEPS.length-1)]; return s.alt&&s.alt.if()?s.alt:s };
+const stepText=(s=curStep())=>{ let t=typeof s.t==='function'?s.t():s.t; if(s.multi){ const a=s.multi.filter(m=>!m.if||m.if()); t+=` (${a.filter(mdone).length}/${a.length})` } return t };
+const near=(p,r)=>hyp(p[0]-P.pos.x,p[1]-P.pos.z)<r;
+const fmt=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+function chOf(step){ let n=1; for(let i=2;i<CH.length;i++)if(step>=CH[i].start)n=i; return n }
+const chLabel=step=>step>=STEPS.length-1?'Hikâye tamamlandı':`Bölüm ${chOf(step)} · ${CH[chOf(step)].name}`;
+function pendingChapter(){ for(let i=2;i<CH.length;i++)if(CH[i].start===G.step&&!G.flags['ch'+i])return i; return 0 }
+function refreshObjective(){ $('#objt').textContent=stepText(); $('#objch').textContent=chLabel(G.step) }
+function targetPos(){ if(F.on)return null; const s=curStep(); if(s.npc)return byId[s.npc].pos; if(s.go)return {x:s.go[0],z:s.go[1]}; if(s.target)return s.target();
+  if(s.multi){ let b=null,bd=1e9; for(const m of s.multi){ if(mdone(m))continue; const p=m.npc?byId[m.npc].pos:{x:m.go[0],z:m.go[1]}; const d=hyp(p.x-P.pos.x,p.z-P.pos.z); if(d<bd){bd=d;b=p} } return b } return null }
+function place(id,x,z,rot,sit){ const n=byId[id]; n.pos.set(x,0,z); if(rot!=null){n.rot=rot;n.home=rot} n.mode=sit?'sit':'idle'; n.H.sit=!!sit; if(!sit)n.H.body.position.y=0; n.H.down=false; n.H.dn=0; n.H.pose=null; n.H.g.visible=true; n.H.g.position.copy(n.pos); n.H.g.rotation.y=n.rot; return n }
+const hide=id=>{byId[id].H.g.visible=false};
+const CAST=['riza','sedat','tayfun','cemal','t1','t2','t3','t4','t5','kadir','kundak'], HOMEN=['selim','hasan','nuri','cirak'];
+function syncCast(){ HOMEN.forEach(id=>{const n=byId[id]; if(n.mode!=='fight')place(id,n.hx,n.hz,n.hr)});
+  for(const id of CAST){ const n=byId[id]; let v=false; if(G.step<10){ if(id==='riza')v=G.step===3; if(id==='sedat'||id==='tayfun')v=G.step===7||(G.step===8&&byId.sedat.mode==='out') }
+    if(n.mode==='out'||n.mode==='fight'){ if(G.step>=10||v)continue; n.mode='idle' } if(v)place(id,n.hx,n.hz,n.hr); else n.H.g.visible=false } }
+function enterStep(){ fireOn(false); RZ.g.visible=false; W.hud=''; SCORCH.visible=!!G.flags.yandi; const s=curStep(); if(s.setup)s.setup(); refreshObjective() }
+function completeStep(){ const st=G.step; G.done.push(stepText().replace(/ \(\d+\/\d+\)$/,'')); const s=curStep(); G.step++; delete G.flags.multi; afterStep(st,s) }
+function markMulti(m){ G.flags.multi=(G.flags.multi||[]).concat(m.id); if(curStep().multi.every(mdone))completeStep(); else { refreshObjective(); saveGame(); A.blip() } }
+async function runScript(fn,done){ busy=true; let r=null; try{ r=fn?await fn():null }finally{ busy=false } if(r&&r.fight)startFight(r.fight,done); else done() }
+function tickStep(dt){ if(busy||F.on)return; const s=curStep();
+  if(s.tick){ if(s.tick(dt)){ W.hud=''; runScript(s.run,completeStep) } return }
+  if(s.go){ if(near(s.go,s.r||3))runScript(s.run,completeStep); return }
+  if(s.multi)for(const m of s.multi){ if(m.go&&!mdone(m)&&near(m.go,m.r||3)){ runScript(m.run,()=>markMulti(m)); return } } }
+async function think(lines,who){ D.begin(null); for(const l of lines)await D.say(who||'Kerem (iç ses)',l); D.end() }
+async function narr(lines){ $('#fade').classList.add('on'); D.begin(null); for(const l of lines)await D.say('',l); D.end(); $('#fade').classList.remove('on') }
+async function pickSay(o){ const c=await D.choose(o); await D.say(K,o[c].text); return c }
+function beginChapter(n){ const c=CH[n]; saveGame(); store.set('sk_ch'+n,G); G.flags['ch'+n]=1; abortFight(); exitCar(true); W.time=c.time; W.rainT=c.rain||0; const x=c.spawn[0],z=c.spawn[1],r=c.spawn[2]; P.pos.set(x,0,z); P.rot=r; P.speed=0; P.hp=100; cam.yaw=r+Math.PI; cam.pitch=.22;
+  if(c.car){ setV(0); V.pos.set(c.car[0],0,c.car[1]); V.rot=c.car[2]; V.spd=0; syncV() } syncCast(); enterStep(); $('#menu').classList.add('hide'); P.H.g.visible=true;
+  setState('cine'); document.body.classList.add('cine'); $('#skip').classList.remove('hide'); $('#dlg').classList.remove('hide'); $('#choices').innerHTML=''; $('#dmore').classList.add('hide'); $('#dwho').textContent='';
+  const dur=c.lines.length*5+1,y=cam.yaw,sx=Math.sin(y),cx=Math.cos(y);
+  cine={t:0,dur,skip:false,lines:c.lines,keys:[[0,[x+24,17,z+26],[x,3,z]],[dur*.55,[x+sx*13+5,6,z+cx*13],[x,2,z]],[dur,[x+sx*4.4+cx*.35,2.55,z+cx*4.4-sx*.35],[x+cx*.35,1.55,z-sx*.35]]],onEnd:()=>{ if(c.onStart)c.onStart() }};
+  $('#ctS').textContent='BÖLÜM '+n; $('#ctH').textContent=c.name; setTimeout(()=>$('#cinetitle').classList.add('on'),400) }
+function showEndG(ch){ if(state!=='play')return; exitCar(true); setState('end'); const c=CH[ch],last=ch===CH.length-1; $('#endS').textContent=last?'Hikâye tamamlandı':'Bölüm '+ch+' tamamlandı'; $('#endH').textContent=last?FINALS[G.flags.final]||c.name:c.name; $('#endNext').textContent=last?'Mahallede dolaş':'Bölüm '+(ch+1)+({6:"'ya",7:"'ye",9:"'a",10:"'a"}[ch+1]||"'e")+' geç';
+  $('#endBody').innerHTML=`<p style="margin-bottom:12px">${c.sum()}</p><div class="row"><span>Hasan Dayı</span><b>${relT(G.rel.hasan)}</b></div><div class="row"><span>Selim</span><b>${relT(G.rel.selim)}</b></div><div class="row"><span>Nuri Bakkal</span><b>${relT(G.rel.nuri)}</b></div><div class="row"><span>Tilki Rıza</span><b>${relT(G.rel.riza)}</b></div><div class="row"><span>Mahalledeki saygın</span><b>${G.saygi}</b></div>${last?'<p class="note" style="margin-top:12px">Diğer iki finali görmek için Bölümler ekranından 8. ya da 10. bölümü yeniden oynayabilirsin.</p>':''}`;
+  $('#endc').classList.remove('hide'); releaseLock() }
+
+/* ================= ARAÇ ================= */
+const HPI=Math.PI/2;
+const VDEF=[
+ {kind:'old',color:0x2c4636,name:'Babanın arabası',home:[-47,-2.2,HPI],max:17,acc:7.5,ok:()=>!!G.flags.anahtar,lock:"Babamın arabası. Anahtarı Selim'de."},
+ {kind:'moto',color:0x8a1f1f,name:"Memo'nun motoru",home:[17.4,7,2.4],max:21,acc:11,ok:()=>G.step>=7,lock:"Memo'nun motoru. Tanımadığı adama vermez."},
+ {kind:'van',color:0xd8d4c8,name:'Rot balansçının kamyoneti',home:[-82,22,HPI],max:14,acc:5.5,ok:()=>G.step>=18,lock:'Kamyonet kilitli. Anahtarı rot balansçıda.'},
+ {kind:'sport',color:0x101014,name:"Cemal'in arabası",home:[10,-18.6,HPI],max:25,acc:12,ok:()=>!!G.flags.final,lock:"Cemal Karataş'ın arabası. Dokunan pişman olur."}];
+const VEHS=[], V={on:false,cur:0,g:null,pos:null,rot:HPI,spd:0,steer:0,view:0,def:null}, RZ={g:null,i:1,go:false,lost:0,seen:0,v:0};
+function storeV(){ if(V.g)VEHS[V.cur].rot=V.rot }
+function setV(i){ storeV(); V.cur=i; const v=VEHS[i]; V.g=v.g; V.pos=v.g.position; V.rot=v.rot; V.def=v.def }
+const syncV=()=>{ V.g.rotation.y=V.rot; VEHS[V.cur].rot=V.rot };
+function buildVehicles(){ VDEF.forEach(d=>{ const g=makeCar(d.kind,d.color); g.position.set(d.home[0],0,d.home[1]); g.rotation.y=d.home[2]; VEHS.push({g,rot:d.home[2],def:d}) }); setV(0); RZ.g=makeCar('sedan',0x0b0b0d); RZ.g.visible=false }
+function loadVehs(){ V.on=false; V.spd=0; VEHS.forEach((v,i)=>{ const p=(G.vehs&&G.vehs[i])||(i===0&&G.car)||v.def.home; v.g.position.set(p[0],0,p[1]); v.rot=p[2]; v.g.rotation.set(0,p[2],0) }); V.g=null; setV(0) }
+function enterCar(i){ i=i||0; const v=VEHS[i]; if(!v.def.ok()){ bark('Kerem (iç ses)',v.def.lock); return } setV(i); V.on=true; V.spd=0; P.sit=null; P.act=null; P.speed=0; P.crouch=false; const moto=v.def.kind==='moto'; P.H.sit=moto; P.H.g.visible=moto; A.tone(60,120,.6,.22,'sawtooth');
+  toast(IS_TOUCH?'Sol çubuk: gaz ve direksiyon · <b>E</b>: in':'<b>W/S</b> gaz-fren · <b>A/D</b> direksiyon · <b>Boşluk</b> el freni · <b>V</b> kamera · <b>H</b> korna · <b>E</b> in'); toastT=6 }
+function exitCar(force){ if(!V.on)return; if(!force&&Math.abs(V.spd)>2.5){ toast('Önce durdur'); return } V.on=false; V.spd=0; V.g.rotation.z=0; P.H.sit=false; P.H.body.position.y=0; P.pos.set(V.pos.x+Math.cos(V.rot)*1.6,0,V.pos.z-Math.sin(V.rot)*1.6); collide(P.pos,.38); P.rot=V.rot; P.H.g.visible=true }
+function updateVehicle(dt){ const D0=V.def,moto=D0.kind==='moto'; let th=inp.y,st=inp.x; if(keys.KeyW||keys.ArrowUp)th+=1; if(keys.KeyS||keys.ArrowDown)th-=1; if(keys.KeyD||keys.ArrowRight)st+=1; if(keys.KeyA||keys.ArrowLeft)st-=1; th=clamp(th,-1,1); st=clamp(st,-1,1);
+  if(th>0)V.spd+=(V.spd<0?15:D0.acc)*th*dt; else if(th<0)V.spd+=(V.spd>0?17:5)*th*dt; else V.spd*=Math.exp(-dt*.6); if(keys.Space)V.spd*=Math.exp(-dt*4); V.spd=clamp(V.spd,-5,D0.max);
+  V.steer=lerp(V.steer,st,1-Math.exp(-dt*7)); V.rot-=V.steer*clamp(V.spd/4.5,-1,1)*(moto?2.4:2)/(1+Math.abs(V.spd)*.07)*dt;
+  const sx=Math.sin(V.rot),cz=Math.cos(V.rot); V.pos.x+=sx*V.spd*dt; V.pos.z+=cz*V.spd*dt; let hit=0;
+  for(const o of(moto?[0]:[1.25,-1.25])){ const q={x:V.pos.x+sx*o,z:V.pos.z+cz*o},qx=q.x,qz=q.z; collide(q,moto?.65:.95,true); const dx=q.x-qx,dz=q.z-qz; if(dx*dx+dz*dz>1e-7){ V.pos.x+=dx; V.pos.z+=dz; hit=1 } }
+  if(hit){ if(Math.abs(V.spd)>5){ shake=.3; A.burst(170,1,.2,.8,'lowpass') } V.spd*=Math.exp(-dt*9) }
+  syncV(); if(moto)V.g.rotation.z=-V.steer*clamp(V.spd/8,-1,1)*.4; P.pos.x=V.pos.x; P.pos.z=V.pos.z; P.rot=V.rot; if(Math.abs(V.spd)>1.2&&!dragging)cam.yaw+=wrap(V.rot+Math.PI-cam.yaw)*(1-Math.exp(-dt*2.6));
+  if(A.ctx){ const t=A.ctx.currentTime; A.enG.gain.setTargetAtTime(.1,t,.1); A.en.frequency.setTargetAtTime((moto?70:46)+Math.abs(V.spd)*(moto?11:8.5),t,.08) } }
+
+/* ================= EFEKTLER: yangın, yağmur, lambalar ================= */
+const FI={on:false,hp:[1,1,1],m:[],pos:[[-66.5,-3.3],[-61,-3.3],[-56.6,-3.4]],light:null}; let SCORCH=null,RAIN=null; const LAMPS=[];
+function fireOn(v){ FI.on=v; if(v)FI.hp=[1,1,1]; FI.m.forEach(m=>m.visible=v) }
+function buildFx(){ for(const p of FI.pos){ const m=new THREE.Mesh(new THREE.ConeGeometry(.95,2.8,7),M.fire); m.position.set(p[0],1.4,p[1]); m.visible=false; scene.add(m); FI.m.push(m) }
+  FI.light=new THREE.PointLight(0xff6a1a,0,34,1.3); FI.light.position.set(-61,2.6,-1.2); scene.add(FI.light);
+  SCORCH=new THREE.Mesh(new THREE.PlaneGeometry(15.8,5),new THREE.MeshBasicMaterial({color:0x050505,transparent:true,opacity:.62})); SCORCH.position.set(-62,2.6,-3.9); SCORCH.visible=false; scene.add(SCORCH);
+  const n=900,a=new Float32Array(n*3); for(let i=0;i<n;i++){a[i*3]=(Math.random()-.5)*44;a[i*3+1]=Math.random()*22;a[i*3+2]=(Math.random()-.5)*44} const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(a,3));
+  RAIN=new THREE.Points(g,new THREE.PointsMaterial({color:0xa8bccf,size:.09,transparent:true,opacity:.5,depthWrite:false})); RAIN.frustumCulled=false; RAIN.visible=false; scene.add(RAIN);
+  for(let i=0;i<4;i++){ const l=new THREE.PointLight(0xffb060,0,26,1.6); scene.add(l); LAMPS.push(l); W.lamps.push(l) } }
+let lampT=0;
+function updateFx(dt){ const fl=.8+Math.sin(T*23)*.1+Math.random()*.2; let sum=0; if(FI.on)FI.m.forEach((m,i)=>{ const h=FI.hp[i]; sum+=h; m.visible=h>0; m.scale.set(.5+h*.5,h*fl,.5+h*.5) }); FI.light.intensity=sum*1.3*fl;
+  W.rain=lerp(W.rain,W.rainT,1-Math.exp(-dt*.6)); RAIN.visible=W.rain>.03; if(RAIN.visible){ const a=RAIN.geometry.attributes.position; for(let i=1;i<a.array.length;i+=3){ a.array[i]-=27*dt; if(a.array[i]<0)a.array[i]+=22 } a.needsUpdate=true; RAIN.position.set(camera.position.x,0,camera.position.z); RAIN.material.opacity=.55*W.rain }
+  if(A.rainG)A.rainG.gain.setTargetAtTime(W.rain*.06,A.ctx.currentTime,.5);
+  lampT-=dt; if(lampT<0){ lampT=.5; const c=state==='menu'?MENU_C:P.pos; const s=W.lampPos.map(p=>[hyp(p[0]-c.x,p[1]-c.z),p]).sort((a,b)=>a[0]-b[0]); LAMPS.forEach((l,i)=>{ if(s[i])l.position.set(s[i][1][0],5.2,s[i][1][1]) }) } }
+
+/* ================= OPTİMİZASYON ================= */
+function mergeStatic(){ world.updateMatrixWorld(true); const groups=new Map(),rm=[];
+  world.traverse(o=>{ if(!o.isMesh||o.isInstancedMesh||Array.isArray(o.material))return; for(let p=o;p&&p!==world;p=p.parent)if(p.userData.dyn)return; const k=o.material.uuid+(o.castShadow?1:0)+(o.receiveShadow?1:0); if(!groups.has(k))groups.set(k,[]); groups.get(k).push(o) });
+  groups.forEach(list=>{ if(list.length<2)return; let n=0; const gs=list.map(o=>{ const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone(); g.applyMatrix4(o.matrixWorld); n+=g.attributes.position.count; return g });
+    const pos=new Float32Array(n*3),nor=new Float32Array(n*3),uv=new Float32Array(n*2); let i=0; for(const g of gs){ pos.set(g.attributes.position.array,i*3); nor.set(g.attributes.normal.array,i*3); if(g.attributes.uv)uv.set(g.attributes.uv.array,i*2); i+=g.attributes.position.count; g.dispose() }
+    const bg=new THREE.BufferGeometry(); bg.setAttribute('position',new THREE.BufferAttribute(pos,3)); bg.setAttribute('normal',new THREE.BufferAttribute(nor,3)); bg.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+    const m=new THREE.Mesh(bg,list[0].material); m.castShadow=list[0].castShadow; m.receiveShadow=list[0].receiveShadow; world.add(m); rm.push(...list) });
+  rm.forEach(o=>{ o.parent.remove(o); o.geometry.dispose() }); world.traverse(o=>{ let d=false; for(let p=o;p&&p!==world;p=p.parent)if(p.userData.dyn)d=true; if(!d){ o.updateMatrix(); o.matrixAutoUpdate=false } }); world.updateMatrixWorld(true) }
+let perfN=0,perfT=0,lastDrop=false,lastFps=0,stall=0,autoLock=false;
+function perf(raw){ perfN++; perfT+=raw; if(perfT<1)return; const fps=perfN/perfT; perfN=0; perfT=0; if(S.fps)$('#fps').textContent=Math.round(fps)+' FPS · çözünürlük %'+Math.round(dyn*100);
+  if(!S.auto||autoLock||state==='menu'||state==='pause'||document.hidden)return;
+  if(lastDrop){ if(fps<lastFps+1.5){ if(++stall>=3){ autoLock=true; dyn=1; renderer.setPixelRatio(BASEPR); return } } else stall=0 } lastDrop=false;
+  if(fps<42&&dyn>.55){ dyn=Math.max(.55,dyn-.1); lastDrop=true; lastFps=fps; renderer.setPixelRatio(BASEPR*dyn) } else if(fps>57&&dyn<1){ dyn=Math.min(1,dyn+.05); renderer.setPixelRatio(BASEPR*dyn) } }
+const OUTF=[['Siyah eşofman',0x1d2026,0x23262c,0xf2f2f2],['Deri mont, kot',0x2a1c14,0x2a3a55,0x2a2018],['Gri tişört, haki pantolon',0x8a8d90,0x4a4a36,0xdedede],['Bordo eşofman',0x6a1620,0x6a1620,0xf2f2f2]];
+function applyOutfit(){ const i=G.outfit||0; if(P.outfitBuilt===i)return; P.outfitBuilt=i; const o=OUTF[i],old=P.H; P.H=makeHuman({top:o[1],bot:o[2],shoe:o[3],hair:0x15110d,stripe:i===0?0xd9a441:i===3?0xffffff:0,skin:SKIN[0],beard:1}); P.H.g.visible=old.g.visible; P.H.sit=old.sit; scene.remove(old.g); if(P.gun)P.H.elR.add(P.gun) }
+function focusLabel(){ const f=focus; return f.k==='npc'?'Konuş · '+f.n.name:f.k==='car'?((VEHS[f.i].def.ok()?'Bin · ':'Kilitli · ')+VEHS[f.i].def.name):f.k==='exit'?'Arabadan in':f.k==='spot'?f.sp.label:'Otur' }
+
+/* ================= HİKÂYE — BÖLÜM 3–10 ================= */
+const TAIL=[[0,22],[0,50],[7,62.5],[44,63],[49.8,56],[49.8,37],[57,39]];
+const FINALS={usta:'Final: Usta',reis:'Final: Yeni Reis',bilet:'Final: Tek Bilet'};
+const carHome=()=>{ exitCar(true); setV(0); V.pos.set(-47,0,-2.2); V.rot=Math.PI/2; V.spd=0; syncV() };
+const NEW=[
+ // ---- B3
+ {t:"Kıraathaneye git, Hasan Dayı'dan bodrumun anahtarını iste",npc:'hasan',conv:async()=>{ const H='Hasan Dayı';
+   await D.say(H,'Bu saatte geldiğine göre defterin arka sayfasını okudun.'); await D.say(K,'Anahtar sendeymiş.');
+   await D.say(H,"On beş yıldır boynumda taşırım. Baban “ben ölürsem oğlanlara ver” dedi. “Hangisine?” diye sordum; “hak edene” dedi.");
+   await D.say(H,'İçinde ne olduğunu bana sorma. Git, gör. Sonra gel; gerisini ben anlatırım.'); toast('Eşya alındı: <b>Bodrum anahtarı</b>') },
+  alt:{if:()=>G.flags.bodrum==='kir',t:'Hurdalıktan bir balyoz bul',go:[-70,22.5],r:3,run:async()=>{ toast('Eşya alındı: <b>Balyoz</b>'); await think(['Sapı çatlak ama iş görür. Babam olsa “alet adamı değil, adam aleti taşır” derdi.']) }}},
+ {t:'Dükkâna dön, bodruma in',go:[-60.5,-2.6],r:3,run:async()=>{
+   await narr([G.flags.bodrum==='kir'?'Dördüncü darbede sıva döküldü, yedincide tuğla. Duvarın arkası küf ve motor yağı kokuyordu.':'Anahtar kilide on beş yıl sonra ilk kez girdi. Kapının arkası küf ve motor yağı kokuyordu.',
+     'Tek bir sandık vardı. Üstünde babamın el yazısı: “C.K.”','İçinden üç şey çıktı: lastikle sarılmış eski paralar, kapağı lekeli bir muhasebe defteri ve yağlı beze sarılı bir tabanca.',
+     'Selim tabancaya dokunmadı bile. “Bu emanet değil Kerem,” dedi. “Bu rehin.”','Yukarıdan cam sesi geldi. Sonra ayak sesleri. Siyah araba gitmemiş; arkadaş getirmiş.']);
+   P.pos.set(-60,0,0); place('t1',-52,2,-1.6); place('t2',-51,-1.5,-1.6); A.sting();
+   return {fight:{who:['t1','t2'],waves:[['t3']],spawn:[-44,0],hp:60,dmg:10,cd:1.3,spd:2.9,obj:'Dükkânı basanları yere ser'}} },
+  after(){ G.flags.sandik=1; G.rel.selim=clamp(G.rel.selim+1,-3,3); setTimeout(()=>bark('Selim','Kolum… bir şey yok, sıyırdı. Sandığı yukarı taşı Kerem. Hemen.'),600) },end:3},
+ // ---- B4
+ {t:'Selim ile konuş — arabanın anahtarını al',npc:'selim',conv:async()=>{ const H='Selim';
+   await D.say(H,'Babamın arabasının anahtarı. Üç yıldır kimse sürmedi; marşa iki kere bas.');
+   await D.say(H,"Rıza'nın siyah arabası bu saatte meydanın güney sokağında durur. Peşine takıl; ama burnunun dibine girme, fazla da geride kalma.");
+   const c=await pickSay([{tag:'YARDIM TEKLİF ET',text:'Kolun nasıl? Doktora gidelim önce.',rel:{selim:1}},{tag:'SERT CEVAP',text:'Ben dönene kadar dükkândan çıkma. Kapıyı da kimseye açma.',saygi:1}]);
+   await D.say(H,['Kaynar. Sen işine bak, akşam olmadan dön.','Emir mi veriyorsun artık? …Tamam. Çıkmam.'][c]); G.flags.anahtar=1; toast('Eşya alındı: <b>Araba anahtarı</b>') }},
+ {t:'Babanın arabasına bin (dükkânın önünde)',target:()=>VEHS[0].g.position,tick:()=>V.on&&V.cur===0},
+ {t:"Rıza'nın siyah arabasını takip et — ne yaklaş ne kaybet",target:()=>RZ.g.position,
+  setup(){ RZ.g.visible=true; RZ.g.position.set(0,0,22); RZ.g.rotation.y=0; RZ.i=1; RZ.go=false; RZ.lost=RZ.seen=RZ.v=0 },
+  tick(dt){ const p=RZ.g.position,d=hyp(p.x-P.pos.x,p.z-P.pos.z); if(!V.on){ W.hud='Arabaya bin'; return false }
+   if(!RZ.go){ W.hud='Meydanın güneyindeki siyah arabaya yaklaş'; if(d<30){ RZ.go=true; toast('Rıza hareket etti. Arayı koru.') } return false }
+   const w=TAIL[RZ.i]; if(w){ const dx=w[0]-p.x,dz=w[1]-p.z,l=hyp(dx,dz); if(l<1.6)RZ.i++; else { RZ.g.rotation.y+=wrap(Math.atan2(dx,dz)-RZ.g.rotation.y)*(1-Math.exp(-dt*4)); RZ.v=lerp(RZ.v,l<8?5:8.5,1-Math.exp(-dt*2)); p.x+=Math.sin(RZ.g.rotation.y)*RZ.v*dt; p.z+=Math.cos(RZ.g.rotation.y)*RZ.v*dt }
+     W.hud=d<8?'Çok yakınsın!':d>48?'Kaybediyorsun!':'Mesafe iyi' }
+   else { W.hud='Durdu. Uzakta dur, arabayı durdur'; if(d<46&&d>9&&Math.abs(V.spd)<.8)return true }
+   RZ.seen=d<8?RZ.seen+dt:0; RZ.lost=d>62?RZ.lost+dt:0;
+   if(RZ.seen>2.5||RZ.lost>5){ toast(RZ.seen>2.5?'Rıza seni fark etti. Baştan.':'İzini kaybettin. Baştan.'); carHome(); P.pos.set(-50,0,0); cam.yaw=-Math.PI/2; this.setup() } return false },
+  run:async()=>{ exitCar(true) }},
+ {t:'Arabadan in, boş arsaya sessizce yaklaş',go:[64,39],r:5,setup(){ RZ.g.visible=true; RZ.g.position.set(57,0,39); RZ.g.rotation.y=1.2; place('cemal',73.4,37.6,1.2); place('riza',74.8,36.4,-2) },
+  run:async()=>{ exitCar(true); const C='Cemal Karataş',Rz='Tilki Rıza'; D.begin(byId.cemal);
+   await D.say(C,'Sedat hastanede. Üç adamım sanayide yerde kaldı. Bana bir çocuğun bunu tek başına yaptığını mı söylüyorsun Rıza?');
+   D.npc=byId.riza; await D.say(Rz,'Tek başına değil abi. Mahalle onun arkasında durmaya başladı.');
+   D.npc=byId.cemal; await D.say(C,'Mahalle kimin arkasında duracağını benden öğrenir. Sandık cumaya kadar gelmezse o dükkânı içindekilerle yakarım.');
+   hide('cemal'); D.npc=byId.riza; await D.say('','Cemal arabasına bindi, gitti. Rıza ateşin başında yalnız kaldı; sonra karanlığa, tam bana doğru konuştu.');
+   await D.say(Rz,"Çık hadi Kero. O hurdanın motor sesini Mersin'den duyarım.");
+   await D.say(Rz,"Dinlediğin iyi oldu. O sandığı ben de istiyorum; ama Cemal'e vermek için değil.");
+   const c=await pickSay([{tag:'SAKİN KAL',text:'Ne istiyorsun, açık konuş.',rel:{riza:1}},{tag:'TEHDİT ET',text:'Dükkâna bir daha gelen olursa ilk seni bulurum.',rel:{riza:-1},saygi:1},{tag:'SORU SOR',text:'Sandıkta ne olduğunu biliyor musun?'}]);
+   await D.say(Rz,['Açık konuşayım o zaman.','Bulursun. Ama önce dinle.','Senden iyi biliyorum.'][c]);
+   await D.say(Rz,"O tabanca 2009'da bir adamı öldürdü. Tetiği Cemal çekti. O gün bugündür bunu herkes bilir, kimse ispat edemez. Sen edebilirsin.");
+   await D.say(Rz,'Cemal düşerse yeri boş kalmaz Kero. Onu sen de düşün; ben çoktan düşünüyorum.'); D.end() },end:4},
+ // ---- B5
+ {t:'Çırak Ufuk ile konuş — Selim nerede?',npc:'cirak',setup(){ hide('selim') },conv:async()=>{ const H='Çırak Ufuk';
+   await D.say(H,'Abi… Selim Usta gün ağarmadan çıktı. Rot balansçının kamyonetini aldı, arkasına bir sandık koydu.');
+   await D.say(H,"Otogar tarafına, ana caddenin doğu ucuna sürdü. “Kardeşime söyleme” dedi ama… sen de ustanın oğlusun abi.");
+   const c=await pickSay([{tag:'SAKİN KAL',text:'Sağ ol Ufuk. Dükkânı kapat, kimseyi alma.'},{tag:'SERT CEVAP',text:'Neden durdurmadın? Gözünün önünde gitti!',saygi:1}]);
+   await D.say(H,['Tamam abi. Yetiş ona; yüzü hiç iyi değildi.','Ben çırağım abi… Usta “çekil” deyince çekilirim.'][c]) }},
+ {t:"Arabayla ana caddenin doğu ucuna yetiş — Selim'i durdur",target:()=>({x:90,z:63}),
+  setup(){ this._t=75; hide('selim'); carHome(); P.pos.set(-51,0,.6) },
+  tick(dt){ this._t-=dt; W.hud=fmt(this._t)+(V.on?'':' · arabaya bin'); if(this._t<=0){ toast('Selim gözden kayboldu. Baştan.'); this.setup(); return false } return V.on&&near([90,63],8) },
+  run:async()=>{ exitCar(true); const s=place('selim',P.pos.x+3.2,P.pos.z+1.5,0); collide(s.pos,.35); const H='Selim'; D.begin(s);
+   await D.say(H,'Dur. Yaklaşma Kerem.'); await D.say(K,'Sandık nerede abi?');
+   await D.say(H,"Kamyonette. Cemal'e götürüyordum. Borcu silecekti, dükkâna da dokunmayacaktı. Söz verdi.");
+   await D.say(H,'Sen üç yıl yoktun! Ben her gece o kapıyı kilitlerken arkama baktım. Yoruldum. Bitsin istedim.');
+   const c=await pickSay([{tag:'SAKİN KAL',text:'Sana kızmıyorum. Ama o sandık giderse babam boşuna susmuş olur.',rel:{selim:2},flag:['kan','affet']},{tag:'YUMRUK AT',text:'Bizi sattın! Babamı da, beni de!',rel:{selim:-1},saygi:1,flag:['kan','kavga']},{tag:'KONUYU DEĞİŞTİR',text:"Cemal'in sözü mü? Dükkânı yakacağını kendi ağzından duydum.",rel:{selim:1},flag:['kan','ikna']}]);
+   if(c===1){ await D.say(H,'Vur. Hak ettim belki. Ama ben de vururum.'); D.end(); return {fight:{who:['selim'],hp:55,dmg:7,cd:1.5,spd:2.5,spar:1,obj:'Selim pes edene kadar dövüş'}} }
+   await D.say(H,['…Babam tapuyu sana boşuna bırakmamış. Al anahtarı. Eve dönelim.','Yakacak mı? …Bana “dokunmam” dedi. Yüzüme baka baka. Al şu anahtarı.'][c===0?0:1]); D.end() },
+  after(){ if(G.flags.kan==='kavga')setTimeout(()=>bark('Selim','…Tamam. Tamam. Sandık senin. Eve dönelim.'),500) },end:5},
+ // ---- B6
+ {t:'Hasan Dayı ile konuş — sandığın hikâyesi',npc:'hasan',conv:async()=>{ const H='Hasan Dayı';
+   await D.say(H,"2009'da Cemal'in bir ortağı vardı: Yusuf. Kasap Halil'in kardeşi, Sedat'ın babası.");
+   await D.say(H,'Bir gece sanayide tartıştılar. Cemal çekti, vurdu. Baban dükkândaydı; her şeyi gördü.');
+   await D.say(H,"Cemal ona tabancayı ve Yusuf'un defterini verdi, “yok et” dedi. Baban yok etmedi; duvarın arkasına ördü. “Bu bende durdukça dükkânıma da çocuklarıma da dokunamazsın” dedi.");
+   await D.say(K,'On beş yıl sustu yani.');
+   await D.say(H,'Sustu. Susmak onu içten içe yedi. Git, mahalleyi dolaş; babanın o geceden sonra nerelere gittiğini gör. Sonra kararını verirsin.') }},
+ {t:'Babanın izlerini bul: cami avlusu, park, gecekondu sokağı',multi:[
+   {id:'cami',go:[13.5,-46.5],r:3.5,run:()=>think(['Cami avlusu. Babam on beş yıl boyunca her cuma buraya gelmiş; ama hiç içeri girmemiş. Avluda oturur, ezan bitince kalkarmış.'])},
+   {id:'park',go:[74,3.4],r:3.5,run:()=>think(["Parktaki bank. Yusuf'un oğlu Sedat küçükken babam ona burada bisiklet sürmeyi öğretmiş. Sedat kimin öğrettiğini hatırlamıyor."])},
+   {id:'ev',go:[-1.5,-66],r:3.5,run:()=>think(["Yusuf'un dul eşinin evi. Kapının önüne her ayın birinde isimsiz bir zarf bırakılırmış. Kırk gündür zarf gelmiyor."])}]},
+ {t:"Hurdalığa git, Sedat'a babasını anlat",npc:'sedat',setup(){ place('sedat',-74,22.6,Math.PI) },conv:async()=>{ const H='Sedat';
+   await D.say(H,'Yine mi sen? Kolum hâlâ alçıda. Vuracaksan öbür tarafa vur.'); await D.say(K,"Kavgaya gelmedim. Baban Yusuf'u kimin vurduğunu biliyor musun?");
+   await D.say(H,'…Kaza dediler. Cemal Abi cenaze masrafını bile ödedi.');
+   const c=await pickSay([{tag:'DOĞRUYU SÖYLE',text:'Tetiği Cemal çekti. Tabanca da, babanın defteri de bende.',saygi:1,flag:['sedat','ally']},{tag:'KONUYU DEĞİŞTİR',text:"Bilmiyorsan sorma. Yalnız cuma günü Cemal'in yanında durma.",flag:['sedat','notr']},{tag:'TEHDİT ET',text:"Cemal'in adamı kalırsan sonun baban gibi olur.",flag:['sedat','dusman']}]);
+   await D.say(H,['Yalan söylüyorsan seni gömerim. Doğru söylüyorsan… cuma günü nerede duracağımı biliyorum.','Tehdit mi bu, öğüt mü? …Düşünürüm.','Babamın adını ağzına alma! Cuma günü görüşürüz.'][c]) },end:6},
+ // ---- B7
+ {t:'Dükkân yanıyor! Sanayiye koş',go:[-57,2.5],r:6,setup(){ fireOn(true); place('selim',-51.5,2.6,-2) },run:async()=>{ bark('Selim','Yangın tüpü rot balansçının kapısında! Koş!') }},
+ {t:'Karşıdaki rot balansçıdan yangın tüpünü al',go:[-62,5],r:2.6,setup(){ fireOn(true); place('selim',-51.5,2.6,-2) },run:async()=>{ toast('Eşya alındı: <b>Yangın tüpü</b>') }},
+ {t:'Alevlerin önünde durup yangını söndür',target(){ const i=FI.hp.findIndex(h=>h>0); return i<0?null:{x:FI.pos[i][0],z:FI.pos[i][1]+1.6} },
+  setup(){ fireOn(true); this._t=80; place('selim',-51.5,2.6,-2) },
+  tick(dt){ this._t-=dt; let act=false; FI.pos.forEach((p,i)=>{ if(FI.hp[i]>0&&near([p[0],p[1]+1.5],2.8)){ FI.hp[i]=Math.max(0,FI.hp[i]-dt/2.6); act=true } }); if(act&&frames%7===0)A.burst(3200,.5,.2,.22,'highpass');
+   W.hud=fmt(this._t)+(act?' · söndürülüyor':''); if(FI.hp.every(h=>h<=0))return true; if(this._t<=0){ toast('Alevler dükkânı sardı. Baştan.'); this.setup() } return false },
+  after(){ G.flags.yandi=1; setTimeout(()=>bark('Çırak Ufuk','Abi! Şu kaçan! Bidon onun elindeydi!'),300) }},
+ {t:'Kundakçıyı yakala',target:()=>byId.kundak.pos,
+  setup(){ const n=place('kundak',-44,0,Math.PI/2); n.path=[[-22,0],[-9,11],[0,20],[0,48],[-1.5,22],[-9,11],[-22,0],[-72,0]]; n.pi=0; n.spd=4.6; n.mode='walk' },
+  tick(){ const n=byId.kundak,d=hyp(n.pos.x-P.pos.x,n.pos.z-P.pos.z); W.hud=d>40?'Kaçıyor!':''; if(d>62){ toast('Kundakçı kaçtı. Baştan.'); P.pos.set(-55,0,1); this.setup(); return false } return d<1.7 },
+  run:async()=>{ bark('Kundakçı','Bırak la! Bırak beni!'); return {fight:{who:['kundak'],hp:50,dmg:9,cd:1.4,spd:3,obj:'Kundakçıyı yere ser'}} },
+  after(){ G.flags.yagmur=1; W.rainT=1; setTimeout(()=>bark('Kundakçı','Cemal Abi “yak” dedi… ben sadece bidonu taşıdım…'),700) },end:7},
+ // ---- B8
+ {t:'Üç teklifi dinle: Hasan Dayı, Rıza (boş arsa), Selim',setup(){ place('riza',72.6,38.6,-2.2) },multi:[
+   {id:'h',npc:'hasan',run:async()=>{ const H='Hasan Dayı'; await D.say(H,'Sandığı savcıya götür. Ben de şahitlik ederim; on beş yıl sustum, yeter. Mahalle arkanda durur.'); await D.say(H,'Kolay yol değil. Cemal içeri girer ama adamları dışarıda kalır. Yine de geceleri uyursun.') }},
+   {id:'r',npc:'riza',run:async()=>{ const H='Tilki Rıza'; await D.say(H,'Sandığı bana ver demiyorum. Birlikte kullanalım diyorum. Cemal düşer, kahveye sen oturursun, tahsilatı ben yaparım.'); await D.say(H,'Mahalleye bir reis lazım Kero. Sen olmazsan başkası olur; senden iyisi de olmaz.') }},
+   {id:'s',npc:'selim',run:async()=>{ const H='Selim'; await D.say(H,"Cemal aradı. Sandığa karşılık borcu siliyor, üstüne bir milyon veriyor. Tek şartı: ikimiz de Adana'dan gideceğiz."); await D.say(H,"Ben yoruldum Kerem. İzmir'de bir sanayi sitesi varmış… Bir kere de kolay olanı seçsek?") }}]},
+ {t:'Meydandaki çınarın altında kararını ver',go:[0,4.6],r:2.6,run:async()=>{ exitCar(true); D.begin(null);
+   await D.say('Kerem (iç ses)','Babam bu ağacın altında otururdu. “Adam sözünden değil, seçtiğinden belli olur” derdi.');
+   const o=[{tag:'MAHALLE',text:'Hasan Dayı ile savcıya gideceğim.',rel:{hasan:1},flag:['taraf','mahalle']},{tag:'RIZA',text:"Rıza ile birlikte Cemal'i devireceğim.",rel:{riza:2},flag:['taraf','riza']},{tag:'GİT',text:"Selim'le gideceğiz. Sandığı Cemal'e vereceğim.",rel:{selim:1},flag:['taraf','git']}];
+   const c=await D.choose(o); await D.say('Kerem (iç ses)',o[c].text);
+   await D.say('Kerem (iç ses)',['Doğrusu bu. Doğru olanın neden bu kadar ağır geldiğini babama soramayacağım.','Tilkiyle yola çıkan, tilkinin ininde uyur. Olsun. Uyanık yatarım.','Bir bavul, bir abi, bir otobüs. Belki de aile dediğin, yanında götürebildiğin kadardır.'][c]); D.end() },end:8},
+ // ---- B9
+ {t:'Arsaya gitmeden önce yanında duracakları topla',setup(){ if(G.flags.sedat==='ally')place('sedat',-74,22.6,Math.PI) },multi:[
+   {id:'m',npc:'memo',run:async()=>{ await D.say('Memo','Kero abi, ben varım. Motorla arkandan gelirim; birini de ben karşılarım.'); G.flags.memoAlly=1 }},
+   {id:'h',npc:'hasan',run:async()=>{ await D.say('Hasan Dayı','Ben yaşlıyım, yumruğum kalmadı; ama şahidim. Arsanın köşesinde duracağım. Herkes görsün, kim neyin tarafında.'); await D.say('Hasan Dayı','Şunu da al. Benim; ruhsatlı, içinde iki şarjör var. Adamlarından biri silahlı gelir, bilirim. Mecbur kalmadıkça çekme.'); G.flags.silah=1; toast('Eşya alındı: <b>Tabanca</b> — çatışmada <b>X</b> ile çek'); G.rel.hasan=clamp(G.rel.hasan+1,-3,3) }},
+   {id:'s',npc:'sedat',if:()=>G.flags.sedat==='ally',run:async()=>{ await D.say('Sedat','Defteri okudum. Babamın yazısı. Tek kolum var ama o da yeter; bir adamı ben tutarım.'); G.flags.sedatAlly=1 }}]},
+ {t:'Gün batımında boş arsaya git',go:[66,38.5],r:5,setup(){ place('cemal',77,37.5,-Math.PI/2); place('kadir',75.4,40,-Math.PI/2) },run:async()=>{ exitCar(true); const C='Cemal Karataş'; D.begin(byId.cemal);
+   await D.say(C,"İsmail'in küçüğü. Baban da böyle dik dururdu; bak şimdi nerede.");
+   if(G.flags.taraf==='git'){ await D.say(K,'Sandığı getirdim. Borç silinecek, biz gideceğiz.'); await D.say(C,"Akıllı çocuk. Ama Sedat'ın koluna, yerde kalan adamlarıma, mahallede bana çıkan lafa da bir bedel biçmem lazım. Kadir!") }
+   else { await D.say(K,'Sandık sana gelmiyor Cemal.'); await D.say(C,'O zaman sen de bir yere gitmiyorsun. Kadir!') }
+   D.end(); place('cemal',89,45,-2.3); let w1=['t1','t2'],w2=['t3','t4'],w3=['kadir','t5']; if(G.flags.memoAlly)w1=['t1']; if(G.flags.sedatAlly)w2=['t3'];
+   place('t1',72,35.5,-Math.PI/2); if(w1[1])place('t2',72,41,-Math.PI/2); P.pos.set(66,0,38.5); hide('kadir'); A.sting();
+   if(G.flags.taraf==='riza')setTimeout(()=>bark('Tilki Rıza','Arkadan gelen benden sorulur Kero. Sen önüne bak!'),1500);
+   return {fight:{who:w1,waves:[w2,w3],spawn:[85,38],hp:62,dmg:10,cd:1.3,spd:2.9,guns:['t5'],stats:{kadir:{hp:G.flags.taraf==='riza'?115:150,dmg:16},t5:{hp:50,dmg:13}},obj:"Cemal'in adamlarını yere ser"}} },
+  after(){ setTimeout(()=>bark('Cemal Karataş','…Yeter. Yarın gece kıraathanede konuşalım. Yalnız gel.'),600) },end:9},
+ // ---- B10
+ {t:'Kıraathaneye git — Cemal Karataş bekliyor',npc:'cemal',setup(){ place('cemal',-11.83,-15.62,2.74,true) },conv:async()=>{ const C='Cemal Karataş';
+   await D.say(C,'Otur. Çay söyledim. Baban şekersiz içerdi; sen?');
+   await D.say(C,'O sandık yüzünden on beş yıl bir tamirciye dokunamadım. Adam ölünce rahatlarım sandım; oğlu daha beteri çıktı.');
+   await D.say(C,'Üç yol var evlat. Sandığı devlete verirsin: ben yanarım, sen de bu sokaklarda hep arkana bakarsın. Bana verirsin: zengin gidersin. Ya da… benim sandalyeme oturursun. Onu da gördüm gözünde.');
+   const o=[{tag:'USTA',text:'Sandık savcıya gidiyor. Sen de bu mahalleden gidiyorsun.',flag:['final','usta']}];
+   if(G.saygi>=6||G.flags.taraf==='riza'||G.flags.defter==='kerem')o.push({tag:'YENİ REİS',text:'Sandık bende kalacak. Sandalye de.',flag:['final','reis']});
+   o.push({tag:'TEK BİLET',text:'Parayı ver. Bu gece gidiyoruz.',flag:['final','bilet']});
+   await pickSay(o); const f=G.flags.final,sv=G.rel.selim>=0,rv=G.rel.riza>=2;
+   await D.say(C,{usta:'…Baban da böyle bakardı. Tek farkınız, sen konuşuyorsun.',reis:"Hah. O sandalye sıcak durur ama çabuk yakar. Rıza'ya sırtını dönme.",bilet:'Akıllıca. Mahalle seni unutur; iki haftada unutur.'}[f]); D.end();
+   await narr({usta:["Sandığı pazartesi sabahı savcılığa Hasan Dayı ile birlikte götürdük. Cemal Karataş'ı salı günü aldılar.",sv?'Selim dükkânın tabelasını yeniden boyadı. Altına bir satır ekledi: “İsmail Usta ve Oğulları.”':"Selim İzmir'e gitti. Tabelayı tek başıma boyadım; altına yine de “ve Oğulları” yazdım.",rv?'Rıza bir gece dükkâna geldi, arabasının yağını değiştirtti. Parasını ödedi. Bu mahallede buna barış denir.':'Rıza ortadan kayboldu. Tilki inini değiştirir, huyunu değil.','Geceleri hâlâ arkama bakıyorum. Ama dükkânın kapısını kilitlerken elim titremiyor.'],
+     reis:["Cemal o gece Adana'dan çıktı. Sandalyesi bir hafta boş kaldı; sonra ben oturdum.",'Veresiye defteri artık bende. Kimse borcunu bana ödemiyor; sadece selam veriyor. Bunun daha pahalı olduğunu hepimiz biliyoruz.',sv?'Selim dükkânı çalıştırıyor. Benimle konuşurken gözlerime bakmıyor.':'Selim gitti. Giderken tapuyu tezgâhın üstüne bıraktı; üstünde tek kelime: “Senin.”','Hasan Dayı çayımı hâlâ getiriyor. Ama artık hesap kesiyor.',"Babamın notu cebimde duruyor: “Dükkânı Cemal'e verme.” Vermedim baba. Cemal oldum."],
+     bilet:['Sandığı verdim. Karşılığında bir çanta ve iki otobüs bileti aldım.',sv?"Selim cam kenarına oturdu. Pozantı'ya kadar konuşmadık; sonra “İzmir'de de araba bozulur” dedi.":'İkinci bilet cebimde kaldı. Selim otobüse binmedi; perondan el bile sallamadı.','Dükkânın yerine bir telefoncu açılmış. Hasan Dayı tabelayı indirip kıraathanenin duvarına asmış.',"Adana'dan çıkarken sıcak yakamı bıraktı. İlk kez üşüdüm."]}[f]) },end:10}
+];
+STEPS.splice(10,0,...NEW);
+const HP2=Math.PI/2;
+const CH=[null,{start:0,name:'Dönüş'},
+ {start:5,name:'Veresiye Defteri',time:8.6,spawn:[-60,0,HP2],lines:['Gece üç kere uyandım. Her seferinde sokaktan aynı motor sesi geçiyordu.','Sabah telefon titrediğinde, kötü haberin sırası gelmiş gibiydi.'],onStart:()=>setTimeout(()=>pushMsg('Nuri Bakkal','Kerem, erkenden gel. Gece dükkâna girmişler.','şimdi'),1200)},
+ {start:10,name:'Sanayi Gecesi',time:21.6,spawn:[-58,1,HP2],lines:['Siyah araba yarım saat bekledi, sonra gitti. Bir şey söylemeden gitmek de bir şey söylemektir.','Bodrumun duvarına baktık. On beş yıllık sıva; babamın elinden çıkma.'],sum:()=>"Bodrumdaki sandığı açtınız: eski paralar, lekeli bir muhasebe defteri ve bir tabanca. Cemal'in adamları aynı gece dükkânı bastı; üçünü de yere serdin. Selim kolundan yaralandı."},
+ {start:12,name:'Tilkinin İni',time:18.2,spawn:[-58,1,HP2],car:[-47,-2.2,HP2],lines:['Selim’in kolu askıda. Sandık yatağımın altında. İkimiz de uyumadık.','Bir tilkinin inini bulmak için peşinden gitmek gerekir.'],sum:()=>"Rıza'yı boş arsaya kadar izledin ve Cemal Karataş'ı ilk kez gördün. Rıza sandığı Cemal'e karşı kullanmak istiyor: tabanca 2009'da bir adamı öldürmüş."},
+ {start:16,name:'Kan Bağı',time:7.1,spawn:[-58,1,HP2],car:[-47,-2.2,HP2],lines:['Sabah uyandığımda yatağın altı boştu.','Selim yoktu. Sandık yoktu. Babamın “Selim’i de bırakma” yazısı hâlâ cebimdeydi.'],sum:()=>({affet:"Selim sandığı Cemal'e götürüyordu. Onu durdurdun ve affettin.",kavga:'Selim sandığı Cemal\'e götürüyordu. Yol kenarında yumruk yumruğa geldiniz; sandık geri döndü ama aranızda bir şey kırıldı.',ikna:"Selim sandığı Cemal'e götürüyordu. Cemal'in gerçek niyetini anlatıp onu geri çevirdin."}[G.flags.kan])},
+ {start:18,name:'Dükkânın Altındaki',time:16.4,spawn:[0,12,Math.PI],lines:['Sandık geri geldi; ama içindekinin ne olduğunu hâlâ tam bilmiyordum.','Hasan Dayı “gerisini ben anlatırım” demişti. Anlatma sırası gelmişti.'],sum:()=>"Babanın on beş yıllık sırrını öğrendin: Cemal'in ortağı Yusuf'u vurduğuna şahit olmuş, kanıtı duvarın arkasına saklamış. "+({ally:'Sedat gerçeği öğrendi ve senin tarafına geçti.',notr:'Sedat ne yapacağına karar veremedi.',dusman:'Sedat artık sana da düşman.'}[G.flags.sedat])},
+ {start:21,name:'Yangın',onStart:()=>incoming('Çırak Ufuk',['Abi! Abi dükkân yanıyor! Selim Usta içeri girmeye çalışıyor, koş!']),time:23.3,spawn:[-9,-13.5,-HP2],lines:['Perşembe gecesi. Cumaya bir gün kala Cemal sabrını değil, kibritini çıkardı.','Kıraathanedeydim. Önce kokuyu aldım; sonra sanayi tarafında göğün rengini gördüm.'],sum:()=>'Dükkânı ateşe verdiler. Yangını söndürdün, kundakçıyı yakalayıp yere serdin. Emri Cemal vermiş. Yağmur başladı.'},
+ {start:25,name:'Taraf Seç',time:17,rain:.6,spawn:[-58,1,HP2],lines:['Dükkânın ön cephesi kapkara. Selim süpürüyor; süpürülecek bir şey kalmamış gibi.','Yarın cuma. Üç kişi benden üç ayrı şey istiyor.'],sum:()=>({mahalle:'Hasan Dayı ile savcıya gitmeyi seçtin.',riza:"Rıza ile birlikte Cemal'i devirmeyi seçtin.",git:"Sandığı Cemal'e verip Selim'le gitmeyi seçtin."}[G.flags.taraf])},
+ {start:27,name:'Cuma, Gün Batımı',onStart:()=>incoming('Cemal Karataş',['Gün batımında boş arsa. Sandığı getir, yalnız gel.','Yalnız gelmezsen de olur. Kalabalık cenaze severim.']),time:18.5,rain:.25,spawn:[-58,1,HP2],car:[-47,-2.2,HP2],lines:['Cuma. Gün batımına bir saat var.','Cemal boş arsada bekliyor. Yanımda kim duracak, o da birazdan belli olur.'],sum:()=>"Boş arsada Cemal'in adamlarıyla karşılaştın; Boğa Kadir dahil hepsini yere serdin. Cemal ilk kez geri adım attı."},
+ {start:29,name:'Sokakların Kanunu',time:21.2,spawn:[0,10,Math.PI],lines:['Cemal Karataş yirmi yılda ilk kez birinin ayağına geldi: babamın otuz yıl çay içtiği kıraathaneye.','Sandık yanımda. Bu gece biri bu mahalleden gidecek.'],sum:()=>({usta:'Sandığı savcıya verdin. Dükkân da, mahalle de ayakta kaldı.',reis:"Cemal'i gönderdin ve yerine oturdun. Sokakların kanunu artık senin.",bilet:"Sandığı verdin, parayı aldın, Adana'dan ayrıldın."}[G.flags.final])}];
+
+/* ================= SİLAH / SİPER ================= */
+Object.assign(P,{weapon:0,ammo:8,mags:1,reload:0,lastShot:-9,crouch:false,gunUp:false,gun:null});
+const TR=[];
+function buildGunFx(){ for(let i=0;i<3;i++){ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3)); const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:0xffe9a0,transparent:true,opacity:.9,fog:false})); l.visible=false; l.frustumCulled=false; scene.add(l); TR.push({l,t:0}) }
+  P.gun=new THREE.Mesh(new THREE.BoxGeometry(.035,.11,.2),M.dark); P.gun.position.set(0,-.36,.07); P.gun.visible=false; P.H.elR.add(P.gun) }
+function tracer(ax,ay,az,bx,by,bz){ const t=TR.find(t=>t.t<=0)||TR[0],a=t.l.geometry.attributes.position; a.setXYZ(0,ax,ay,az); a.setXYZ(1,bx,by,bz); a.needsUpdate=true; t.l.visible=true; t.t=.07 }
+const gunSound=()=>{ A.burst(900,.6,.17,1.2,'lowpass'); A.tone(220,50,.18,.45,'square') };
+const _gd=new THREE.Vector3();
+function reload(){ if(P.reload>0||P.mags<=0||P.ammo>=8||!P.gunUp)return; P.reload=1.1; A.tone(520,300,.08,.2,'square') }
+function fire(){ if(!P.gunUp||P.hurtT>0||P.act||P.reload>0||T-P.lastShot<.3)return; if(P.ammo<=0){ A.tone(900,700,.04,.15,'square'); if(P.mags>0)reload(); else toast('Mermi bitti — <b>X</b> ile yumruğa geç'); return }
+  P.ammo--; P.lastShot=T; gunSound(); cam.pitch-=.03; shake=.2; const o=camera.position; camera.getWorldDirection(_gd); const d=_gd; let wall=70;
+  for(let t=1.5;t<70;t+=.4){ const y=o.y+d.y*t; if(y<0||inside(o.x+d.x*t,y,o.z+d.z*t)){ wall=t; break } }
+  let best=null,bt=wall; for(const n of F.list){ if(n.fx.st==='down')continue; const t=(n.pos.x-o.x)*d.x+(1.1-o.y)*d.y+(n.pos.z-o.z)*d.z; if(t<0||t>bt)continue; const px=o.x+d.x*t,py=o.y+d.y*t,pz=o.z+d.z*t; if(hyp(px-n.pos.x,pz-n.pos.z)<.5&&py>0&&py<1.95){ best=n; bt=t } }
+  tracer(P.pos.x+Math.sin(P.rot)*.5,P.crouch?1:1.35,P.pos.z+Math.cos(P.rot)*.5,o.x+d.x*bt,o.y+d.y*bt,o.z+d.z*bt); if(best)hitEnemy(best,24,3) }
+function shootAt(n,f,d){ gunSound(); const ty=P.crouch?.75:1.3; let blocked=false; for(let i=1;i<12;i++){ const u=i/12; if(inside(lerp(n.pos.x,P.pos.x,u),lerp(1.45,ty,u),lerp(n.pos.z,P.pos.z,u))){ blocked=true; break } }
+  let p=.8; if(P.speed>4)p-=.3; if(P.crouch)p-=.15; if(d>14)p-=.15; const hit=!blocked&&!(P.act&&P.act.k==='dodge')&&Math.random()<p;
+  tracer(n.pos.x,1.45,n.pos.z,P.pos.x+(hit?0:(Math.random()-.5)*1.6),ty+(hit?0:.5),P.pos.z+(hit?0:(Math.random()-.5)*1.6)); if(hit)hitPlayer(n,f.dmg,true); else if(blocked)A.burst(2600,3,.05,.3) }
+function toggleWeapon(){ if(!G.flags.silah){ toast('Üzerinde silah yok'); return } P.weapon=1-P.weapon; toast(P.weapon?'Tabanca hazır — yalnızca çatışmada çekilir':'Yumruk'); A.blip() }
+function toggleCrouch(){ if(state!=='play'||P.sit||V.on)return; P.crouch=!P.crouch }
+function updateGun(dt){ for(const t of TR)if(t.t>0){ t.t-=dt; if(t.t<=0)t.l.visible=false }
+  P.gunUp=state==='play'&&P.weapon===1&&F.on&&!!G.flags.silah&&P.hp>0&&!V.on; P.gun.visible=P.gunUp; P.H.cr=P.crouch&&!P.sit&&!V.on&&P.hp>0; if(state!=='play'&&state!=='phone')P.crouch=false;
+  if(P.reload>0){ P.reload-=dt; if(P.reload<=0){ P.ammo=8; P.mags--; A.tone(300,620,.06,.2,'square') } }
+  $('#cross').classList.toggle('hide',!P.gunUp); const am=$('#ammo'); if(G.flags.silah&&F.on){ am.classList.remove('hide'); am.textContent=P.weapon?(P.reload>0?'Şarjör değişiyor…':'Tabanca · '+P.ammo+' / '+P.mags*8):'Yumruk · X: tabanca' } else am.classList.add('hide') }
+
+/* ================= İŞ, PARA, TELEFON, SES ================= */
+const JOB={on:false,dest:null,t:0}, ADDR=[{n:'Kıraathane',p:[-6,-17.5]},{n:'Aydın Oto',p:[-58,1.5]},{n:'Park girişi',p:[54,0]},{n:'Gecekondu sokağı',p:[0,-70]},{n:'Otobüs durağı',p:[6,51]},{n:'Hurdalık',p:[-75,20]},{n:'Boş arsa',p:[58,36]}];
+const marker2=new THREE.Mesh(new THREE.OctahedronGeometry(.24,0),new THREE.MeshBasicMaterial({color:0x4aa3d9,transparent:true,opacity:.9,fog:false})); marker2.visible=false; scene.add(marker2);
+async function offerJob(n){ const a=pick(ADDR); D.begin(n); await D.say('Nuri Bakkal',`Teslimat var gardaşım: ${a.n}. İki dakikada götürürsen bahşişi de benden.`); const c=await D.choose([{tag:'İŞİ AL',text:'Ver paketi, götüreyim.'},{tag:'SONRA',text:'Şimdi olmaz Nuri Abi.'}]); D.end();
+  if(c===0){ JOB.on=true; JOB.dest=a; JOB.t=120; toast('Teslimat: <b>'+a.n+'</b> · 2 dakika') } }
+async function buySalgam(n){ D.begin(n); await D.say('Şalgamcı Bekir','Yüzün gözün dağılmış gardaşım. Bir acılı şalgam iyi gelir; kırk lira.'); const c=await D.choose([{tag:'AL · 40 ₺',text:'Ver bir acılı.'},{tag:'SONRA',text:'Kalsın, sağ ol.'}]); D.end(); if(c===0){ G.para-=40; P.hp=Math.min(100,P.hp+50); toast('Şalgam içtin: <b>+50 can</b>') } }
+function tickJob(dt){ const el=$('#job'); if(!JOB.on){ if(el.textContent)el.textContent=''; marker2.visible=false; return } JOB.t-=dt; const p=JOB.dest.p; marker2.visible=true; marker2.position.set(p[0],2.2+Math.sin(T*2.4)*.1,p[1]); marker2.rotation.y=T*1.5;
+  if(frames%10===0)el.textContent='Teslimat: '+JOB.dest.n+' · '+fmt(JOB.t)+' · '+Math.round(hyp(p[0]-P.pos.x,p[1]-P.pos.z))+' m';
+  if(near(p,3.2)){ const pay=120+Math.round(Math.max(0,JOB.t))*2; G.para=(G.para||0)+pay; JOB.on=false; toast('Teslim edildi: <b>+'+pay+' ₺</b>'); A.blip(); saveGame() } else if(JOB.t<=0){ JOB.on=false; toast('Teslimat gecikti. Nuri kızacak.') } }
+function nextOutfit(){ G.owned=G.owned||[0]; let i=((G.outfit||0)+1)%OUTF.length;
+  if(!G.owned.includes(i)){ if((G.para||0)>=250){ G.para-=250; G.owned.push(i); toast('Satın alındı: <b>'+OUTF[i][0]+'</b> (−250 ₺)') } else { toast('<b>'+OUTF[i][0]+'</b> 250 ₺ — paran yetmiyor. Nuri Bakkal teslimat işi veriyor.'); while(!G.owned.includes(i))i=(i+1)%OUTF.length } } else toast('Kıyafet: <b>'+OUTF[i][0]+'</b>');
+  G.outfit=i; applyOutfit(); A.blip(); saveGame() }
+const PITCH={'Kerem':1,'Kerem (iç ses)':.95,'Hasan Dayı':.6,'Selim':.8,'Nuri Bakkal':1.1,'Tilki Rıza':.9,'Cemal Karataş':.5,'Sedat':.7,'Tayfun':1.3,'Memo':1.4,'Çırak Ufuk':1.5};
+function speak(who,text){ if(!S.tts||!window.speechSynthesis)return; try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text.replace(/[“”—]/g,' ')); u.lang='tr-TR'; const v=speechSynthesis.getVoices().find(v=>/^tr/i.test(v.lang)); if(v)u.voice=v; u.pitch=PITCH[who.replace('Telefon · ','')]||1; u.rate=1.05; u.volume=S.vol; speechSynthesis.speak(u) }catch(e){} }
+function callLines(id){ const ch=chOf(G.step),tgt=curStep().npc===id; if(id==='selim')return ch===5&&G.step<18?['Aradığınız kişiye şu anda ulaşılamıyor.']:tgt?['Telefonda olmaz. Dükkâna gel.']:[ch<3?'Dükkândayım. Bir şey mi oldu?':ch<6?'Kolum iyi. Sen kendine dikkat et.':'Buradayım Kerem. Bu sefer bir yere gitmiyorum.'];
+  if(id==='hasan')return ['Telefonda konuşulmaz evlat. Kıraathaneye gel, çayın hazır.','Aklında olsun, işin belli: '+stepText().replace(/ \(\d+\/\d+\)$/,'')+'.'];
+  if(id==='nuri')return ['Bir ihtiyacın olursa dükkân açık gardaşım. Teslimat işi de var; uğra, paket vereyim.'];
+  if(id==='riza')return [G.rel.riza>=1?'Bu hattan arama. Ama madem aradın: arkanı kolla.':'Yanlış numara Kero.'];
+  return ['Kero abi! Motor meydanda, anahtarı üstünde. Al, kullan; yalnız çizme.'] }
+const CNAME={selim:'Selim',hasan:'Hasan Dayı',nuri:'Nuri Bakkal',riza:'Tilki Rıza',memo:'Memo'};
+function incoming(name,lines){ if(busy||state!=='play')return; A.buzz(); runScript(async()=>{ D.begin(null); for(const l of lines)await D.say('Telefon · '+name,l); D.end() },()=>{}) }
+function phoneCall(id){ if(F.on){ toast('Şimdi sırası değil'); return } togglePhone(false); incoming(CNAME[id],callLines(id)) }
+function takePhoto(){ try{ renderer.render(scene,camera); const c=cv(240,135); c.getContext('2d').drawImage(canvas,0,0,240,135); G.photos=G.photos||[]; G.photos.unshift({u:c.toDataURL('image/jpeg',.7),t:$('#clock').textContent.split(' · ')[0]+' · '+chLabel(G.step)}); G.photos=G.photos.slice(0,6); A.tone(1200,900,.05,.2,'square'); renderPhone(); saveGame() }catch(e){ toast('Fotoğraf çekilemedi') } }
+function renderPhotos(b){ b.innerHTML='<h3>Fotoğraflar</h3><button class="btn" id="shot">Fotoğraf çek</button><p class="note" style="margin:8px 0">Karşındaki görüntüyü kaydeder. Son 6 fotoğraf saklanır.</p>'; (G.photos||[]).forEach(p=>{ const d=document.createElement('div'); d.style.marginBottom='10px'; const im=new Image(); im.src=p.u; im.style.cssText='width:100%;display:block;border:1px solid var(--line)'; const s=document.createElement('small'); s.className='note'; s.textContent=p.t; d.append(im,s); b.appendChild(d) }); $('#shot').onclick=takePhoto }
+let hintK='';
+function updateHint(){ const k=V.on?'v':F.on?(P.gunUp?'g':'f'):'w'; if(k===hintK)return; hintK=k; $('#hint').innerHTML={w:'<kbd>WASD</kbd> yürü · <kbd>Shift</kbd> koş · <kbd>E</kbd> etkileşim · <kbd>C</kbd> çömel<br><kbd>T</kbd> telefon · <kbd>Esc</kbd> duraklat · fare: kamera',f:'<kbd>F</kbd>/sol tık yumruk · <kbd>G</kbd> tekme · <kbd>Q</kbd>/sağ tık blok<br><kbd>Boşluk</kbd> kaçın · <kbd>X</kbd> silah · <kbd>C</kbd> çömel',g:'sol tık/<kbd>F</kbd> ateş · <kbd>R</kbd> şarjör · <kbd>C</kbd> siperde çömel<br><kbd>X</kbd> yumruğa geç · <kbd>Boşluk</kbd> kaçın',v:'<kbd>W/S</kbd> gaz-fren · <kbd>A/D</kbd> direksiyon · <kbd>Boşluk</kbd> el freni<br><kbd>V</kbd> kamera · <kbd>H</kbd> korna · <kbd>E</kbd> in'}[k] }
+
+/* ================= HUD ================= */
+let toastT=0,barkT=0;
+function toast(html){ const e=$('#toast'); e.innerHTML=html; e.classList.add('on'); toastT=3.6 }
+function bark(name,text){ const e=$('#bark'); e.innerHTML='<b></b> '; e.firstChild.textContent=name+':'; e.appendChild(document.createTextNode(text)); e.classList.remove('hide'); barkT=3+text.length*.045 }
+const marker=new THREE.Mesh(new THREE.OctahedronGeometry(.28,0),M.marker); marker.visible=false; scene.add(marker);
+const mctx=$('#minic').getContext('2d');
+function drawMap(g,size,cx,cz,scale,labels){ g.fillStyle='#14171a'; g.fillRect(0,0,size,size); const X=x=>size/2+(x-cx)*scale,Z=z=>size/2+(z-cz)*scale;
+  const col={r:'#3a3d42',p:'#57534c',g:'#2c3d27',d:'#4a4032',b:'#7d776b'}; for(const t of['g','d','r','p','b'])for(const s of W.shapes){ if(s.t!==t)continue; g.fillStyle=col[t]; g.fillRect(X(s.x-s.w/2),Z(s.z-s.d/2),s.w*scale,s.d*scale) }
+  for(const n of NPCS){ if(!n.H.g.visible)continue; g.fillStyle=n.story?'#e9e4d8':'#8a8f96'; g.beginPath(); g.arc(X(n.pos.x),Z(n.pos.z),n.story?size*.014:size*.009,0,6.3); g.fill() }
+  g.fillStyle='#d9a441'; VEHS.forEach((v,i)=>{ if(V.on&&i===V.cur)return; g.fillRect(X(v.g.position.x)-size*.011,Z(v.g.position.z)-size*.011,size*.022,size*.022) }); if(JOB.on){ g.fillStyle='#4aa3d9'; g.fillRect(X(JOB.dest.p[0])-size*.016,Z(JOB.dest.p[1])-size*.016,size*.032,size*.032) } if(RZ.g.visible){ g.fillStyle='#c0392b'; g.fillRect(X(RZ.g.position.x)-size*.013,Z(RZ.g.position.z)-size*.013,size*.026,size*.026) }
+  for(const c of CARS){ g.fillStyle='#b9b4a8'; g.fillRect(X(c.g.position.x)-size*.012,Z(c.g.position.z)-size*.006,size*.024,size*.012) }
+  if(labels){ g.fillStyle='#e9e4d8'; g.font=`${Math.round(size*.032)}px sans-serif`; g.textAlign='center'; for(const l of W.labels)g.fillText(l[0],X(l[1]),Z(l[2])) }
+  const tp=targetPos(); if(tp){ let x=X(tp.x),z=Z(tp.z); const dx=x-size/2,dz=z-size/2,d=Math.hypot(dx,dz),m=size/2-size*.06; if(!labels&&d>m){x=size/2+dx/d*m;z=size/2+dz/d*m} g.fillStyle='#d9a441'; g.beginPath(); g.moveTo(x,z-size*.035); g.lineTo(x+size*.026,z); g.lineTo(x,z+size*.035); g.lineTo(x-size*.026,z); g.fill() }
+  g.save(); g.translate(X(P.pos.x),Z(P.pos.z)); g.rotate(-P.rot+Math.PI); g.fillStyle='#fff'; g.beginPath(); const a=size*.032; g.moveTo(0,-a); g.lineTo(a*.7,a*.8); g.lineTo(0,a*.35); g.lineTo(-a*.7,a*.8); g.fill(); g.restore() }
+let focus=null,hudT=0;
+function updateHUD(dt,t){ if(toastT>0){toastT-=dt;if(toastT<=0)$('#toast').classList.remove('on')} if(barkT>0){barkT-=dt;if(barkT<=0)$('#bark').classList.add('hide')}
+  const tp=targetPos(); marker.visible=!!tp&&!F.on&&state!=='dialogue'&&state!=='cine'&&state!=='menu'; if(tp){ marker.position.set(tp.x,2.35+Math.sin(t*2.4)*.1,tp.z); marker.rotation.y=t*1.5 }
+  if(state!=='play'){focus=null;$('#prompt').classList.add('hide');return}
+  // etkileşim hedefi
+  focus=null; let bd=2.3; if(!P.sit&&!F.on&&!V.on){ for(const n of NPCS){ if(!n.H.g.visible||n.mode==='out')continue; const d=Math.hypot(n.pos.x-P.pos.x,n.pos.z-P.pos.z); if(d<bd){bd=d;focus={k:'npc',n}} } for(const b of W.benches){ const d=Math.hypot(b.x-P.pos.x,b.z-P.pos.z); if(d<Math.min(bd,1.5)){bd=d;focus={k:'bench',b}} } }
+  const pr=$('#prompt'); if(!P.sit&&!F.on&&!focus){ if(V.on){ if(Math.abs(V.spd)<2.5)focus={k:'exit'} } else { let bi=-1,bb=2.9; VEHS.forEach((v,i)=>{ const dd=hyp(v.g.position.x-P.pos.x,v.g.position.z-P.pos.z); if(dd<bb){bb=dd;bi=i} }); if(bi>=0)focus={k:'car',i:bi}; else for(const sp of W.spots)if(near([sp.x,sp.z],1.7))focus={k:'spot',sp} } }
+  if(focus){ pr.innerHTML='<kbd>E</kbd>'; pr.appendChild(document.createTextNode(focusLabel())); pr.classList.remove('hide') } else if(P.sit){ pr.textContent='Kalkmak için hareket et'; pr.classList.remove('hide') } else pr.classList.add('hide');
+  hudT-=dt; if(hudT<0){ hudT=.1; drawMap(mctx,336,P.pos.x,P.pos.z,2.2,false); updateHint(); $('#stam').style.width=(P.stam*100)+'%'; $('#hp').style.width=P.hp+'%'; if(F.on){ const e=nearestFoe(99)||F.list[0]; $('#ename').textContent=e.name; $('#ehp').style.width=(e.fx.hp/e.fx.max*100)+'%' } const hh=Math.floor(W.time),mm=Math.floor((W.time%1)*60); const ck=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0'); $('#clock').textContent=ck+' · '+(G.para||0)+' ₺'; $('#phclock').textContent=ck;
+    $('#objd').textContent=[tp?Math.round(Math.hypot(tp.x-P.pos.x,tp.z-P.pos.z))+' m':'',W.hud].filter(Boolean).join(' · ') } }
+function interact(){ if(state!=='play'||!focus||F.on)return; if(focus.k==='npc')talk(focus.n); else if(focus.k==='car')enterCar(focus.i); else if(focus.k==='exit')exitCar(); else if(focus.k==='spot')focus.sp.fn(); else { const b=focus.b; P.sit=b; P.H.sit=true; P.rot=b.ry; P.pos.x=b.x+Math.sin(b.ry)*.12; P.pos.z=b.z+Math.cos(b.ry)*.12; P.speed=0; A.blip() } }
+
+/* ================= TELEFON ================= */
+let phApp='msg';
+function pushMsg(th,text,when){ G.msgs.push({th,text,when,nw:1}); G.unread++; A.buzz(); toast('Yeni mesaj · <b>'+th+'</b> — telefonu aç ('+(IS_TOUCH?'TEL':'T')+')'); renderPhone(); saveGame() }
+function renderPhone(){ const b=$('#phbody'); $$('#phone nav button').forEach(x=>{x.classList.toggle('on',x.dataset.app===phApp); if(x.dataset.app==='msg')x.innerHTML='Mesajlar'+(G.unread?`<sup>${G.unread}</sup>`:'')});
+  if(phApp==='msg'){ const ths={}; G.msgs.forEach(m=>(ths[m.th]=ths[m.th]||[]).push(m)); b.innerHTML='<h3>Mesajlar</h3>'; Object.keys(ths).reverse().forEach(k=>{ const d=document.createElement('div'); d.className='th'; const nm=document.createElement('div'); nm.className='nm'; nm.textContent=k; d.appendChild(nm);
+      ths[k].forEach(m=>{const e=document.createElement('div'); e.className='msg'+(m.nw?' new':''); e.textContent=m.text; const s=document.createElement('small'); s.textContent=m.when; e.appendChild(s); d.appendChild(e)}); b.appendChild(d) });
+    if($('#phone').classList.contains('on')){G.msgs.forEach(m=>delete m.nw);G.unread=0;$$('#phone nav button')[0].innerHTML='Mesajlar'} }
+  else if(phApp==='ct'){ const L=[['Selim (Abi)','selim'],['Hasan Dayı','hasan'],['Nuri Bakkal','nuri']]; if(G.step>=3)L.push(['Tilki Rıza','riza']); if(G.step>=7)L.push(['Memo','memo']);
+    b.innerHTML='<h3>Kişiler</h3>'+L.map(([n,k])=>`<div class="ct" style="align-items:center"><span>${n}<br><small>${G.rel[k]!=null?relT(G.rel[k]):'Tanıdık'}</small></span><button class="btn" data-call="${k}">Ara</button></div>`).join('')+`<div class="ct"><span>Mahalledeki saygın</span><small>${G.saygi}</small></div><div class="ct"><span>Cüzdan</span><small>${G.para||0} ₺</small></div>`;
+    b.querySelectorAll('[data-call]').forEach(x=>x.onclick=()=>phoneCall(x.dataset.call)) }
+  else if(phApp==='ph'){ renderPhotos(b) }
+  else if(phApp==='q'){ b.innerHTML='<h3>Görevler</h3><div class="q" style="color:var(--acc)"></div>'; b.querySelector('.q').textContent='▸ '+stepText(); G.done.slice().reverse().forEach(t=>{const e=document.createElement('div');e.className='q done';e.textContent=t;b.appendChild(e)}) }
+  else { b.innerHTML='<h3>Harita</h3><canvas id="bigmap" width="536" height="536"></canvas><p class="note" style="margin-top:8px">◆ hedef · beyaz ok: sen</p>'; drawMap($('#bigmap').getContext('2d'),536,0,-6,2.6,true) } }
+function togglePhone(on){ if(on===undefined)on=!$('#phone').classList.contains('on'); if(on&&state!=='play')return; if(!on&&state!=='phone')return; $('#phone').classList.toggle('on',on); if(on){setState('phone');releaseLock();renderPhone();A.blip()} else setState('play') }
+$$('#phone nav button').forEach(x=>x.onclick=()=>{phApp=x.dataset.app;renderPhone();A.blip()});
+
+/* ================= DURUM / MENÜ ================= */
+let state='menu', locked=false, lockExitAt=0, dragging=false;
+function setState(s){ state=s; $('#hud').classList.toggle('hide',s==='menu'); $('#touch').classList.toggle('hide',!IS_TOUCH||!(s==='play'||s==='phone')); if(s!=='play'){keys.KeyW=keys.KeyA=keys.KeyS=keys.KeyD=keys.KeyQ=false;inp.x=inp.y=0;inp.block=false} }
+function releaseLock(){ lockExitAt=performance.now(); if(document.pointerLockElement)try{document.exitPointerLock()}catch(e){} }
+function grabLock(){ if(IS_TOUCH||state!=='play')return; try{const p=canvas.requestPointerLock(); if(p&&p.catch)p.catch(()=>{})}catch(e){} }
+document.addEventListener('pointerlockchange',()=>{ const was=locked; locked=document.pointerLockElement===canvas; if(was&&!locked&&state==='play'&&performance.now()-lockExitAt>400)openPause() });
+function showPanel(id){ ['mMain','mChapters','mSaves','mQuit'].forEach(p=>$('#'+p).classList.toggle('hide',p!==id)); $('#mKeys').classList.toggle('hide',id!=='mMain'); if(id==='mMain')$('#bCont').disabled=!loadSave(); if(id==='mSaves')renderSaves(); if(id==='mChapters')renderChapters() }
+const CHAPS=['Dönüş','Veresiye Defteri','Sanayi Gecesi','Tilkinin İni','Kan Bağı','Dükkânın Altındaki','Yangın','Taraf Seç','Cuma, Gün Batımı','Sokakların Kanunu'];
+function renderChapters(){ const s=loadSave(),ok=s&&s.step>=5; $('#chList').innerHTML=CHAPS.map((c,i)=>{ const n=i+1,snap=i>0&&store.get('sk_ch'+n); const btn=i===0?'<button class="btn" data-a="new">Oyna</button>':snap?`<button class="btn" data-a="ch" data-n="${n}">Oyna</button>`:(i===1&&ok)?'<button class="btn" data-a="ch2">Oyna</button>':'<i>Kilitli</i>'; return `<div class="ch ${btn.startsWith('<i')?'lock':''}"><b>${String(n).padStart(2,'0')}</b><span>${c}</span>${btn}</div>` }).join('') }
+function renderSaves(){ const s=loadSave(), b=$('#saveBox'); if(!s){b.innerHTML='<p class="note">Kayıt yok. Oyun her görev adımında otomatik kaydedilir; duraklatma menüsünden elle de kaydedebilirsin.</p>';return}
+  b.innerHTML=`<div class="row"><span>${chLabel(s.step)}<br><small class="note"></small></span><span style="display:flex;gap:8px"><button class="btn" data-a="cont">Yükle</button><button class="btn" data-a="del">Sil</button></span></div>`; b.querySelector('small').textContent=new Date(s.stamp).toLocaleString('tr-TR') }
+$('#menu').addEventListener('click',e=>{ const a=e.target.closest('[data-a]'); if(!a)return; A.init(); A.blip(); const k=a.dataset.a;
+  if(k==='new')startGame(newGame(),true); else if(k==='cont'){const s=loadSave(); if(s)startGame(s,false)} else if(k==='chapters')showPanel('mChapters'); else if(k==='saves')showPanel('mSaves'); else if(k==='settings')openSettings(); else if(k==='quit')showPanel('mQuit'); else if(k==='back')showPanel('mMain'); else if(k==='ch'){ const sn=store.get('sk_ch'+a.dataset.n); if(sn)startGame(sn,false) } else if(k==='ch2'){ const s=loadSave(); if(s&&s.step>=5){ s.step=5; s.done=s.done.slice(0,5); ['ch2','ucret','defter','bodrum','hurda','tapuKavga'].forEach(f=>delete s.flags[f]); startGame(s,false) } } else if(k==='del'){store.del(GKEY);renderSaves()} });
+function openPause(){ if(state!=='play')return; setState('pause'); $('#pause').classList.remove('hide'); releaseLock() }
+function closePause(){ $('#pause').classList.add('hide'); setState('play'); grabLock() }
+$('#pause').addEventListener('click',e=>{ const a=e.target.closest('[data-p]'); if(!a)return; A.blip(); const k=a.dataset.p; if(k==='resume')closePause(); else if(k==='save'){ setState('play'); const ok=saveGame(); setState('pause'); a.textContent=ok?'Kaydedildi ✓':'Kaydedilemedi'; setTimeout(()=>a.textContent='Oyunu Kaydet',1400) } else if(k==='settings')openSettings(); else if(k==='menu')toMenu() });
+function toMenu(){ abortFight(); V.on=false; V.spd=0; busy=false; $('#pause').classList.add('hide'); $('#endc').classList.add('hide'); $('#phone').classList.remove('on'); P.H.g.visible=false; setState('menu'); $('#menu').classList.remove('hide'); showPanel('mMain'); releaseLock() }
+$('#endNext').onclick=()=>{ $('#endc').classList.add('hide'); if(pendingChapter())beginChapter(pendingChapter()); else { setState('play'); grabLock() } }; $('#retry').onclick=()=>{A.blip();retryFight()}; $('#endMenu').onclick=toMenu;
+function openSettings(){ $('#sVol').value=S.vol; $('#sSens').value=S.sens; const seg=(id,v)=>$$('#'+id+' button').forEach(b=>b.classList.toggle('on',+b.dataset.v===v)); seg('sQ',S.q); seg('sSh',S.sh); seg('sSub',S.sub); seg('sAuto',S.auto); seg('sFps',S.fps); seg('sTts',S.tts); $('#settings').classList.remove('hide') }
+$('#sVol').oninput=e=>{S.vol=+e.target.value;A.setVol(S.vol);store.set(SKEY,S)}; $('#sSens').oninput=e=>{S.sens=+e.target.value;store.set(SKEY,S)};
+[['sQ','q'],['sSh','sh'],['sSub','sub'],['sAuto','auto'],['sFps','fps'],['sTts','tts']].forEach(([id,k])=>$('#'+id).addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; S[k]=+b.dataset.v; store.set(SKEY,S); applyGfx(); openSettings(); A.blip()}));
+$('#sClose').onclick=()=>$('#settings').classList.add('hide');
+
+/* ================= OYUN BAŞLATMA & SİNEMATİK ================= */
+let cine=null;
+function startGame(g,intro){ abortFight(); busy=false; G=g; G.car=G.car||[-47,-2.2,Math.PI/2]; G.outfit=G.outfit||0; loadVehs(); G.para=G.para==null?150:G.para; JOB.on=false; P.weapon=0; P.crouch=false; applyOutfit(); { const c=CH[chOf(G.step)]; W.rainT=W.rain=(chOf(G.step)===7&&G.flags.yagmur)?1:(c.rain||0) } W.time=G.time; P.pos.set(G.pos[0],0,G.pos[1]); P.rot=Math.PI; P.speed=0; P.stam=1; P.sit=null; P.H.sit=false; P.H.body.position.y=0; cam.yaw=G.yaw||0; cam.pitch=.22; P.H.g.visible=true;
+  syncCast(); NPCS.forEach(n=>{if(n.path){n.pi=0}});
+  $('#menu').classList.add('hide'); refreshObjective(); renderPhone();
+  if(intro){ runIntro() } else if(pendingChapter()){ beginChapter(pendingChapter()) } else { enterStep(); setState('play'); cam.pos.set(P.pos.x,3,P.pos.z+5); toast('Kayıt yüklendi'); grabLock() } }
+async function runIntro(){ setState('cine'); document.body.classList.add('cine'); $('#skip').classList.remove('hide'); $('#dlg').classList.remove('hide'); $('#choices').innerHTML=''; $('#dmore').classList.add('hide'); $('#dwho').textContent='';
+  const lines=['Adana. Ağustos sonu. Sıcak, akşam olunca bile yakanı bırakmaz.','Üç yıl önce bu mahalleden tek çantayla çıktım. Babamla son konuşmamız bir kavgaydı.',"Kırk gün önce İsmail Usta'yı toprağa verdiler. Ben cenazeye yetişemedim.",'Şimdi dönüyorum. Yıldıztepe aynı Yıldıztepe mi, bilmiyorum.'];
+  cine={t:0,dur:21,skip:false,lines,keys:CK}; $('#ctS').textContent='BÖLÜM 1'; $('#ctH').textContent='Dönüş'; setTimeout(()=>$('#cinetitle').classList.add('on'),600); }
+const CK=[[0,[70,46,118],[10,4,40]],[7,[-46,24,34],[-11,3,-22]],[13,[-20,6,-4],[-62,2,-8]],[17,[6,7,74],[0,2,30]],[21,[.35,2.6,54.6],[0,1.55,50]]];
+function updateCine(dt){ const c=cine; c.t+=c.skip?dt*40:dt; const t=Math.min(c.t,c.dur); const KS=c.keys; let i=0; while(i<KS.length-2&&t>=KS[i+1][0])i++; const a=KS[i],b=KS[i+1],u=sstep(0,1,(t-a[0])/(b[0]-a[0]));
+  cam.pos.set(lerp(a[1][0],b[1][0],u),lerp(a[1][1],b[1][1],u),lerp(a[1][2],b[1][2],u)); cam.look.set(lerp(a[2][0],b[2][0],u),lerp(a[2][1],b[2][1],u),lerp(a[2][2],b[2][2],u));
+  const li=Math.min(c.lines.length-1,Math.floor(t/5)); $('#dtxt').textContent=t>1&&t<c.dur-1?c.lines[li]:''; if(t>Math.min(6,c.dur*.45))$('#cinetitle').classList.remove('on');
+  if(c.t>=c.dur){ cine=null; document.body.classList.remove('cine'); $('#skip').classList.add('hide'); $('#dlg').classList.add('hide'); $('#cinetitle').classList.remove('on'); setState('play'); saveGame(); toast(IS_TOUCH?'Sol: yürü · Sağ: kamera':'Kamerayı çevirmek için ekrana tıkla'); if(c.onEnd)c.onEnd(); } }
+/* ================= GİRDİ ================= */
+window.addEventListener('keydown',e=>{ if(e.repeat){ if(['Space','Tab'].includes(e.code))e.preventDefault(); return } keys[e.code]=true;
+  if(state==='cine'&&(e.code==='Space'||e.code==='Enter')){cine&&(cine.skip=true);e.preventDefault();return}
+  if(state==='dialogue'){ if(['Space','Enter','KeyE'].includes(e.code)){D.advance();e.preventDefault()} else if(/^(Digit|Numpad)[1-3]$/.test(e.code))D.pick(+e.code.slice(-1)-1); return }
+  if(!$('#settings').classList.contains('hide')){ if(e.code==='Escape')$('#settings').classList.add('hide'); return }
+  if(state==='play'){ if(e.code==='KeyE'){interact();grabLock()} else if(V.on){ if(e.code==='KeyV')V.view=1-V.view; else if(e.code==='KeyH')A.tone(430,410,.3,.25,'square'); else if(e.code==='Space')e.preventDefault(); else if(e.code==='KeyT'||e.code==='Tab'){e.preventDefault();togglePhone(true)} else if(e.code==='Escape'||e.code==='KeyP')openPause() } else if(e.code==='KeyF')attack('punch'); else if(e.code==='KeyG')attack('kick'); else if(e.code==='Space'){e.preventDefault();dodge()} else if(e.code==='KeyX')toggleWeapon(); else if(e.code==='KeyC')toggleCrouch(); else if(e.code==='KeyR')reload(); else if(e.code==='KeyT'||e.code==='Tab'){e.preventDefault();togglePhone(true)} else if(e.code==='Escape'||e.code==='KeyP')openPause() }
+  else if(state==='phone'){ if(['KeyT','Tab','Escape'].includes(e.code)){e.preventDefault();togglePhone(false);grabLock()} }
+  else if(state==='pause'){ if(e.code==='Escape'||e.code==='KeyP')closePause() } });
+window.addEventListener('keyup',e=>{keys[e.code]=false}); window.addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('mousedown',e=>{ if(state==='play'){A.init(); if(e.button===2)inp.block=true; else { if(locked&&!V.on)attack('punch'); dragging=true; grabLock() } } else if(state==='cine'&&cine)cine.skip=true; else if(state==='dialogue')D.advance(); else if(state==='phone')togglePhone(false) });
+window.addEventListener('mouseup',e=>{ if(e.button===2)inp.block=false; else dragging=false });
+window.addEventListener('mousemove',e=>{ if(state!=='play'&&state!=='phone')return; if(locked||dragging){ cam.yaw-=e.movementX*.0026*S.sens; cam.pitch+=e.movementY*.0022*S.sens } });
+$('#dlg').addEventListener('click',e=>{ if(!e.target.closest('#choices'))D.advance() });
+// dokunmatik
+if(IS_TOUCH){ let jt=null,ct=null,jx=0,jy=0,lx=0,ly=0; const joy=$('#joy'),knob=joy.firstChild;
+  canvas.addEventListener('touchstart',e=>{ e.preventDefault(); A.init(); if(state==='cine'&&cine){cine.skip=true;return} if(state==='dialogue'){D.advance();return} if(state==='phone'){togglePhone(false);return} if(state!=='play')return;
+    for(const t of e.changedTouches){ if(t.clientX<innerWidth*.45&&jt===null){jt=t.identifier;jx=t.clientX;jy=t.clientY;joy.style.display='block';joy.style.left=(jx-55)+'px';joy.style.top=(jy-55)+'px'} else if(ct===null){ct=t.identifier;lx=t.clientX;ly=t.clientY} } },{passive:false});
+  canvas.addEventListener('touchmove',e=>{ e.preventDefault(); for(const t of e.changedTouches){ if(t.identifier===jt){ let dx=(t.clientX-jx)/50,dy=(t.clientY-jy)/50; const l=Math.hypot(dx,dy); if(l>1){dx/=l;dy/=l} inp.x=dx; inp.y=-dy; knob.style.transform=`translate(${dx*36}px,${dy*36}px)` } else if(t.identifier===ct){ cam.yaw-=(t.clientX-lx)*.006*S.sens; cam.pitch+=(t.clientY-ly)*.005*S.sens; lx=t.clientX; ly=t.clientY } } },{passive:false});
+  const end=e=>{ for(const t of e.changedTouches){ if(t.identifier===jt){jt=null;inp.x=inp.y=0;joy.style.display='none';knob.style.transform=''} if(t.identifier===ct)ct=null } }; canvas.addEventListener('touchend',end); canvas.addEventListener('touchcancel',end);
+  const tap=(id,fn)=>$(id).addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();fn()},{passive:false});
+  tap('#tGun',toggleWeapon); tap('#tCr',toggleCrouch); tap('#tHit',()=>attack('punch')); tap('#tKick',()=>attack('kick')); tap('#tDg',dodge); tap('#tBlk',()=>{inp.block=true}); $('#tBlk').addEventListener('touchend',()=>{inp.block=false}); $('#tBlk').addEventListener('touchcancel',()=>{inp.block=false});
+  tap('#tE',interact); tap('#tTel',()=>togglePhone()); tap('#tP',openPause); tap('#tRun',()=>{inp.run=!inp.run;$('#tRun').classList.toggle('on',inp.run)}); }
+
+/* ================= ANA DÖNGÜ ================= */
+let last=performance.now(), T=0, frames=0;
+function frame(now){ requestAnimationFrame(frame); const raw=(now-last)/1000; let dt=Math.min(.05,raw); last=now; perf(raw); if(hitStop>0){hitStop-=dt;dt*=.08} if(state==='pause'||state==='end'){renderer.render(scene,camera);return} T+=dt; frames++;
+  updateGun(dt); if(state==='play'){ if(V.on)updateVehicle(dt); else updatePlayer(dt,T); tickJob(dt) } else { V.spd=0; P.speed=lerp(P.speed,0,1-Math.exp(-dt*10)); P.act=null; P.H.pose=null }
+  P.H.g.position.set(P.pos.x,V.on&&V.def.kind==='moto'?.36:0,P.pos.z); P.H.g.rotation.y=P.rot; animHuman(P.H,P.speed,dt,T);
+  updateNPCs(dt,T); const carD=updateTraffic(dt);
+  if(state==='menu'){ const a=T*.05+.6; cam.pos.set(Math.sin(a)*52,17,Math.cos(a)*52); cam.look.set(0,4,0) }
+  else if(state==='cine'&&cine)updateCine(dt); else if(state==='dialogue')updateDlgCam(dt); else updateFollowCam(dt);
+  camera.position.copy(cam.pos); camera.lookAt(cam.look); if(shake>0){ shake=Math.max(0,shake-dt*1.6); camera.position.x+=(Math.random()-.5)*shake*.4; camera.position.y+=(Math.random()-.5)*shake*.3 }
+  $('#hurt').style.opacity=state==='menu'?0:clamp(P.hurtT*2.5+(P.hp<30?.35:0)+(P.hp<=0?.6:0),0,1); updateSky(state==='menu'?dt*.3:dt); if(W.flag)W.flag.rotation.y=Math.sin(T*1.3)*.15;
+  updateHUD(dt,T); if(state==='play')tickStep(dt); updateFx(dt); if(S.sh&&(S.q===2||frames%2===0))renderer.shadowMap.needsUpdate=true; A.update(dt,W.night,state==='menu'?99:V.on?99:carD,state==='dialogue'||state==='cine'); renderer.render(scene,camera) }
+
+/* ================= BAŞLAT ================= */
+buildWorld(); W.flag.userData.dyn=true; W.flame.userData.dyn=true; mergeStatic(); buildNPCs(); buildTraffic(); buildVehicles(); buildFx(); W.spots.push({x:-59.2,z:-3.4,label:'Kıyafet değiştir',fn:nextOutfit});
+P.outfitBuilt=0; P.H=makeHuman({top:0x1d2026,bot:0x23262c,shoe:0xf2f2f2,hair:0x15110d,stripe:0xd9a441,skin:SKIN[0],beard:1}); P.H.g.visible=false;
+buildGunFx(); W.spots.push({x:74,z:41.4,label:'Arsa kavgası başlat (ödül 300 ₺)',fn:()=>{ if(G.step<STEPS.length-1){ bark('Kerem (iç ses)','Önce elimdeki işi bitireyim.'); return } G.flags.silah=1; place('t1',80,36,-HPI); place('t2',80,41,-HPI); startFight({who:['t1','t2'],waves:[['t3','t5']],guns:['t5'],spawn:[87,38],hp:62,dmg:10,cd:1.3,spd:2.9,stats:{t5:{hp:50,dmg:13}},obj:'Arsa kavgası'},()=>{ G.para=(G.para||0)+300; toast('Kazandın: <b>+300 ₺</b>'); saveGame() }) }});
+applyGfx(); showPanel('mMain'); setState('menu'); requestAnimationFrame(frame);
+window.__game={VEHS,JOB,fire,phoneCall,takePhoto,toggleWeapon,toggleCrouch,V,RZ,FI,CH,STEPS,curStep,completeStep,tickStep,place,enterCar,exitCar,get busy(){return busy},get dyn(){return dyn},F,attack,dodge,hitEnemy,startFight,get state(){return state},P,G:()=>G,W,cam,NPCS,byId,D,talk,interact,get frames(){return frames},setTime(h){W.time=h},skipCine(){if(cine)cine.skip=true},renderer};
+})();
+</script>
+</body>
+</html>

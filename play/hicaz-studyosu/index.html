@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hicaz Stüdyosu</title>
+<style>
+:root{
+  --bg:#f5efe3; --panel:#fffaf0; --ink:#231c14; --mute:#7b6d5c; --line:#dccfb8;
+  --acc:#b8641a; --acc2:#1f7f79; --cell:#ece2cf; --cellalt:#e3d7c0; --tonic:#d9c9a8;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#15110d; --panel:#1f1913; --ink:#f1e7d6; --mute:#a39581; --line:#3a3026;
+  --acc:#e9a13b; --acc2:#4fbdb5; --cell:#2a221a; --cellalt:#322920; --tonic:#45382a;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1060px;margin:0 auto;padding:20px 16px 60px}
+h1{font:600 30px/1.1 Georgia,"Times New Roman",serif;margin:0 0 4px;letter-spacing:-.01em}
+h1 span{color:var(--acc)}
+.sub{color:var(--mute);margin:0 0 18px}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--mute);margin:0 0 10px;font-weight:600}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.makams{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:8px}
+.makam{text-align:left;background:transparent;color:inherit;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;font:inherit}
+.makam b{display:block;font-size:15px}
+.makam small{color:var(--mute);font-size:12.5px}
+.makam[aria-pressed=true]{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,transparent)}
+.makam[aria-pressed=true] b{color:var(--acc)}
+.ruler{position:relative;height:58px;margin:16px 6px 2px;border-bottom:2px solid var(--line)}
+.tick{position:absolute;bottom:0;transform:translateX(-50%);text-align:center;font-size:11px;color:var(--mute);transition:left .25s}
+.tick i{display:block;width:3px;height:22px;background:var(--acc);margin:2px auto 0;border-radius:2px}
+.tick b{color:var(--ink);font-size:13px;display:block}
+.ghost{position:absolute;bottom:0;width:1px;height:10px;background:var(--mute);opacity:.6}
+.note{color:var(--mute);font-size:13px;margin:10px 0 0}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.bar label{display:flex;align-items:center;gap:6px;color:var(--mute);font-size:13px}
+select,input[type=range]{accent-color:var(--acc)}
+select{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit}
+button.btn{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 13px;font:inherit;cursor:pointer}
+button.btn:hover{border-color:var(--acc)}
+#play{background:var(--acc);color:#1a1208;border-color:var(--acc);font-weight:700;min-width:110px;font-size:16px;padding:10px 16px}
+.tog[aria-pressed=true]{background:var(--acc2);border-color:var(--acc2);color:#fff}
+.gridwrap{overflow-x:auto;margin-top:12px;padding-bottom:6px}
+.grid{display:grid;grid-template-columns:34px repeat(32,minmax(24px,1fr));gap:2px;min-width:860px}
+.lab{font-size:11px;color:var(--mute);display:flex;align-items:center;justify-content:center}
+.lab.t{color:var(--acc);font-weight:700}
+.c{height:22px;border:0;border-radius:4px;background:var(--cell);cursor:pointer;padding:0}
+.c.alt{background:var(--cellalt)}
+.c.t{box-shadow:inset 0 0 0 1px var(--tonic)}
+.c.on{background:var(--acc)}
+.c.now{outline:2px solid var(--acc2);outline-offset:-2px}
+.keys{display:flex;gap:6px;flex-wrap:wrap}
+.key{flex:1 0 54px;height:64px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 16px system-ui;cursor:pointer;touch-action:manipulation}
+.key small{display:block;font-weight:400;font-size:11px;color:var(--mute)}
+.key:active{background:var(--acc);color:#1a1208}
+</style>
+</head>
+<body>
+<main>
+  <h1>Hicaz <span>Stüdyosu</span></h1>
+  <p class="sub">Aynı melodiyi farklı Hicaz türlerinde dinle. Çalarken makamı değiştir, fark anında duyulur.</p>
+
+  <section>
+    <h2>Makam / dizi</h2>
+    <div class="makams" id="makams"></div>
+    <div class="ruler" id="ruler"></div>
+    <p class="note" id="desc"></p>
+  </section>
+
+  <section>
+    <div class="bar">
+      <button class="btn" id="play">▶ Çal</button>
+      <label>Tempo <input type="range" id="tempo" min="60" max="200" value="120"><span id="tempoV">120</span></label>
+      <label>Karar sesi
+        <select id="tonic">
+          <option value="261.63">Do</option><option value="293.66" selected>Re</option>
+          <option value="329.63">Mi</option><option value="349.23">Fa</option>
+          <option value="392.00">Sol</option><option value="220.00">La</option>
+        </select></label>
+      <label>Çalgı
+        <select id="inst"><option value="ud">Ud / kanun</option><option value="ney">Ney</option><option value="synth">Synth</option></select></label>
+      <button class="btn tog" id="drone" aria-pressed="false">Dem sesi</button>
+      <button class="btn tog" id="rhythm" aria-pressed="false">Darbuka</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Melodi</h2>
+    <div class="bar">
+      <label>Hazır örnek
+        <select id="demo"><option value="">— seç —</option><option value="0">Çıkış–iniş</option><option value="1">Seyir</option><option value="2">Dizi (1–8)</option></select></label>
+      <button class="btn" id="clear">Temizle</button>
+      <span class="note" style="margin:0">Kutulara dokunarak kendi melodini yaz. Satırlar perde (1 = karar sesi), sütunlar sekizlik nota.</span>
+    </div>
+    <div class="gridwrap"><div class="grid" id="grid"></div></div>
+  </section>
+
+  <section>
+    <h2>Canlı çal</h2>
+    <div class="keys" id="keys"></div>
+  </section>
+</main>
+
+<script>
+const K = 1200/53; // Holder koması (sent)
+const MAKAMS = [
+  {n:"Majör (karşılaştırma)", s:"Batı majör dizisi", c:[0,200,400,500,700,900,1100],
+   d:"Hicaz değil. Çoğu pop melodisinin özgün hâli budur; farkı duymak için buradan başla."},
+  {n:"Hicaz – Batı akordu", s:"Frig dominant, piyano perdeleri", c:[0,100,400,500,700,800,1000],
+   d:"Piyanoda ya da gitarda çalınan Hicaz. 2. perde yarım ses, ardından 1,5 seslik artık ikili gelir; Hicaz rengini veren aralık budur."},
+  {n:"Arap Hicazı", s:"Geleneksel entonasyon, üstte Nihavend", c:[0,130,370,500,700,800,1000],
+   d:"Arap icrasında 2. perde biraz tiz, 3. perde biraz pes basılır; artık ikili daralır ve ses daha yumuşak olur. Sent değerleri yaklaşıktır, icracıya göre değişir."},
+  {n:"Arap Hicazı – Rast üst", s:"6. perde çeyrek ses pes", c:[0,130,370,500,700,850,1000],
+   d:"Aynı Hicaz dörtlüsü, ama üst bölgede Rast: 6. perde yarım bemol (çeyrek ses). Çıkıcı seyirlerde sık duyulur."},
+  {n:"Hicazkâr", s:"Çift armonik: iki Hicaz dörtlüsü", c:[0,100,400,500,700,800,1100],
+   d:"Altta ve üstte birer Hicaz dörtlüsü. İki artık ikili olduğu için en dramatik, en “doğulu” duyulan tür."},
+  {n:"Türk Hicazı", s:"Komalı: Hicaz dörtlüsü + Rast beşlisi", c:[0,5,17,22,31,39,44].map(x=>x*K),
+   d:"Arel-Ezgi nazariyesine göre koma değerleri (5-12-5). 6. perde majöre yakın ama bir koma pes."},
+  {n:"Hümayun", s:"Komalı: Hicaz dörtlüsü + Buselik beşlisi", c:[0,5,17,22,31,35,44].map(x=>x*K),
+   d:"Hicaz ailesinin minör tarafı: üst bölgede 6. perde pes. Daha hüzünlü, içe dönük."},
+  {n:"Zirgüleli Hicaz", s:"Komalı: Hicaz beşlisi + Hicaz dörtlüsü", c:[0,5,17,22,31,36,48].map(x=>x*K),
+   d:"Hicazkâr'ın komalı karşılığı: üstte de Hicaz dörtlüsü, yeden sesi var."}
+];
+const DEMOS = [
+  [0,1,2,3,4,null,3,2, 1,2,0,null,null,null,null,null, 4,5,6,7,6,null,5,4, 3,2,1,null,0,null,null,null],
+  [7,null,6,5,4,null,5,null, 3,2,3,4,2,null,1,null, 0,null,2,null,1,0,-1,null, 0,null,null,null,null,null,null,null],
+  [0,null,1,null,2,null,3,null, 4,null,5,null,6,null,7,null, 7,null,6,null,5,null,4,null, 3,null,2,null,1,null,0,null]
+];
+const STEPS=32, TOP=9, BOTTOM=-3;
+let makam=1, mel=new Array(STEPS).fill(null), playing=false, ctx=null, master=null, noiseBuf=null;
+let droneOn=false, rhythmOn=false, droneNodes=null;
+const $=id=>document.getElementById(id);
+
+try{const s=JSON.parse(localStorage.getItem("hicaz-mel")||"null"); if(Array.isArray(s)&&s.length===STEPS) mel=s;}catch(e){}
+if(mel.every(x=>x===null)) mel=DEMOS[0].slice();
+function save(){try{localStorage.setItem("hicaz-mel",JSON.stringify(mel));}catch(e){}}
+
+/* ---------- ses ---------- */
+function audio(){
+  if(!ctx){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain(); master.gain.value=.8;
+    const comp=ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*.3,ctx.sampleRate);
+    const d=noiseBuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  }
+  if(ctx.state==="suspended") ctx.resume().catch(()=>{});
+  return ctx;
+}
+function freqOf(deg){
+  const oct=Math.floor(deg/7), i=((deg%7)+7)%7;
+  return (+$("tonic").value)*Math.pow(2,(MAKAMS[makam].c[i]+1200*oct)/1200);
+}
+function note(f,t,dur){
+  const inst=$("inst").value, g=ctx.createGain(); g.connect(master);
+  const o=ctx.createOscillator(); o.frequency.value=f;
+  if(inst==="ud"){
+    o.type="sawtooth";
+    const o2=ctx.createOscillator(); o2.type="triangle"; o2.frequency.value=f*2;
+    const g2=ctx.createGain(); g2.gain.value=.25;
+    const lp=ctx.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=1;
+    lp.frequency.setValueAtTime(f*7,t); lp.frequency.exponentialRampToValueAtTime(f*1.5,t+.5);
+    o.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.45,t+.005);
+    g.gain.exponentialRampToValueAtTime(.001,t+1.1);
+    o.start(t); o2.start(t); o.stop(t+1.15); o2.stop(t+1.15);
+  }else if(inst==="ney"){
+    o.type="sine";
+    const o2=ctx.createOscillator(); o2.type="triangle"; o2.frequency.value=f*2;
+    const g2=ctx.createGain(); g2.gain.value=.12;
+    const lfo=ctx.createOscillator(); lfo.frequency.value=5.2;
+    const lg=ctx.createGain(); lg.gain.setValueAtTime(0,t); lg.gain.linearRampToValueAtTime(f*.007,t+.25);
+    lfo.connect(lg); lg.connect(o.frequency);
+    o.connect(g); o2.connect(g2); g2.connect(g);
+    const end=t+Math.max(dur,.12);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.4,t+.06);
+    g.gain.setValueAtTime(.4,end); g.gain.linearRampToValueAtTime(0,end+.12);
+    [o,o2,lfo].forEach(x=>{x.start(t); x.stop(end+.15);});
+  }else{
+    o.type="square";
+    const lp=ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=f*3;
+    o.connect(lp); lp.connect(g);
+    const end=t+Math.max(dur*.9,.1);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.22,t+.01);
+    g.gain.setValueAtTime(.22,end); g.gain.linearRampToValueAtTime(0,end+.05);
+    o.start(t); o.stop(end+.08);
+  }
+}
+function dum(t){
+  const o=ctx.createOscillator(), g=ctx.createGain();
+  o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(55,t+.15);
+  g.gain.setValueAtTime(.7,t); g.gain.exponentialRampToValueAtTime(.001,t+.25);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t+.3);
+}
+function tek(t){
+  const s=ctx.createBufferSource(); s.buffer=noiseBuf;
+  const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=2800; bp.Q.value=1.5;
+  const g=ctx.createGain(); g.gain.setValueAtTime(.45,t); g.gain.exponentialRampToValueAtTime(.001,t+.07);
+  s.connect(bp); bp.connect(g); g.connect(master); s.start(t); s.stop(t+.1);
+}
+function setDrone(){
+  if(droneNodes){droneNodes.g.gain.setTargetAtTime(0,ctx.currentTime,.1); const n=droneNodes; setTimeout(()=>n.os.forEach(o=>{try{o.stop()}catch(e){}}),600); droneNodes=null;}
+  if(!droneOn) return;
+  audio();
+  const f=+$("tonic").value/2, g=ctx.createGain(); g.gain.value=0; g.gain.setTargetAtTime(.13,ctx.currentTime,.3); g.connect(master);
+  const os=[["sine",f],["triangle",f*1.002],["sine",f/2]].map(([ty,fr])=>{const o=ctx.createOscillator(); o.type=ty; o.frequency.value=fr; o.connect(g); o.start(); return o;});
+  droneNodes={g,os};
+}
+
+/* ---------- sıralayıcı ---------- */
+let step=0, nextT=0, timer=null, queue=[];
+function stepDur(){return 60/(+$("tempo").value)/2;}
+function tick(){
+  while(nextT<ctx.currentTime+.12){
+    const d=mel[step];
+    if(d!==null){
+      let len=1; while(len<4 && mel[(step+len)%STEPS]===null) len++;
+      note(freqOf(d),nextT,len*stepDur());
+    }
+    if(rhythmOn){const r=step%8; if(r===0||r===4) dum(nextT); else if(r===1||r===3||r===6) tek(nextT);}
+    queue.push({s:step,t:nextT});
+    nextT+=stepDur(); step=(step+1)%STEPS;
+  }
+}
+function draw(){
+  if(!playing) return;
+  while(queue.length && queue[0].t<=ctx.currentTime){
+    const s=queue.shift().s;
+    document.querySelectorAll(".c.now").forEach(e=>e.classList.remove("now"));
+    document.querySelectorAll('.c[data-s="'+s+'"]').forEach(e=>e.classList.add("now"));
+  }
+  requestAnimationFrame(draw);
+}
+function toggle(){
+  audio();
+  playing=!playing;
+  $("play").textContent=playing?"■ Durdur":"▶ Çal";
+  if(playing){step=0; queue=[]; nextT=ctx.currentTime+.06; timer=setInterval(tick,25); tick(); draw();}
+  else{clearInterval(timer); document.querySelectorAll(".c.now").forEach(e=>e.classList.remove("now"));}
+}
+
+/* ---------- arayüz ---------- */
+function renderMakams(){
+  $("makams").innerHTML="";
+  MAKAMS.forEach((m,i)=>{
+    const b=document.createElement("button"); b.className="makam"; b.setAttribute("aria-pressed",i===makam);
+    b.innerHTML="<b>"+m.n+"</b><small>"+m.s+"</small>";
+    b.onclick=()=>{makam=i; renderMakams(); renderRuler();};
+    $("makams").appendChild(b);
+  });
+}
+function renderRuler(){
+  const r=$("ruler"), m=MAKAMS[makam]; r.innerHTML="";
+  MAKAMS[0].c.concat(1200).forEach(c=>{const g=document.createElement("div"); g.className="ghost"; g.style.left=(c/12)+"%"; r.appendChild(g);});
+  m.c.concat(1200).forEach((c,i)=>{
+    const t=document.createElement("div"); t.className="tick"; t.style.left=(c/12)+"%";
+    t.innerHTML="<b>"+(i+1)+"</b>"+Math.round(c)+"<i></i>"; r.appendChild(t);
+  });
+  $("desc").textContent=m.d+" (Sayılar karar sesinden uzaklığı sent olarak gösterir; alttaki ince çizgiler majör dizinin yerleridir.)";
+}
+function renderGrid(){
+  const g=$("grid"); g.innerHTML="";
+  for(let d=TOP; d>=BOTTOM; d--){
+    const i=((d%7)+7)%7, l=document.createElement("div");
+    l.className="lab"+(i===0?" t":""); l.textContent=(i+1)+(d>=7?"'":d<0?",":""); g.appendChild(l);
+    for(let s=0;s<STEPS;s++){
+      const b=document.createElement("button");
+      b.className="c"+(Math.floor(s/8)%2?" alt":"")+(i===0?" t":"")+(mel[s]===d?" on":"");
+      b.dataset.s=s; b.dataset.d=d; b.setAttribute("aria-label","Adım "+(s+1)+", perde "+(i+1));
+      g.appendChild(b);
+    }
+  }
+}
+$("grid").addEventListener("click",e=>{
+  const b=e.target.closest(".c"); if(!b) return;
+  const s=+b.dataset.s, d=+b.dataset.d;
+  if(mel[s]===d) mel[s]=null; else {mel[s]=d; audio(); note(freqOf(d),ctx.currentTime+.01,.3);}
+  document.querySelectorAll('.c[data-s="'+s+'"]').forEach(x=>x.classList.toggle("on",+x.dataset.d===mel[s]));
+  save();
+});
+function renderKeys(){
+  const k=$("keys"); k.innerHTML="";
+  for(let d=-1; d<=8; d++){
+    const i=((d%7)+7)%7, b=document.createElement("button"); b.className="key";
+    b.innerHTML=(i+1)+(d>=7?"'":d<0?",":"")+"<small>"+(i===0?"karar":"&nbsp;")+"</small>";
+    b.addEventListener("pointerdown",ev=>{ev.preventDefault(); audio(); note(freqOf(d),ctx.currentTime+.01,.4);});
+    k.appendChild(b);
+  }
+}
+$("play").onclick=toggle;
+$("tempo").oninput=e=>$("tempoV").textContent=e.target.value;
+$("tonic").onchange=()=>{if(droneOn) setDrone();};
+$("drone").onclick=e=>{droneOn=!droneOn; e.currentTarget.setAttribute("aria-pressed",droneOn); audio(); setDrone();};
+$("rhythm").onclick=e=>{rhythmOn=!rhythmOn; e.currentTarget.setAttribute("aria-pressed",rhythmOn);};
+$("clear").onclick=()=>{mel.fill(null); save(); renderGrid();};
+$("demo").onchange=e=>{if(e.target.value==="") return; mel=DEMOS[+e.target.value].slice(); save(); renderGrid();};
+renderMakams(); renderRuler(); renderGrid(); renderKeys();
+</script>
+</body>
+</html>

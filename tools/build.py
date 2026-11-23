@@ -146,9 +146,25 @@ def footer(lang, me):
 
 # ----------------------------------------------------------------- pieces
 def cover_img(me, pr, lang, eager=False):
-    alt = T[lang]["cover_alt"].format(name=pr["name"][lang])
-    return (f'<img src="{rel(me, "assets/covers/" + pr["id"] + ".svg")}" alt="{e(alt)}" width="1200" height="675"'
+    if pr.get("shot"):
+        alt = T[lang]["shot_alt"].format(name=pr["name"][lang])
+        src = rel(me, "assets/shots/" + pr["id"] + ".webp")
+    else:
+        alt = T[lang]["cover_alt"].format(name=pr["name"][lang])
+        src = rel(me, "assets/covers/" + pr["id"] + ".svg")
+    return (f'<img src="{src}" alt="{e(alt)}" width="1200" height="675"'
             f'{"" if eager else " loading=\"lazy\""} decoding="async">')
+
+
+PLAY_ICON = '<svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14"><path fill="currentColor" d="M4 2.5v11l9-5.5z"/></svg>'
+
+
+def play_btn(me, pr, lang, cls="play"):
+    if not pr.get("play"):
+        return ""
+    label = T[lang][pr.get("play_label", "play")]
+    return (f'<a class="{cls}" href="{rel(me, pr["play"] + "index.html")}">{PLAY_ICON}{e(label)}'
+            f'<span class="sr"> — {e(pr["name"][lang])}</span></a>')
 
 
 def badge(pr, lang):
@@ -165,8 +181,12 @@ def card(me, pr, lang):
     detail = rel(me, path(lang, "project", pr["id"]))
     if pr.get("link"):
         link = f'<a class="ext" href="{pr["link"]}">{GH_ICON}{e(t["view_code"])}<span class="sr"> — {e(pr["name"][lang])}</span></a>'
+    elif pr.get("play"):
+        link = ""
     else:
         link = f'<p class="nolink">{e(pr.get("nolink", {}).get(lang, t["no_link"]))}</p>'
+    if pr.get("play"):
+        link = f'<p class="actions">{play_btn(me, pr, lang)}{link}</p>'
     search = " ".join([pr["name"][lang], pr["desc"][lang], " ".join(pr["stack"]), pr["status"][lang]]).lower()
     return f"""<li class="card{' card--concept' if concept else ''}" data-cats="{' '.join(pr['cats'])}" data-group="{pr['group']}" data-search="{e(search)}">
 <article>
@@ -227,7 +247,9 @@ def home(lang):
     t = T[lang]
     me = path(lang, "home")
     n_projects = len(PROJECTS)
-    n_games = sum(1 for p in PROJECTS if "games" in p["cats"] and p["status"]["en"].lower().startswith("playable"))
+    n_games = sum(1 for p in PROJECTS if "games" in p["cats"] and p.get("play"))
+    no_shot = [BY_ID[i]["name"][lang] for i in FEATURED if not BY_ID[i].get("shot")]
+    feat_note = f'<p class="note small">{e(t["featured_note"].format(rep=", ".join(no_shot)))}</p>' if no_shot else ""
     featured = "".join(
         f"""<li class="feat">
 <article>
@@ -236,7 +258,7 @@ def home(lang):
 <p class="feat-meta">{badge(BY_ID[i], lang)}<span class="mono muted">{' · '.join(BY_ID[i]['stack'][:3])}</span></p>
 <h3><a class="stretch" href="{rel(me, path(lang, 'project', i))}">{e(BY_ID[i]['name'][lang])}</a></h3>
 <p>{e(BY_ID[i]['desc'][lang])}</p>
-<span class="more">{e(t['details'])} {ARROW}</span>
+<p class="feat-actions">{play_btn(me, BY_ID[i], lang)}<span class="more">{e(t['details'])} {ARROW}</span></p>
 </div>
 </article>
 </li>""" for i in FEATURED)
@@ -264,11 +286,11 @@ def home(lang):
 <div class="term" aria-hidden="true">
 <div class="term-bar"><i></i><i></i><i></i><span class="mono">runia0 ~ build</span></div>
 <pre class="mono"><span class="c">$</span> runia0 status
-<span class="ok">●</span> frogie            <span class="d">playable</span>
+<span class="ok">●</span> frogier           <span class="d">playable</span>
 <span class="ok">●</span> shadow-protocol   <span class="d">playable</span>
 <span class="ok">●</span> sokaklarin-kanunu <span class="d">playable</span>
 <span class="wip">●</span> iplik             <span class="d">pre-release</span>
-<span class="wip">●</span> night-shift       <span class="d">early dev</span>
+<span class="ok">●</span> night-shift       <span class="d">playable</span>
 <span class="c">$</span> <span class="cursor">▍</span></pre>
 </div>
 </div>
@@ -286,7 +308,7 @@ def home(lang):
 <div class="sec-head"><h2 id="work-h">{e(t['featured_title'])}</h2>
 <a class="link-more" href="{rel(me, path(lang, 'projects'))}">{e(t['all_projects'])} {ARROW}</a></div>
 <ul class="feats" role="list">{featured}</ul>
-<p class="note small">{e(t['featured_note'])}</p>
+{feat_note}
 </div>
 </section>
 
@@ -377,7 +399,11 @@ def project_page(lang, pr):
     if pr["stack"]:
         meta.append((t["stack"], '<ul class="tags">' + "".join(f"<li>{e(s)}</li>" for s in pr["stack"]) + "</ul>"))
     meta_html = "".join(f'<div class="meta"><dt>{e(k)}</dt><dd>{v}</dd></div>' for k, v in meta)
-    if pr.get("link"):
+    if pr.get("play"):
+        link = (f'<p class="ctas">{play_btn(me, pr, lang, "btn btn--primary btn--play")}'
+                + (f'<a class="btn" href="{pr["link"]}">{GH_ICON}{e(t["view_code"])}</a>' if pr.get("link") else "")
+                + f'</p><p class="note small">{e(t["play_note"])}</p>')
+    elif pr.get("link"):
         link = f'<p><a class="btn btn--primary" href="{pr["link"]}">{GH_ICON}{e(t["view_code"])}</a></p>'
     else:
         link = f'<p class="nolink">{e(pr.get("nolink", {}).get(lang, t["no_link"]))}</p>'
@@ -419,7 +445,8 @@ def project_page(lang, pr):
 """
     title = f"{name} — Runia0"
     ld = [crumbs_ld(lang, [(t["home"], absurl(path(lang, "home"))), (t["projects_title"], absurl(path(lang, "projects"))), (name, absurl(me))])]
-    return (head(lang, me, "project", title, pr["desc"][lang], pid=pid, ld=ld)
+    og = BASE_URL + f"assets/shots/{pid}.jpg" if pr.get("shot") else None
+    return (head(lang, me, "project", title, pr["desc"][lang], pid=pid, ld=ld, og_image=og)
             + header(lang, me, "project", pid) + body + footer(lang, me))
 
 
