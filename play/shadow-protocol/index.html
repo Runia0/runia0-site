@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0b0e10">
-<title>Shadow Protocol</title>
+<title>DEMO · Shadow Protocol</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@400;500;600&display=swap">
 <style>
@@ -1050,7 +1050,7 @@ function reticle(kind){ const dots=(n,s)=>{ let o=''; for(let i=1;i<=n;i++){ o+=
 const Game={
   load(id){ const def=MISSIONS[id]; clearWorld(); THERMAL.length=0; BARRELS.length=0; MS=newMS(def); seed(def.seed||7);
     def.build(); applyLights(); ENV.wind.set(def.wind?def.wind[0]:0,def.wind?def.wind[1]:0); AU.ambience(def.amb||'none'); },
-  start(id){ const def=MISSIONS[id]; fade(()=>{ Game.load(id); Game.begin(); }); },
+  start(id){ if(id!=='m1'&&window.RDEMO){window.RDEMO.end();return} const def=MISSIONS[id]; fade(()=>{ Game.load(id); Game.begin(); }); },
   begin(){ const def=MS.def, W=G.W=weaponStats(SD.equip.w), Sc=SCOPES[SD.equip.scope];
     Object.assign(G,{state:'play',scoped:false,ads:0,zi:0,mag:W.mag,res:W.mag*(def.magsRes||4),bolt:0,reload:0,hp:100,crouch:0,crouchOn:false,breath:1,hold:false,tired:0,shake:0,recoil:0,vmKick:0,time:0,ts:1,therm:false,lastHurt:-99,
       shots:0,hits:0,heads:0,kills:0,longest:0,dmgTaken:0,det:0,detIdle:0,mx:0,my:0});
@@ -1685,7 +1685,7 @@ const UI={ctx:'menu',from:null,armTab:'rifles',armSel:null,setTab:'gfx',
     h+='</div><p class="tx" style="margin-top:14px">Her görevde 3 yıldız: görevi tamamla, göreve özel meydan okumayı başar ve gizli istihbaratı dürbünle tara. Yıldızlar ve skor kredi ve XP kazandırır.</p>'; $('misB').innerHTML=h;
     $('misB').querySelectorAll('.mc').forEach(b=>b.onclick=()=>{ const id=b.dataset.id; if(!unlocked(id)){ AU.deny(); toast('ÖNCE ÖNCEKİ GÖREVİ TAMAMLA'); return; } AU.ui(); fade(()=>UI.brief(id)); }); },
   /* ---------- brifing ---------- */
-  brief(id,keep){ const M=MISSIONS[id]; this.briefId=id; if(!keep||MS.def.id!==id) Game.load(id); G.state='brief'; this.bt=0; applyLights(); AU.music('cut');
+  brief(id,keep){ if(id!=='m1'&&window.RDEMO){window.RDEMO.end();return} const M=MISSIONS[id]; this.briefId=id; if(!keep||MS.def.id!==id) Game.load(id); G.state='brief'; this.bt=0; applyLights(); AU.music('cut');
     const r=SD.missions[id]||{}, W=WEAPONS[SD.equip.w], Sc=SCOPES[SD.equip.scope], O=OUTFITS[SD.equip.outfit], st=ST();
     $('bloc').innerHTML='<small>GÖREV '+M.no+'</small><b>'+M.name+'</b><span>'+M.region+' · '+M.time+'</span>';
     $('briefB').innerHTML='<div class="dhead"><span class="org h" style="letter-spacing:.3em">OPERASYON BRİFİNGİ</span><b>'+M.name+'</b><span>'+M.loc.toUpperCase()+'</span><p>'+M.desc+'</p></div>'+
@@ -1920,6 +1920,55 @@ function frame(now){ requestAnimationFrame(frame); const cap=ST().low?30:ST().fp
   setTimeout(()=>{ $('boot').style.opacity=0; $('fade').style.opacity=0; setTimeout(()=>$('boot').remove(),700); },350); })();
 window.__sp={SR,G,get MS(){return MS;},Game,UI,fire,toggleScope,cycleZoom,doReload,SD,Cut,EndScreen,simulate,camera};
 
+})();
+</script>
+
+<style id="rdemo-css">
+#rdemo-badge{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:2147483000;pointer-events:none;
+ font:700 12px/1 system-ui,sans-serif;letter-spacing:.2em;color:#04120a;background:#39ff88;padding:6px 12px;border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.4);opacity:.92}
+#rdemo-end{position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;
+ background:radial-gradient(800px 500px at 50% 40%,rgba(31,107,67,.45),transparent 70%),rgba(3,6,5,.94);color:#e8f2ec;font-family:system-ui,sans-serif;text-align:center;padding:24px}
+#rdemo-end .box{max-width:560px}
+#rdemo-end .k{font:600 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.3em;color:#39ff88}
+#rdemo-end h2{font-size:clamp(30px,6vw,52px);margin:14px 0 10px;font-weight:800;letter-spacing:-.02em}
+#rdemo-end p{color:#cbdcd2;font-size:17px;line-height:1.55;margin:0 0 8px}
+#rdemo-end .en{color:#8fa89a;font-size:14px}
+#rdemo-end .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
+#rdemo-end a,#rdemo-end button{font:700 16px system-ui,sans-serif;padding:13px 22px;border-radius:999px;cursor:pointer;text-decoration:none;border:1px solid #1f6b43}
+#rdemo-end .p{background:#39ff88;color:#04120a;border-color:#39ff88}
+#rdemo-end .s{background:#0b1611;color:#e8f2ec}
+</style>
+<script>
+(function(){
+  var CFG = {"title": "Demo burada bitiyor", "tr": "Shadow Protocol demosunda yalnızca Görev 01 – First Contact oynanabilir. Tam sürümde 5 görev, ara sahneler ve silah geliştirmeleri var.", "en": "The Shadow Protocol demo includes Mission 01 – First Contact only. The full game has 5 missions, cutscenes and weapon upgrades.", "page": "https://runia0.github.io/runia0-site/projeler/shadow-protocol.html", "keys": ["shadowproto"], "home": "https://runia0.github.io/runia0-site/"};
+  var ended = false;
+  function el(){
+    var b=document.createElement('div'); b.id='rdemo-badge'; b.textContent='DEMO'; document.body.appendChild(b);
+    var d=document.createElement('div'); d.id='rdemo-end'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true');
+    d.innerHTML='<div class="box"><div class="k">RUNIA0 · DEMO</div><h2>'+CFG.title+'</h2>'
+      +'<p>'+CFG.tr+'</p><p class="en">'+CFG.en+'</p>'
+      +'<div class="row"><a class="p" href="'+CFG.page+'" target="_top">Projeyi incele · Details</a>'
+      +'<button class="s" type="button" id="rdemo-restart">Baştan oyna · Restart</button>'
+      +'<a class="s" href="'+CFG.home+'" target="_top">Runia0</a></div></div>';
+    document.body.appendChild(d);
+    d.querySelector('#rdemo-restart').onclick=function(){
+      try{ Object.keys(localStorage).forEach(function(k){ if(CFG.keys.some(function(p){return k.indexOf(p)===0;})) localStorage.removeItem(k); }); }catch(e){}
+      location.reload();
+    };
+  }
+  window.RDEMO = {
+    end: function(){
+      if(ended) return false; ended = true;
+      try{ document.exitPointerLock && document.exitPointerLock(); }catch(e){}
+      var d=document.getElementById('rdemo-end'); if(d){ d.style.display='flex'; var p=d.querySelector('a.p'); p && p.focus(); }
+      try{ if(window.AudioContext){ /* let the game keep its audio context; just stop input */ } }catch(e){}
+      window.addEventListener('keydown', function(e){ if(!e.target.closest || !e.target.closest('#rdemo-end')) { e.stopImmediatePropagation(); } }, true);
+      return false;
+    },
+    get ended(){ return ended; }
+  };
+  if(document.body) el(); else document.addEventListener('DOMContentLoaded', el);
+  
 })();
 </script>
 </body>

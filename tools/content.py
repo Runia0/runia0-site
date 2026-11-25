@@ -76,8 +76,8 @@ PROJECTS = [
             ],
         },
         "notes": {
-            "tr": "Web sürümü tarayıcıda oynanabilir. Masaüstü Chromium'da ve telefon ekran boyutlarında test edildi; gerçek cihaz testi henüz yapılmadı. Oyun arayüzü şu an İngilizce.",
-            "en": "The web version is playable in the browser. Tested in desktop Chromium and at phone screen sizes; not yet tested on a physical device. The in-game UI is currently in English.",
+            "tr": "Sitede tarayıcıda oynanabilen kısa bir demo var. Masaüstü Chromium'da ve telefon ekran boyutlarında test edildi; gerçek cihaz testi henüz yapılmadı. Oyun arayüzü şu an İngilizce.",
+            "en": "A short demo is playable in the browser on this site. Tested in desktop Chromium and at phone screen sizes; not yet tested on a physical device. The in-game UI is currently in English.",
         },
         "next": {
             "tr": ["Gerçek cihaz testleri", "Google Play kapalı test süreci"],
@@ -85,7 +85,8 @@ PROJECTS = [
         },
         "role": AI_ROLE,
         "stack": ["Three.js", "JavaScript", "HTML5", "PWA", "Capacitor", "Android", "GitHub Actions"],
-        "status": {"tr": "Tarayıcıda oynanabilir · mağaza hazırlığı", "en": "Playable in browser · store pre-release"},
+        "status": {"tr": "Tarayıcıda demo · mağaza hazırlığı", "en": "Browser demo · store pre-release"},
+        "demo": {"tr": "Demo: 1. dünya — 5 bölüm ve ilk boss savaşı.", "en": "Demo: World 1 — 5 levels and the first boss fight."},
         "link": None,
     },
     {
@@ -96,6 +97,7 @@ PROJECTS = [
         "cover": "shadow",
         "name": {"tr": "Shadow Protocol", "en": "Shadow Protocol"},
         "play": "play/shadow-protocol/",
+        "demo": {"tr": "Demo: Görev 01 – First Contact.", "en": "Demo: Mission 01 – First Contact."},
         "shot": True,
         "desc": {
             "tr": "Hikâyeli 3D sniper oyunu: 5 görev, gerçekçi balistik ve silah geliştirme sistemi.",
@@ -143,7 +145,7 @@ PROJECTS = [
         },
         "role": AI_ROLE,
         "stack": ["Three.js", "JavaScript", "Web Audio API", "Playwright"],
-        "status": {"tr": "Tarayıcıda oynanabilir prototip", "en": "Playable prototype in browser"},
+        "status": {"tr": "Tarayıcıda demo · prototip", "en": "Browser demo · prototype"},
         "link": None,
     },
     {
@@ -154,6 +156,7 @@ PROJECTS = [
         "cover": "streets",
         "name": {"tr": "Sokakların Kanunu", "en": "Sokakların Kanunu"},
         "play": "play/sokaklarin-kanunu/",
+        "demo": {"tr": "Demo: 1. bölüm – Dönüş.", "en": "Demo: Chapter 1 – The Return."},
         "shot": True,
         "desc": {
             "tr": "Adana'da kurgusal bir mahallede geçen, kararların finali belirlediği özgün 3D aile ve suç draması.",
@@ -199,7 +202,7 @@ PROJECTS = [
         },
         "role": AI_ROLE,
         "stack": ["Three.js", "JavaScript", "Web Audio API"],
-        "status": {"tr": "Tarayıcıda oynanabilir prototip", "en": "Playable prototype in browser"},
+        "status": {"tr": "Tarayıcıda demo · prototip", "en": "Browser demo · prototype"},
         "link": None,
     },
     {
@@ -209,6 +212,7 @@ PROJECTS = [
         "date": "2026-11",
         "cover": "nightshift",
         "play": "play/night-shift/",
+        "demo": {"tr": "Demo: ilk gün ve gece (yaklaşık 20 dakika).", "en": "Demo: the first day and night (about 20 minutes)."},
         "shot": True,
         "name": {"tr": "NIGHT SHIFT: Son Vardiya", "en": "NIGHT SHIFT: Son Vardiya"},
         "desc": {
@@ -245,7 +249,7 @@ PROJECTS = [
         },
         "role": AI_ROLE,
         "stack": ["Three.js", "JavaScript"],
-        "status": {"tr": "Tarayıcıda oynanabilir prototip", "en": "Playable prototype in browser"},
+        "status": {"tr": "Tarayıcıda demo · prototip", "en": "Browser demo · prototype"},
         "link": None,
     },
     {
@@ -544,6 +548,8 @@ PROJECTS = [
 # Held back until the owner confirms (not rendered): findate.
 
 LOG = [
+    ("2026-11-25", {"tr": "Sitedeki oyunlar kısa demo sürümlerine çevrildi; tam sürümler geliştirilmeye devam ediyor.",
+                    "en": "The games on the site became short demos; the full versions are still in development."}),
     ("2026-11-23", {"tr": "Frogier, Shadow Protocol, Sokakların Kanunu, NIGHT SHIFT ve Hicaz Stüdyosu tarayıcıda oynanabilir olarak siteye eklendi.",
                     "en": "Frogier, Shadow Protocol, Sokakların Kanunu, NIGHT SHIFT and Hicaz Studio added to the site, playable in the browser."}),
     ("2026-11-23", {"tr": "runia0-site GitHub Pages'te yayına alındı; İplik'in Android sürümü hazırlandı.",
@@ -579,7 +585,7 @@ T = {
         "cta_projects": "Projeleri gör",
         "cta_github": "GitHub",
         "stat_projects": "proje",
-        "stat_games": "oynanabilir oyun",
+        "stat_games": "oynanabilir demo",
         "stat_langs": "dil (TR · EN)",
         "featured_title": "Öne çıkan işler",
         "film_title": "Tanıtım filmi",
@@ -653,7 +659,7 @@ T = {
         "nf_title": "Sayfa bulunamadı",
         "cover_alt": "{name} için temsilî kapak görseli",
         "shot_alt": "{name} oyun içi ekran görüntüsü",
-        "play": "Oyna",
+        "play": "Demoyu oyna",
         "try": "Dene",
         "play_note": "Tarayıcıda açılır; masaüstünde klavye ve fare önerilir.",
     },
@@ -675,7 +681,7 @@ T = {
         "cta_projects": "See projects",
         "cta_github": "GitHub",
         "stat_projects": "projects",
-        "stat_games": "playable games",
+        "stat_games": "playable demos",
         "stat_langs": "languages (TR · EN)",
         "featured_title": "Featured work",
         "film_title": "Showreel",
@@ -749,7 +755,7 @@ T = {
         "nf_title": "Page not found",
         "cover_alt": "Illustrative cover image for {name}",
         "shot_alt": "In-game screenshot of {name}",
-        "play": "Play",
+        "play": "Play demo",
         "try": "Try it",
         "play_note": "Opens in the browser; keyboard and mouse recommended on desktop.",
     },

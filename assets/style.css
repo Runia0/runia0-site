@@ -231,3 +231,4 @@ ul { margin: 0; padding: 0; }
 .feat-actions .more { margin-top: 0; }
 .btn--play svg { width: 16px; height: 16px; }
 .film { width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); background: #000; display: block; }
+.demo-scope { margin: .25rem 0 .25rem; font-weight: 600; color: var(--accent); }

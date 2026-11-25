@@ -286,11 +286,11 @@ def home(lang):
 <div class="term" aria-hidden="true">
 <div class="term-bar"><i></i><i></i><i></i><span class="mono">runia0 ~ build</span></div>
 <pre class="mono"><span class="c">$</span> runia0 status
-<span class="ok">●</span> frogier           <span class="d">playable</span>
-<span class="ok">●</span> shadow-protocol   <span class="d">playable</span>
-<span class="ok">●</span> sokaklarin-kanunu <span class="d">playable</span>
+<span class="ok">●</span> frogier           <span class="d">demo live</span>
+<span class="ok">●</span> shadow-protocol   <span class="d">demo live</span>
+<span class="ok">●</span> sokaklarin-kanunu <span class="d">demo live</span>
 <span class="wip">●</span> iplik             <span class="d">pre-release</span>
-<span class="ok">●</span> night-shift       <span class="d">playable</span>
+<span class="ok">●</span> night-shift       <span class="d">demo live</span>
 <span class="c">$</span> <span class="cursor">▍</span></pre>
 </div>
 </div>
@@ -411,7 +411,7 @@ def project_page(lang, pr):
     if pr.get("play"):
         link = (f'<p class="ctas">{play_btn(me, pr, lang, "btn btn--primary btn--play")}'
                 + (f'<a class="btn" href="{pr["link"]}">{GH_ICON}{e(t["view_code"])}</a>' if pr.get("link") else "")
-                + f'</p><p class="note small">{e(t["play_note"])}</p>')
+                + '</p>' + (f'<p class="demo-scope">{e(pr["demo"][lang])}</p>' if pr.get("demo") else '') + f'<p class="note small">{e(t["play_note"])}</p>')
     elif pr.get("link"):
         link = f'<p><a class="btn btn--primary" href="{pr["link"]}">{GH_ICON}{e(t["view_code"])}</a></p>'
     else:

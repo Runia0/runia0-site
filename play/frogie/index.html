@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Frogier</title>
+<title>DEMO · Frogier</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <script>window.KG_CFG={mode:"test"};</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1919,7 +1919,7 @@ function updateWin(dt){
     else nextLevel();
   }
 }
-function nextLevel(){
+function nextLevel(){if(level>=5&&window.RDEMO){window.RDEMO.end();return}
   level++;maxLane=0;P.st.endlessLv=Math.max(P.st.endlessLv||0,level);
   buildLevel(level);resetFrog();
   frog.invul=1.2;camBoost=T+1.2;lvLives=lives;bossBegin(mode,level);
@@ -1933,7 +1933,7 @@ function gameOver(){
   if(mode==='endless'&&score>best){best=score;try{localStorage.setItem('kurbaga-gecidi-best',String(best));}catch(e){}}
   showResult('over');
 }
-function startRun(m,lv){
+function startRun(m,lv){if((lv||1)>5&&window.RDEMO){window.RDEMO.end();return}
   if(storyGate(m,lv))return;
   if(monRunStart(m,lv))return;
   audio();
@@ -4267,4 +4267,53 @@ boot();
 })();
 </script>
 
+
+<style id="rdemo-css">
+#rdemo-badge{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:2147483000;pointer-events:none;
+ font:700 12px/1 system-ui,sans-serif;letter-spacing:.2em;color:#04120a;background:#39ff88;padding:6px 12px;border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.4);opacity:.92}
+#rdemo-end{position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;
+ background:radial-gradient(800px 500px at 50% 40%,rgba(31,107,67,.45),transparent 70%),rgba(3,6,5,.94);color:#e8f2ec;font-family:system-ui,sans-serif;text-align:center;padding:24px}
+#rdemo-end .box{max-width:560px}
+#rdemo-end .k{font:600 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.3em;color:#39ff88}
+#rdemo-end h2{font-size:clamp(30px,6vw,52px);margin:14px 0 10px;font-weight:800;letter-spacing:-.02em}
+#rdemo-end p{color:#cbdcd2;font-size:17px;line-height:1.55;margin:0 0 8px}
+#rdemo-end .en{color:#8fa89a;font-size:14px}
+#rdemo-end .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
+#rdemo-end a,#rdemo-end button{font:700 16px system-ui,sans-serif;padding:13px 22px;border-radius:999px;cursor:pointer;text-decoration:none;border:1px solid #1f6b43}
+#rdemo-end .p{background:#39ff88;color:#04120a;border-color:#39ff88}
+#rdemo-end .s{background:#0b1611;color:#e8f2ec}
+</style>
+<script>
+(function(){
+  var CFG = {"title": "Demo burada bitiyor", "tr": "Frogier demosunda 1. dünyanın 5 bölümü ve ilk boss savaşı var. Tam sürümde 20 dünyada 100 bölüm, 5 boss ve hikâye modu seni bekliyor.", "en": "The Frogier demo includes World 1: 5 levels and the first boss. The full game has 100 levels across 20 worlds, 5 bosses and a story mode.", "page": "https://runia0.github.io/runia0-site/projeler/frogie.html", "keys": ["kurbaga", "kg-"], "home": "https://runia0.github.io/runia0-site/"};
+  var ended = false;
+  function el(){
+    var b=document.createElement('div'); b.id='rdemo-badge'; b.textContent='DEMO'; document.body.appendChild(b);
+    var d=document.createElement('div'); d.id='rdemo-end'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true');
+    d.innerHTML='<div class="box"><div class="k">RUNIA0 · DEMO</div><h2>'+CFG.title+'</h2>'
+      +'<p>'+CFG.tr+'</p><p class="en">'+CFG.en+'</p>'
+      +'<div class="row"><a class="p" href="'+CFG.page+'" target="_top">Projeyi incele · Details</a>'
+      +'<button class="s" type="button" id="rdemo-restart">Baştan oyna · Restart</button>'
+      +'<a class="s" href="'+CFG.home+'" target="_top">Runia0</a></div></div>';
+    document.body.appendChild(d);
+    d.querySelector('#rdemo-restart').onclick=function(){
+      try{ Object.keys(localStorage).forEach(function(k){ if(CFG.keys.some(function(p){return k.indexOf(p)===0;})) localStorage.removeItem(k); }); }catch(e){}
+      location.reload();
+    };
+  }
+  window.RDEMO = {
+    end: function(){
+      if(ended) return false; ended = true;
+      try{ document.exitPointerLock && document.exitPointerLock(); }catch(e){}
+      var d=document.getElementById('rdemo-end'); if(d){ d.style.display='flex'; var p=d.querySelector('a.p'); p && p.focus(); }
+      try{ if(window.AudioContext){ /* let the game keep its audio context; just stop input */ } }catch(e){}
+      window.addEventListener('keydown', function(e){ if(!e.target.closest || !e.target.closest('#rdemo-end')) { e.stopImmediatePropagation(); } }, true);
+      return false;
+    },
+    get ended(){ return ended; }
+  };
+  if(document.body) el(); else document.addEventListener('DOMContentLoaded', el);
+  
+})();
+</script>
 </body></html>

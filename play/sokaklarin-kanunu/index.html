@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<title>Sokakların Kanunu — Bir Adana Hikâyesi</title>
+<title>DEMO · Sokakların Kanunu — Bir Adana Hikâyesi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -880,14 +880,14 @@ function enterStep(){ fireOn(false); RZ.g.visible=false; W.hud=''; SCORCH.visibl
 function completeStep(){ const st=G.step; G.done.push(stepText().replace(/ \(\d+\/\d+\)$/,'')); const s=curStep(); G.step++; delete G.flags.multi; afterStep(st,s) }
 function markMulti(m){ G.flags.multi=(G.flags.multi||[]).concat(m.id); if(curStep().multi.every(mdone))completeStep(); else { refreshObjective(); saveGame(); A.blip() } }
 async function runScript(fn,done){ busy=true; let r=null; try{ r=fn?await fn():null }finally{ busy=false } if(r&&r.fight)startFight(r.fight,done); else done() }
-function tickStep(dt){ if(busy||F.on)return; const s=curStep();
+function tickStep(dt){ if(G.step>=5&&window.RDEMO){window.RDEMO.end();return} if(busy||F.on)return; const s=curStep();
   if(s.tick){ if(s.tick(dt)){ W.hud=''; runScript(s.run,completeStep) } return }
   if(s.go){ if(near(s.go,s.r||3))runScript(s.run,completeStep); return }
   if(s.multi)for(const m of s.multi){ if(m.go&&!mdone(m)&&near(m.go,m.r||3)){ runScript(m.run,()=>markMulti(m)); return } } }
 async function think(lines,who){ D.begin(null); for(const l of lines)await D.say(who||'Kerem (iç ses)',l); D.end() }
 async function narr(lines){ $('#fade').classList.add('on'); D.begin(null); for(const l of lines)await D.say('',l); D.end(); $('#fade').classList.remove('on') }
 async function pickSay(o){ const c=await D.choose(o); await D.say(K,o[c].text); return c }
-function beginChapter(n){ const c=CH[n]; saveGame(); store.set('sk_ch'+n,G); G.flags['ch'+n]=1; abortFight(); exitCar(true); W.time=c.time; W.rainT=c.rain||0; const x=c.spawn[0],z=c.spawn[1],r=c.spawn[2]; P.pos.set(x,0,z); P.rot=r; P.speed=0; P.hp=100; cam.yaw=r+Math.PI; cam.pitch=.22;
+function beginChapter(n){ if(n>=2&&window.RDEMO){window.RDEMO.end();return} const c=CH[n]; saveGame(); store.set('sk_ch'+n,G); G.flags['ch'+n]=1; abortFight(); exitCar(true); W.time=c.time; W.rainT=c.rain||0; const x=c.spawn[0],z=c.spawn[1],r=c.spawn[2]; P.pos.set(x,0,z); P.rot=r; P.speed=0; P.hp=100; cam.yaw=r+Math.PI; cam.pitch=.22;
   if(c.car){ setV(0); V.pos.set(c.car[0],0,c.car[1]); V.rot=c.car[2]; V.spd=0; syncV() } syncCast(); enterStep(); $('#menu').classList.add('hide'); P.H.g.visible=true;
   setState('cine'); document.body.classList.add('cine'); $('#skip').classList.remove('hide'); $('#dlg').classList.remove('hide'); $('#choices').innerHTML=''; $('#dmore').classList.add('hide'); $('#dwho').textContent='';
   const dur=c.lines.length*5+1,y=cam.yaw,sx=Math.sin(y),cx=Math.cos(y);
@@ -1216,7 +1216,7 @@ $('#sClose').onclick=()=>$('#settings').classList.add('hide');
 
 /* ================= OYUN BAŞLATMA & SİNEMATİK ================= */
 let cine=null;
-function startGame(g,intro){ abortFight(); busy=false; G=g; G.car=G.car||[-47,-2.2,Math.PI/2]; G.outfit=G.outfit||0; loadVehs(); G.para=G.para==null?150:G.para; JOB.on=false; P.weapon=0; P.crouch=false; applyOutfit(); { const c=CH[chOf(G.step)]; W.rainT=W.rain=(chOf(G.step)===7&&G.flags.yagmur)?1:(c.rain||0) } W.time=G.time; P.pos.set(G.pos[0],0,G.pos[1]); P.rot=Math.PI; P.speed=0; P.stam=1; P.sit=null; P.H.sit=false; P.H.body.position.y=0; cam.yaw=G.yaw||0; cam.pitch=.22; P.H.g.visible=true;
+function startGame(g,intro){ if(g&&g.step>=5&&window.RDEMO){window.RDEMO.end();return} abortFight(); busy=false; G=g; G.car=G.car||[-47,-2.2,Math.PI/2]; G.outfit=G.outfit||0; loadVehs(); G.para=G.para==null?150:G.para; JOB.on=false; P.weapon=0; P.crouch=false; applyOutfit(); { const c=CH[chOf(G.step)]; W.rainT=W.rain=(chOf(G.step)===7&&G.flags.yagmur)?1:(c.rain||0) } W.time=G.time; P.pos.set(G.pos[0],0,G.pos[1]); P.rot=Math.PI; P.speed=0; P.stam=1; P.sit=null; P.H.sit=false; P.H.body.position.y=0; cam.yaw=G.yaw||0; cam.pitch=.22; P.H.g.visible=true;
   syncCast(); NPCS.forEach(n=>{if(n.path){n.pi=0}});
   $('#menu').classList.add('hide'); refreshObjective(); renderPhone();
   if(intro){ runIntro() } else if(pendingChapter()){ beginChapter(pendingChapter()) } else { enterStep(); setState('play'); cam.pos.set(P.pos.x,3,P.pos.z+5); toast('Kayıt yüklendi'); grabLock() } }
@@ -1270,6 +1270,55 @@ P.outfitBuilt=0; P.H=makeHuman({top:0x1d2026,bot:0x23262c,shoe:0xf2f2f2,hair:0x1
 buildGunFx(); W.spots.push({x:74,z:41.4,label:'Arsa kavgası başlat (ödül 300 ₺)',fn:()=>{ if(G.step<STEPS.length-1){ bark('Kerem (iç ses)','Önce elimdeki işi bitireyim.'); return } G.flags.silah=1; place('t1',80,36,-HPI); place('t2',80,41,-HPI); startFight({who:['t1','t2'],waves:[['t3','t5']],guns:['t5'],spawn:[87,38],hp:62,dmg:10,cd:1.3,spd:2.9,stats:{t5:{hp:50,dmg:13}},obj:'Arsa kavgası'},()=>{ G.para=(G.para||0)+300; toast('Kazandın: <b>+300 ₺</b>'); saveGame() }) }});
 applyGfx(); showPanel('mMain'); setState('menu'); requestAnimationFrame(frame);
 window.__game={VEHS,JOB,fire,phoneCall,takePhoto,toggleWeapon,toggleCrouch,V,RZ,FI,CH,STEPS,curStep,completeStep,tickStep,place,enterCar,exitCar,get busy(){return busy},get dyn(){return dyn},F,attack,dodge,hitEnemy,startFight,get state(){return state},P,G:()=>G,W,cam,NPCS,byId,D,talk,interact,get frames(){return frames},setTime(h){W.time=h},skipCine(){if(cine)cine.skip=true},renderer};
+})();
+</script>
+
+<style id="rdemo-css">
+#rdemo-badge{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:2147483000;pointer-events:none;
+ font:700 12px/1 system-ui,sans-serif;letter-spacing:.2em;color:#04120a;background:#39ff88;padding:6px 12px;border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.4);opacity:.92}
+#rdemo-end{position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;
+ background:radial-gradient(800px 500px at 50% 40%,rgba(31,107,67,.45),transparent 70%),rgba(3,6,5,.94);color:#e8f2ec;font-family:system-ui,sans-serif;text-align:center;padding:24px}
+#rdemo-end .box{max-width:560px}
+#rdemo-end .k{font:600 13px/1 ui-monospace,Menlo,monospace;letter-spacing:.3em;color:#39ff88}
+#rdemo-end h2{font-size:clamp(30px,6vw,52px);margin:14px 0 10px;font-weight:800;letter-spacing:-.02em}
+#rdemo-end p{color:#cbdcd2;font-size:17px;line-height:1.55;margin:0 0 8px}
+#rdemo-end .en{color:#8fa89a;font-size:14px}
+#rdemo-end .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
+#rdemo-end a,#rdemo-end button{font:700 16px system-ui,sans-serif;padding:13px 22px;border-radius:999px;cursor:pointer;text-decoration:none;border:1px solid #1f6b43}
+#rdemo-end .p{background:#39ff88;color:#04120a;border-color:#39ff88}
+#rdemo-end .s{background:#0b1611;color:#e8f2ec}
+</style>
+<script>
+(function(){
+  var CFG = {"title": "Demo burada bitiyor", "tr": "Sokakların Kanunu demosunda yalnızca 1. bölüm – Dönüş oynanabilir. Tam sürümde 10'dan fazla bölüm ve kararlarınla şekillenen 3 final var.", "en": "The Sokakların Kanunu demo includes Chapter 1 – The Return only. The full game has 10+ chapters and 3 endings shaped by your choices.", "page": "https://runia0.github.io/runia0-site/projeler/sokaklarin-kanunu.html", "keys": ["sk_"], "home": "https://runia0.github.io/runia0-site/"};
+  var ended = false;
+  function el(){
+    var b=document.createElement('div'); b.id='rdemo-badge'; b.textContent='DEMO'; document.body.appendChild(b);
+    var d=document.createElement('div'); d.id='rdemo-end'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true');
+    d.innerHTML='<div class="box"><div class="k">RUNIA0 · DEMO</div><h2>'+CFG.title+'</h2>'
+      +'<p>'+CFG.tr+'</p><p class="en">'+CFG.en+'</p>'
+      +'<div class="row"><a class="p" href="'+CFG.page+'" target="_top">Projeyi incele · Details</a>'
+      +'<button class="s" type="button" id="rdemo-restart">Baştan oyna · Restart</button>'
+      +'<a class="s" href="'+CFG.home+'" target="_top">Runia0</a></div></div>';
+    document.body.appendChild(d);
+    d.querySelector('#rdemo-restart').onclick=function(){
+      try{ Object.keys(localStorage).forEach(function(k){ if(CFG.keys.some(function(p){return k.indexOf(p)===0;})) localStorage.removeItem(k); }); }catch(e){}
+      location.reload();
+    };
+  }
+  window.RDEMO = {
+    end: function(){
+      if(ended) return false; ended = true;
+      try{ document.exitPointerLock && document.exitPointerLock(); }catch(e){}
+      var d=document.getElementById('rdemo-end'); if(d){ d.style.display='flex'; var p=d.querySelector('a.p'); p && p.focus(); }
+      try{ if(window.AudioContext){ /* let the game keep its audio context; just stop input */ } }catch(e){}
+      window.addEventListener('keydown', function(e){ if(!e.target.closest || !e.target.closest('#rdemo-end')) { e.stopImmediatePropagation(); } }, true);
+      return false;
+    },
+    get ended(){ return ended; }
+  };
+  if(document.body) el(); else document.addEventListener('DOMContentLoaded', el);
+  
 })();
 </script>
 </body>
